@@ -13,7 +13,7 @@ the name and the abbreviation DC.
 It follows the theme of [Omarchy](https://omarchy.org/) live: switch the theme and the
 colors change at once, with no setup.
 
-> **Alpha (0.0.2).** Many features are not done yet. Most menu items and toolbar buttons
+> **Alpha (0.0.3).** Many features are not done yet. Most menu items and toolbar buttons
 > are not connected, and there is no settings dialog. Expect rough edges.
 
 ## What works
@@ -26,7 +26,9 @@ colors change at once, with no setup.
   text editor, Enter in the default application
 - F5 copy and F6 move, with the questions and options of the original, a progress
   window, pause, and queues
-- F7 new directory, F8 delete (to the trash, or permanently with Shift)
+- F7 new directory, F8 delete (to the trash, or permanently with Shift), F9 terminal
+  in the current directory
+- Sorting by clicking the column headers, from the Show menu or with Ctrl+F3 to Ctrl+F6
 - Adjustable panel divider, drive list with free space
 - English and Czech
 
