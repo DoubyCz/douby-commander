@@ -1,5 +1,7 @@
 # Douby Commander
 
+![Douby Commander in six Omarchy themes](docs/poster.webp)
+
 A two-panel file manager for Linux, written in Rust with GTK 4.
 
 Douby Commander is a tribute to [Double Commander](https://github.com/doublecmd/doublecmd),
