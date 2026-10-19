@@ -28,6 +28,12 @@ pub fn build(app: &gtk::Application) {
     operations.connect_finished(move || {
         if let Some(commander) = weak.upgrade() {
             commander.refresh_panels();
+            // The progress window is gone: back to the panel, unless the
+            // user is somewhere else (another dialog has the window).
+            let main = commander.active().window();
+            if main.is_some_and(|window| window.is_active()) && !commander.panels().iter().any(|panel| panel.has_focus()) {
+                commander.active().focus();
+            }
         }
     });
 
@@ -61,6 +67,21 @@ pub fn build(app: &gtk::Application) {
     let function_bar = function_bar::build(&commander);
     content.append(function_bar.widget());
     window.set_child(Some(&content));
+
+    // Back from a dialog, the progress window or a question of an
+    // operation: the keyboard goes to the active panel again, unless it
+    // is in a panel already or in a text field (quick search, path).
+    let returned = Rc::downgrade(&commander);
+    window.connect_is_active_notify(move |window| {
+        let Some(commander) = returned.upgrade() else { return };
+        if !window.is_active() || commander.panels().iter().any(|panel| panel.has_focus()) {
+            return;
+        }
+        let in_text = gtk::prelude::GtkWindowExt::focus(window).is_some_and(|widget| widget.is::<gtk::Text>());
+        if !in_text {
+            commander.active().focus();
+        }
+    });
 
     window.present();
     if commander.settings().startup_wave {

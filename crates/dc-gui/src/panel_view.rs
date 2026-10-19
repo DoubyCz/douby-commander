@@ -984,7 +984,8 @@ impl PanelView {
         }
     }
 
-    fn has_focus(&self) -> bool {
+    /// Whether the keyboard focus is in this panel's list.
+    pub fn has_focus(&self) -> bool {
         let widget = self.list_widget();
         widget.has_focus() || widget.focus_child().is_some()
     }
@@ -1090,6 +1091,9 @@ impl PanelView {
 
     /// Rebuilds all rows from the panel state.
     fn refresh(&self) {
+        // New rows replace the focused one; the focus would fall to some
+        // other widget (a column header) and the arrows would move there.
+        let had_focus = self.has_focus();
         let panel = self.panel.borrow();
         // Previews made already stay with their rows (sorting, marks).
         let thumbnails = self.thumbnails.borrow();
@@ -1116,7 +1120,11 @@ impl PanelView {
         drop(panel);
         self.update_status();
         self.update_list_headers();
-        self.show_cursor();
+        if had_focus {
+            self.focus();
+        } else {
+            self.show_cursor();
+        }
         for callback in self.path_listeners.borrow().iter() {
             callback(&path);
         }
