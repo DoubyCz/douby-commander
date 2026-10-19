@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: doubycmd\n"
 "Report-Msgid-Bugs-To: douby@douby.cz\n"
-"POT-Creation-Date: 2026-10-19 21:55+0200\n"
+"POT-Creation-Date: 2026-10-19 22:10+0200\n"
 "PO-Revision-Date: 2026-10-19 18:45+0200\n"
 "Last-Translator: Jiří Doubravský <douby@douby.cz>\n"
 "Language-Team: Czech\n"
@@ -17,12 +17,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: crates/dc-core/src/command.rs:211
+#: crates/dc-core/src/command.rs:219
 #, rust-format
 msgid "Unknown command {command}"
 msgstr "Neznámý příkaz {command}"
 
-#: crates/dc-core/src/command.rs:213
+#: crates/dc-core/src/command.rs:221
 #, rust-format
 msgid "Command {command} does not accept parameter {param}"
 msgstr "Příkaz {command} nepřijímá parametr {param}"
@@ -71,38 +71,38 @@ msgstr ""
 msgid "Invalid shortcut {shortcut}"
 msgstr "Neplatná klávesová zkratka {shortcut}"
 
-#: crates/dc-gui/src/commander.rs:171
+#: crates/dc-gui/src/commander.rs:173
 msgid "No text editor found. Set one in the VISUAL or EDITOR variable."
 msgstr ""
 "Nenalezen žádný textový editor. Nastavte ho v proměnné VISUAL nebo EDITOR."
 
-#: crates/dc-gui/src/commander.rs:172
+#: crates/dc-gui/src/commander.rs:174
 msgid ""
 "No terminal found. Install xdg-terminal-exec or set the TERMINAL variable."
 msgstr ""
 "Nenalezen žádný terminál. Nainstalujte xdg-terminal-exec nebo nastavte "
 "proměnnou TERMINAL."
 
-#: crates/dc-gui/src/commander.rs:173
+#: crates/dc-gui/src/commander.rs:175
 msgid "No application is set for text files (text/plain)."
 msgstr "Pro textové soubory (text/plain) není nastavená žádná aplikace."
 
-#: crates/dc-gui/src/commander.rs:177
+#: crates/dc-gui/src/commander.rs:179
 #, rust-format
 msgid "Cannot open {path} in an editor"
 msgstr "Nelze otevřít {path} v editoru"
 
-#: crates/dc-gui/src/commander.rs:281
+#: crates/dc-gui/src/commander.rs:283
 #, rust-format
 msgid "Delete selected \"{name}\" into trash can?"
 msgstr "Opravdu přesunout \"{name}\" do koše?"
 
-#: crates/dc-gui/src/commander.rs:283
+#: crates/dc-gui/src/commander.rs:285
 #, rust-format
 msgid "Delete selected \"{name}\"?"
 msgstr "Opravdu smazat \"{name}\"?"
 
-#: crates/dc-gui/src/commander.rs:291
+#: crates/dc-gui/src/commander.rs:293
 #, rust-format
 msgid "Delete {count} selected file/directory into trash can?"
 msgid_plural "Delete {count} selected files/directories into trash can?"
@@ -110,7 +110,7 @@ msgstr[0] "Opravdu přesunout {count} vybranou položku do koše?"
 msgstr[1] "Opravdu přesunout {count} vybrané položky do koše?"
 msgstr[2] "Opravdu přesunout {count} vybraných položek do koše?"
 
-#: crates/dc-gui/src/commander.rs:296
+#: crates/dc-gui/src/commander.rs:298
 #, rust-format
 msgid "Delete {count} selected file/directory?"
 msgid_plural "Delete {count} selected files/directories?"
@@ -118,17 +118,17 @@ msgstr[0] "Opravdu smazat {count} vybranou položku?"
 msgstr[1] "Opravdu smazat {count} vybrané položky?"
 msgstr[2] "Opravdu smazat {count} vybraných položek?"
 
-#: crates/dc-gui/src/commander.rs:338
+#: crates/dc-gui/src/commander.rs:340
 #, rust-format
 msgid "Copy selected \"{name}\"?"
 msgstr "Kopírovat \"{name}\"?"
 
-#: crates/dc-gui/src/commander.rs:338
+#: crates/dc-gui/src/commander.rs:340
 #, rust-format
 msgid "Rename/move selected \"{name}\"?"
 msgstr "Přejmenovat nebo přesunout \"{name}\"?"
 
-#: crates/dc-gui/src/commander.rs:344
+#: crates/dc-gui/src/commander.rs:346
 #, rust-format
 msgid "Copy {count} selected file/directory?"
 msgid_plural "Copy {count} selected files/directories?"
@@ -136,7 +136,7 @@ msgstr[0] "Kopírovat {count} vybranou položku?"
 msgstr[1] "Kopírovat {count} vybrané položky?"
 msgstr[2] "Kopírovat {count} vybraných položek?"
 
-#: crates/dc-gui/src/commander.rs:347
+#: crates/dc-gui/src/commander.rs:349
 #, rust-format
 msgid "Rename/move {count} selected file/directory?"
 msgid_plural "Rename/move {count} selected files/directories?"
@@ -723,13 +723,13 @@ msgctxt "main menu"
 msgid "Load tabs from Favorite Tabs"
 msgstr "Načíst záložky z oblíbených"
 
-#: crates/dc-gui/src/menu.rs:151 crates/dc-gui/src/menu.rs:199
+#: crates/dc-gui/src/menu.rs:151 crates/dc-gui/src/menu.rs:200
 msgctxt "main menu"
 msgid "Configuration of folder tabs"
 msgstr "Nastavení záložek složek"
 
 #: crates/dc-gui/src/menu.rs:152 crates/dc-gui/src/menu.rs:161
-#: crates/dc-gui/src/menu.rs:197
+#: crates/dc-gui/src/menu.rs:198
 msgctxt "main menu"
 msgid "Configuration of Favorite Tabs"
 msgstr "Nastavení oblíbených záložek"
@@ -754,137 +754,137 @@ msgctxt "main menu"
 msgid "_Show"
 msgstr "_Zobrazit"
 
-#: crates/dc-gui/src/menu.rs:168
-msgctxt "main menu"
-msgid "Brief view"
-msgstr "Seznam"
-
 #: crates/dc-gui/src/menu.rs:169
 msgctxt "main menu"
-msgid "Full"
-msgstr "Podrobnosti"
+msgid "_List"
+msgstr "_Seznam"
 
 #: crates/dc-gui/src/menu.rs:170
 msgctxt "main menu"
-msgid "Thumbnails"
-msgstr "Miniatury"
+msgid "_Details"
+msgstr "_Podrobnosti"
 
-#: crates/dc-gui/src/menu.rs:172
+#: crates/dc-gui/src/menu.rs:171
+msgctxt "main menu"
+msgid "_Icons"
+msgstr "_Ikony"
+
+#: crates/dc-gui/src/menu.rs:173
 msgctxt "main menu"
 msgid "_Quick View Panel"
 msgstr "_Panel rychlého prohlížení"
 
-#: crates/dc-gui/src/menu.rs:173
+#: crates/dc-gui/src/menu.rs:174
 msgctxt "main menu"
 msgid "_Tree View Panel"
 msgstr "S_tromové zobrazení"
 
-#: crates/dc-gui/src/menu.rs:175
+#: crates/dc-gui/src/menu.rs:176
 msgctxt "main menu"
 msgid "Sort by _Name"
 msgstr "Řadit podle _názvu"
 
-#: crates/dc-gui/src/menu.rs:176
+#: crates/dc-gui/src/menu.rs:177
 msgctxt "main menu"
 msgid "Sort by _Extension"
 msgstr "Řadit podl_e přípony"
 
-#: crates/dc-gui/src/menu.rs:177
+#: crates/dc-gui/src/menu.rs:178
 msgctxt "main menu"
 msgid "Sort by _Size"
 msgstr "Řadit podle veliko_sti"
 
-#: crates/dc-gui/src/menu.rs:178
+#: crates/dc-gui/src/menu.rs:179
 msgctxt "main menu"
 msgid "Sort by _Date"
 msgstr "Řadit podle _data"
 
-#: crates/dc-gui/src/menu.rs:179
+#: crates/dc-gui/src/menu.rs:180
 msgctxt "main menu"
 msgid "Sort by _Attributes"
 msgstr "Řadit podle _atributů"
 
-#: crates/dc-gui/src/menu.rs:181
+#: crates/dc-gui/src/menu.rs:182
 msgctxt "main menu"
 msgid "Re_verse Order"
 msgstr "O_brácené pořadí"
 
-#: crates/dc-gui/src/menu.rs:182
+#: crates/dc-gui/src/menu.rs:183
 msgctxt "main menu"
 msgid "_Refresh"
 msgstr "_Obnovit"
 
-#: crates/dc-gui/src/menu.rs:184
+#: crates/dc-gui/src/menu.rs:185
 msgctxt "main menu"
 msgid "Show _Hidden/System Files"
 msgstr "Zobrazit _skryté soubory"
 
-#: crates/dc-gui/src/menu.rs:186
+#: crates/dc-gui/src/menu.rs:187
 msgctxt "main menu"
 msgid "_Horizontal Panels Mode"
 msgstr "_Vodorovný režim panelů"
 
-#: crates/dc-gui/src/menu.rs:188
+#: crates/dc-gui/src/menu.rs:189
 msgctxt "main menu"
 msgid "Operations _Viewer"
 msgstr "P_rohlížeč operací"
 
-#: crates/dc-gui/src/menu.rs:192
+#: crates/dc-gui/src/menu.rs:193
 msgctxt "main menu"
 msgid "C_onfiguration"
 msgstr "N_astavení"
 
-#: crates/dc-gui/src/menu.rs:194
+#: crates/dc-gui/src/menu.rs:195
 msgctxt "main menu"
 msgid "_Options..."
 msgstr "M_ožnosti..."
 
-#: crates/dc-gui/src/menu.rs:196
+#: crates/dc-gui/src/menu.rs:197
 msgctxt "main menu"
 msgid "Configuration of Directory Hotlist"
 msgstr "Nastavení oblíbených složek"
 
-#: crates/dc-gui/src/menu.rs:198
+#: crates/dc-gui/src/menu.rs:199
 msgctxt "main menu"
 msgid "Configuration of File _Associations"
 msgstr "Nastavení _přidružení souborů"
 
-#: crates/dc-gui/src/menu.rs:200
+#: crates/dc-gui/src/menu.rs:201
 msgctxt "main menu"
 msgid "Configuration of Archivers"
 msgstr "Nastavení archivátorů"
 
-#: crates/dc-gui/src/menu.rs:202
+#: crates/dc-gui/src/menu.rs:203
 msgctxt "main menu"
 msgid "Save Position"
 msgstr "Uložit pozici"
 
-#: crates/dc-gui/src/menu.rs:203
+#: crates/dc-gui/src/menu.rs:204
 msgctxt "main menu"
 msgid "Save Settings"
 msgstr "Uložit nastavení"
 
-#: crates/dc-gui/src/menu.rs:207
+#: crates/dc-gui/src/menu.rs:208
 msgctxt "main menu"
 msgid "_Help"
 msgstr "_Nápověda"
 
-#: crates/dc-gui/src/menu.rs:209
+#: crates/dc-gui/src/menu.rs:210
 msgctxt "main menu"
 msgid "_Contents"
 msgstr "_Obsah"
 
-#: crates/dc-gui/src/menu.rs:210
+#: crates/dc-gui/src/menu.rs:211
 msgctxt "main menu"
 msgid "_Keyboard"
 msgstr "_Klávesnice"
 
-#: crates/dc-gui/src/menu.rs:211
+#: crates/dc-gui/src/menu.rs:212
 msgctxt "main menu"
 msgid "_Visit Douby Commander Website"
 msgstr "Na_vštívit web Douby Commanderu"
 
-#: crates/dc-gui/src/menu.rs:213
+#: crates/dc-gui/src/menu.rs:214
 msgctxt "main menu"
 msgid "_About"
 msgstr "_O programu"
@@ -955,32 +955,32 @@ msgctxt "tooltip of a disabled button"
 msgid "{hint} - {reason}"
 msgstr "{hint} - {reason}"
 
-#: crates/dc-gui/src/panel_view.rs:27
+#: crates/dc-gui/src/panel_view.rs:28
 msgid "Name"
 msgstr "Název"
 
-#: crates/dc-gui/src/panel_view.rs:28
+#: crates/dc-gui/src/panel_view.rs:29
 msgid "Ext"
 msgstr "Přípona"
 
-#: crates/dc-gui/src/panel_view.rs:29
+#: crates/dc-gui/src/panel_view.rs:30
 msgid "Size"
 msgstr "Velikost"
 
-#: crates/dc-gui/src/panel_view.rs:30
+#: crates/dc-gui/src/panel_view.rs:31
 msgid "Date"
 msgstr "Datum"
 
-#: crates/dc-gui/src/panel_view.rs:31
+#: crates/dc-gui/src/panel_view.rs:32
 msgid "Attr"
 msgstr "Atr."
 
-#: crates/dc-gui/src/panel_view.rs:444
+#: crates/dc-gui/src/panel_view.rs:739
 #, rust-format
 msgid "(SEARCH: {text})"
 msgstr "(HLEDÁNÍ: {text})"
 
-#: crates/dc-gui/src/panel_view.rs:478
+#: crates/dc-gui/src/panel_view.rs:769
 #, rust-format
 msgid "Cannot open {path}"
 msgstr "Nelze otevřít {path}"
@@ -1078,18 +1078,18 @@ msgstr "Možnosti..."
 
 #: crates/dc-gui/src/toolbar.rs:28
 msgctxt "toolbar"
-msgid "Brief View"
+msgid "List"
 msgstr "Seznam"
 
 #: crates/dc-gui/src/toolbar.rs:29
 msgctxt "toolbar"
-msgid "Columns View"
+msgid "Details"
 msgstr "Podrobnosti"
 
 #: crates/dc-gui/src/toolbar.rs:30
 msgctxt "toolbar"
-msgid "Thumbnails View"
-msgstr "Miniatury"
+msgid "Icons"
+msgstr "Ikony"
 
 #: crates/dc-gui/src/toolbar.rs:32
 msgctxt "toolbar"

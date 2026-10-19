@@ -38,7 +38,15 @@ pub struct PanelView {
     tz: TimeZone,
     store: gio::ListStore,
     selection: gtk::SingleSelection,
+    /// Details: one row per item, all columns.
     column_view: gtk::ColumnView,
+    /// List: names only, in columns side by side, scrolled horizontally.
+    grid_view: gtk::GridView,
+    /// Sort headers above the list view, with the arrow of each.
+    list_headers: Vec<(SortColumn, gtk::Image)>,
+    /// Shows one of the two views; both are views of the same rows.
+    views: gtk::Stack,
+    mode: Cell<ViewMode>,
     path_label: gtk::Label,
     status_label: gtk::Label,
     root: gtk::Box,
@@ -49,11 +57,38 @@ pub struct PanelView {
     path_listeners: RefCell<Vec<PathListener>>,
     /// Scroll position of directories left for a subdirectory, restored
     /// when coming back up, so the list looks as it did before.
-    scroll_memory: RefCell<HashMap<PathBuf, f64>>,
+    scroll_memory: RefCell<HashMap<PathBuf, (ViewMode, f64)>>,
     this: Weak<Self>,
 }
 
 type PathListener = Box<dyn Fn(&Path)>;
+
+/// How a panel shows its items (`cm_BriefView`, `cm_ColumnsView` of the
+/// original, there "brief" and "full"; icons will follow).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ViewMode {
+    /// All columns, one row per item.
+    Details,
+    /// Names only, in columns side by side, scrolled horizontally.
+    List,
+}
+
+impl ViewMode {
+    fn name(self) -> &'static str {
+        match self {
+            Self::Details => "details",
+            Self::List => "list",
+        }
+    }
+}
+
+/// Space around a name in the list view, matches `.dc-list-view > child`
+/// in the base style (1px top and bottom, 6px left and right).
+const LIST_CELL_PADDING: i32 = 2;
+const LIST_CELL_SIDE_PADDING: i32 = 12;
+
+/// Width of a column of the list view in `rem`, enough for a name.
+const LIST_COLUMN_REM: f64 = 20.0;
 
 impl PanelView {
     pub fn new(path: PathBuf) -> Rc<Self> {
@@ -67,12 +102,47 @@ impl PanelView {
         let status_label = gtk::Label::builder().xalign(0.0).ellipsize(gtk::pango::EllipsizeMode::End).build();
         status_label.add_css_class("dc-status");
 
-        let scrolled = gtk::ScrolledWindow::builder().child(&column_view).vexpand(true).build();
+        let details = gtk::ScrolledWindow::builder().child(&column_view).vexpand(true).build();
+
+        // The list view: columns of names filled top to bottom, as many rows
+        // as fit (set on resize), scrolled sideways.
+        let grid_view = gtk::GridView::builder().model(&selection).orientation(gtk::Orientation::Horizontal).build();
+        grid_view.add_css_class("dc-list-view");
+        let list = gtk::ScrolledWindow::builder()
+            .child(&grid_view)
+            .vexpand(true)
+            .vscrollbar_policy(gtk::PolicyType::Never)
+            .build();
+        let header_row = gtk::Box::builder().css_classes(["dc-list-header"]).build();
+        let list_box = gtk::Box::new(gtk::Orientation::Vertical, 0);
+        list_box.append(&header_row);
+        list_box.append(&list);
+
+        let views = gtk::Stack::builder().vexpand(true).build();
+        views.add_named(&details, Some(ViewMode::Details.name()));
+        views.add_named(&list_box, Some(ViewMode::List.name()));
+
         let root = gtk::Box::new(gtk::Orientation::Vertical, 0);
         root.add_css_class("dc-panel");
         root.append(&path_label);
-        root.append(&scrolled);
+        root.append(&views);
         root.append(&status_label);
+
+        let list_headers = COLUMNS
+            .iter()
+            .map(|(sort_column, _, title)| {
+                let arrow = gtk::Image::builder().visible(false).build();
+                let content = gtk::Box::builder().spacing(4).build();
+                content.append(&gtk::Label::builder().label(gettext(*title)).xalign(0.0).hexpand(true).build());
+                content.append(&arrow);
+                let button = gtk::Button::builder().child(&content).focusable(false).build();
+                button.add_css_class("flat");
+                // The name takes the room, the others as in the details header.
+                button.set_hexpand(matches!(sort_column, SortColumn::Name));
+                header_row.append(&button);
+                (*sort_column, button, arrow)
+            })
+            .collect::<Vec<_>>();
 
         let view = Rc::new_cyclic(|this| Self {
             panel: RefCell::new(Panel::new(path.clone())),
@@ -81,6 +151,10 @@ impl PanelView {
             store,
             selection,
             column_view,
+            grid_view,
+            list_headers: list_headers.iter().map(|(column, _, arrow)| (*column, arrow.clone())).collect(),
+            views,
+            mode: Cell::new(ViewMode::Details),
             path_label,
             status_label,
             root,
@@ -91,6 +165,15 @@ impl PanelView {
             this: this.clone(),
         });
         view.setup_columns();
+        view.setup_list_view(&list);
+        for (column, button, _) in list_headers {
+            let weak = Rc::downgrade(&view);
+            button.connect_clicked(move |_| {
+                if let Some(view) = weak.upgrade() {
+                    view.sort_by(column);
+                }
+            });
+        }
         view.connect_signals();
 
         let loaded = view.panel.borrow_mut().load(&view.source, path, None);
@@ -119,14 +202,18 @@ impl PanelView {
         let cursor = self.panel.borrow().cursor();
         // FOCUS only picks the focused row inside the list, the widget itself
         // has to take keyboard focus too.
-        self.column_view.scroll_to(position(cursor), None, gtk::ListScrollFlags::FOCUS, None);
-        self.column_view.grab_focus();
+        self.scroll_to_row(position(cursor), gtk::ListScrollFlags::FOCUS);
+        self.list_widget().grab_focus();
     }
 
     pub fn connect_focus_enter(&self, callback: impl Fn() + 'static) {
-        let focus = gtk::EventControllerFocus::new();
-        focus.connect_enter(move |_| callback());
-        self.column_view.add_controller(focus);
+        let callback = Rc::new(callback);
+        for widget in [self.column_view.upcast_ref::<gtk::Widget>(), self.grid_view.upcast_ref()] {
+            let focus = gtk::EventControllerFocus::new();
+            let callback = Rc::clone(&callback);
+            focus.connect_enter(move |_| callback());
+            widget.add_controller(focus);
+        }
     }
 
     /// Insert, Shift+Down (`forward`) and Shift+Up.
@@ -250,23 +337,33 @@ impl PanelView {
         }
     }
 
-    /// The directory being left and how far its list is scrolled.
-    fn leaving(&self) -> (PathBuf, f64) {
-        let scrolled = self.column_view.vadjustment().map_or(0.0, |adjustment| adjustment.value());
-        (self.path(), scrolled)
+    /// The scrolling of the current view: vertical in details, horizontal
+    /// in the list view.
+    fn scroll_adjustment(&self) -> Option<gtk::Adjustment> {
+        match self.mode.get() {
+            ViewMode::Details => self.column_view.vadjustment(),
+            ViewMode::List => self.grid_view.hadjustment(),
+        }
+    }
+
+    /// The directory being left and how far its view is scrolled.
+    fn leaving(&self) -> (PathBuf, ViewMode, f64) {
+        let scrolled = self.scroll_adjustment().map_or(0.0, |adjustment| adjustment.value());
+        (self.path(), self.mode.get(), scrolled)
     }
 
     /// After moving to another directory: going down remembers how the
     /// directory left was scrolled, going up shows it scrolled the same
     /// way again, with the cursor on the directory we came from at the
-    /// same place on screen.
-    fn arrived(&self, (left, scrolled): (PathBuf, f64)) {
+    /// same place on screen. Only within one view mode.
+    fn arrived(&self, (left, mode, scrolled): (PathBuf, ViewMode, f64)) {
         self.refresh();
         let now = self.path();
         if now.parent() == Some(left.as_path()) {
-            self.scroll_memory.borrow_mut().insert(left, scrolled);
+            self.scroll_memory.borrow_mut().insert(left, (mode, scrolled));
         } else if left.parent() == Some(now.as_path())
-            && let Some(&remembered) = self.scroll_memory.borrow().get(&now)
+            && let Some(&(remembered_mode, remembered)) = self.scroll_memory.borrow().get(&now)
+            && remembered_mode == self.mode.get()
         {
             // After the list is laid out with the new rows.
             let this = self.this.clone();
@@ -281,16 +378,28 @@ impl PanelView {
     /// Scrolls to `value` unless the cursor would not be fully visible
     /// there (the directory changed meanwhile); then it stays as it is.
     fn restore_scroll(&self, value: f64) {
-        let rows = self.store.n_items();
-        let Some(adjustment) = self.column_view.vadjustment() else { return };
-        if rows == 0 || adjustment.upper() <= 0.0 {
+        let items = self.store.n_items();
+        let Some(adjustment) = self.scroll_adjustment() else { return };
+        if items == 0 || adjustment.upper() <= 0.0 {
             return;
         }
-        // The header scrolls with the rows, it counts as one more row.
-        let row_height = adjustment.upper() / f64::from(rows + 1);
-        let cursor_top = f64::from(position(self.panel.borrow().cursor()) + 1) * row_height;
+        let cursor = position(self.panel.borrow().cursor());
+        // Where the cursor is along the scrolling, and the size of a step.
+        let (start, step) = match self.mode.get() {
+            ViewMode::Details => {
+                // The header scrolls with the rows, it counts as one more row.
+                let row_height = adjustment.upper() / f64::from(items + 1);
+                (f64::from(cursor + 1) * row_height, row_height)
+            }
+            ViewMode::List => {
+                let rows = u32::try_from(self.list_rows()).unwrap_or(1);
+                let column_width = adjustment.upper() / f64::from(items.div_ceil(rows));
+                (f64::from(cursor / rows) * column_width, column_width)
+            }
+        };
         let value = value.clamp(0.0, (adjustment.upper() - adjustment.page_size()).max(0.0));
-        if cursor_top >= value + row_height && cursor_top + row_height <= value + adjustment.page_size() {
+        let margin = if self.mode.get() == ViewMode::Details { step } else { 0.0 };
+        if start >= value + margin && start + step <= value + adjustment.page_size() {
             adjustment.set_value(value);
         }
     }
@@ -335,36 +444,7 @@ impl PanelView {
                     label.set_ellipsize(gtk::pango::EllipsizeMode::End);
                     label.set_width_chars(18);
                 }
-
-                // Ctrl+click and Shift+click mark files. The cell handles them
-                // before the row does, which would otherwise just move the cursor.
-                let click = gtk::GestureClick::new();
-                let (this, item) = (this.clone(), list_item.downgrade());
-                click.connect_pressed(move |gesture, _, _, _| {
-                    let modifiers = gesture.current_event_state();
-                    if !modifiers.intersects(gdk::ModifierType::CONTROL_MASK | gdk::ModifierType::SHIFT_MASK) {
-                        return;
-                    }
-                    gesture.set_state(gtk::EventSequenceState::Claimed);
-                    if let (Some(view), Some(item)) = (this.upgrade(), item.upgrade())
-                        && let Ok(index) = usize::try_from(item.position())
-                    {
-                        view.clicked_with_modifiers(index, modifiers);
-                    }
-                });
-                label.add_controller(click);
-
-                // Follows `marked` of whatever row the cell currently shows,
-                // a changed mark restyles the cell without rebinding it.
-                list_item
-                    .property_expression("item")
-                    .chain_property::<FileRow>("marked")
-                    .chain_closure::<Vec<String>>(glib::closure!(|_: Option<glib::Object>, marked: bool| {
-                        if marked { vec!["dc-marked".to_owned()] } else { Vec::new() }
-                    }))
-                    .bind(&label, "css-classes", Some(list_item));
-
-                list_item.set_child(Some(&label));
+                setup_cell(&this, list_item, &label);
             });
             factory.connect_bind(move |_, object| {
                 let list_item = list_item(object);
@@ -399,6 +479,163 @@ impl PanelView {
 
         let first = self.column_view.columns().item(0).and_downcast::<gtk::ColumnViewColumn>();
         self.column_view.sort_by_column(first.as_ref(), gtk::SortType::Ascending);
+    }
+
+    /// The list view: full names, bold directories, marks as in details.
+    /// Its rows follow the height of the panel.
+    fn setup_list_view(&self, scrolled: &gtk::ScrolledWindow) {
+        let factory = gtk::SignalListItemFactory::new();
+        let this = self.this.clone();
+        let column_width = self.list_column_width();
+        factory.connect_setup(move |_, object| {
+            // The grid makes every column as wide as the minimum width of
+            // its cells, so that is set; longer names are ellipsized.
+            let label = gtk::Label::builder()
+                .xalign(0.0)
+                .ellipsize(gtk::pango::EllipsizeMode::End)
+                .max_width_chars(1)
+                .width_request(column_width)
+                .build();
+            setup_cell(&this, list_item(object), &label);
+        });
+        factory.connect_bind(|_, object| {
+            let list_item = list_item(object);
+            let row = list_item.item().and_downcast::<FileRow>().expect("rows are FileRow");
+            let label = list_item.child().and_downcast::<gtk::Label>().expect("child is set up as Label");
+            let texts = row.texts();
+            label.set_text(&texts.full_name);
+            label.set_attributes(texts.directory.then(bold_attributes).as_ref());
+        });
+        self.grid_view.set_factory(Some(&factory));
+
+        let weak = self.this.clone();
+        self.grid_view.connect_activate(move |_, _| {
+            if let Some(view) = weak.upgrade() {
+                view.open_current();
+            }
+        });
+
+        // As many rows as fit: the grid's "columns" are rows when it is
+        // horizontal, both limits the same makes it exact.
+        let weak = self.this.clone();
+        scrolled.vadjustment().connect_page_size_notify(move |adjustment| {
+            if let Some(view) = weak.upgrade() {
+                let row_height = view.list_row_height();
+                #[expect(
+                    clippy::cast_possible_truncation,
+                    clippy::cast_sign_loss,
+                    reason = "a small positive row count, truncation intended"
+                )]
+                let rows = (adjustment.page_size() / f64::from(row_height)).floor().max(1.0) as u32;
+                if rows != view.grid_view.max_columns() {
+                    // Not now: this runs while the grid is laid out, a change
+                    // made here would show only after the next relayout
+                    // (e.g. scrolling), with the old rows stretched meanwhile.
+                    let weak = view.this.clone();
+                    glib::idle_add_local_once(move || {
+                        if let Some(view) = weak.upgrade() {
+                            view.grid_view.set_max_columns(rows.max(view.grid_view.min_columns()));
+                            view.grid_view.set_min_columns(rows);
+                            view.grid_view.set_max_columns(rows);
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    /// Width of a name in the list view: `LIST_COLUMN_REM` times the font
+    /// size (as CSS `rem`), less the horizontal padding of the cell.
+    fn list_column_width(&self) -> i32 {
+        let font = self.grid_view.pango_context().font_description();
+        let size = font.as_ref().map_or(0.0, |font| f64::from(font.size()) / f64::from(gtk::pango::SCALE));
+        // Points to pixels at the 96 dpi GTK works in, unless given in pixels.
+        let pixels = if font.as_ref().is_some_and(gtk::pango::FontDescription::is_size_absolute) { size } else { size * 96.0 / 72.0 };
+        let pixels = if pixels > 0.0 { pixels } else { 16.0 };
+        #[expect(clippy::cast_possible_truncation, reason = "a width of a few hundred pixels")]
+        let width = (pixels * LIST_COLUMN_REM).round() as i32;
+        width - LIST_CELL_SIDE_PADDING
+    }
+
+    /// Height of one name in the list view: a line of text and the padding.
+    fn list_row_height(&self) -> i32 {
+        let (_, text_height) = self.grid_view.create_pango_layout(Some("Ág")).pixel_size();
+        (text_height + LIST_CELL_PADDING).max(1)
+    }
+
+    /// Rows per column of the list view.
+    fn list_rows(&self) -> usize {
+        usize::try_from(self.grid_view.max_columns()).unwrap_or(1).max(1)
+    }
+
+    /// `cm_BriefView` / `cm_ColumnsView`: the same items, cursor, marks and
+    /// sorting in another view.
+    pub fn set_view_mode(&self, mode: ViewMode) {
+        if mode == self.mode.get() {
+            return;
+        }
+        let had_focus = self.has_focus();
+        self.mode.set(mode);
+        self.views.set_visible_child_name(mode.name());
+        if had_focus {
+            self.focus();
+        } else {
+            self.show_cursor();
+        }
+    }
+
+    /// The widget of the current view.
+    fn list_widget(&self) -> gtk::Widget {
+        match self.mode.get() {
+            ViewMode::Details => self.column_view.clone().upcast(),
+            ViewMode::List => self.grid_view.clone().upcast(),
+        }
+    }
+
+    fn has_focus(&self) -> bool {
+        let widget = self.list_widget();
+        widget.has_focus() || widget.focus_child().is_some()
+    }
+
+    fn scroll_to_row(&self, index: u32, flags: gtk::ListScrollFlags) {
+        match self.mode.get() {
+            ViewMode::Details => self.column_view.scroll_to(index, None, flags, None),
+            ViewMode::List => self.grid_view.scroll_to(index, flags, None),
+        }
+    }
+
+    /// A click on a sort header of the list view: the same as in the
+    /// details header, which shows it too. A new column starts descending
+    /// for size and date (newest, largest first), as in the original.
+    fn sort_by(&self, column: SortColumn) {
+        let current = self.panel.borrow().sorting();
+        let descending = if current.column == column {
+            current.direction == SortDirection::Ascending
+        } else {
+            matches!(column, SortColumn::Size | SortColumn::Modified)
+        };
+        let order = if descending { gtk::SortType::Descending } else { gtk::SortType::Ascending };
+        let columns = self.column_view.columns();
+        let header = (0..columns.n_items())
+            .filter_map(|index| columns.item(index).and_downcast::<gtk::ColumnViewColumn>())
+            .find(|candidate| candidate.id().as_deref() == COLUMNS.iter().find(|(c, ..)| *c == column).map(|(_, id, _)| *id));
+        // Through the details header, whose sorter tells the panel.
+        self.column_view.sort_by_column(header.as_ref(), order);
+    }
+
+    /// The arrow in the list view's headers, after the panel's sorting.
+    fn update_list_headers(&self) {
+        let sorting = self.panel.borrow().sorting();
+        for (column, arrow) in &self.list_headers {
+            let shown = *column == sorting.column;
+            arrow.set_visible(shown);
+            if shown {
+                arrow.set_icon_name(Some(match sorting.direction {
+                    SortDirection::Ascending => "pan-up-symbolic",
+                    SortDirection::Descending => "pan-down-symbolic",
+                }));
+            }
+        }
     }
 
     fn connect_signals(self: &Rc<Self>) {
@@ -445,6 +682,7 @@ impl PanelView {
         let path = panel.path().to_owned();
         drop(panel);
         self.update_status();
+        self.update_list_headers();
         self.show_cursor();
         for callback in self.path_listeners.borrow().iter() {
             callback(&path);
@@ -473,6 +711,10 @@ impl PanelView {
 
     /// How far PgUp/PgDn jump: the number of fully visible rows.
     fn rows_per_page(&self) -> usize {
+        // The list view moves by a column less one, as the original.
+        if self.mode.get() == ViewMode::List {
+            return self.list_rows().saturating_sub(1).max(1);
+        }
         let rows = self.store.n_items();
         let Some(adjustment) = self.column_view.vadjustment() else { return 1 };
         if rows == 0 || adjustment.upper() <= 0.0 {
@@ -508,12 +750,8 @@ impl PanelView {
         self.selection.set_selected(cursor);
         self.syncing.set(false);
 
-        let flags = if self.column_view.has_focus() || self.column_view.focus_child().is_some() {
-            gtk::ListScrollFlags::FOCUS
-        } else {
-            gtk::ListScrollFlags::NONE
-        };
-        self.column_view.scroll_to(cursor, None, flags, None);
+        let flags = if self.has_focus() { gtk::ListScrollFlags::FOCUS } else { gtk::ListScrollFlags::NONE };
+        self.scroll_to_row(cursor, flags);
     }
 
     /// The file under the cursor, for F3 and F4; not `..` or a directory.
@@ -572,6 +810,39 @@ impl PanelView {
             Err(err) => self.show_error(&err),
         }
     }
+}
+
+/// What every cell showing a row does, in both views: Ctrl+click and
+/// Shift+click mark files (the cell handles them before the row does,
+/// which would otherwise just move the cursor), and the label follows
+/// `marked` of whatever row it currently shows, so a changed mark restyles
+/// it without rebinding.
+fn setup_cell(view: &Weak<PanelView>, list_item: &gtk::ListItem, label: &gtk::Label) {
+    let click = gtk::GestureClick::new();
+    let (view, item) = (view.clone(), list_item.downgrade());
+    click.connect_pressed(move |gesture, _, _, _| {
+        let modifiers = gesture.current_event_state();
+        if !modifiers.intersects(gdk::ModifierType::CONTROL_MASK | gdk::ModifierType::SHIFT_MASK) {
+            return;
+        }
+        gesture.set_state(gtk::EventSequenceState::Claimed);
+        if let (Some(view), Some(item)) = (view.upgrade(), item.upgrade())
+            && let Ok(index) = usize::try_from(item.position())
+        {
+            view.clicked_with_modifiers(index, modifiers);
+        }
+    });
+    label.add_controller(click);
+
+    list_item
+        .property_expression("item")
+        .chain_property::<FileRow>("marked")
+        .chain_closure::<Vec<String>>(glib::closure!(|_: Option<glib::Object>, marked: bool| {
+            if marked { vec!["dc-marked".to_owned()] } else { Vec::new() }
+        }))
+        .bind(label, "css-classes", Some(list_item));
+
+    list_item.set_child(Some(label));
 }
 
 fn bold_attributes() -> gtk::pango::AttrList {

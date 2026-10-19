@@ -13,7 +13,10 @@ use jiff::tz::TimeZone;
 /// Pre-formatted column texts.
 #[derive(Debug, Default)]
 pub struct RowTexts {
+    /// Without the extension, for the Name column next to Ext (details).
     pub name: String,
+    /// With the extension, directories in brackets (list view).
+    pub full_name: String,
     pub extension: String,
     pub size: String,
     pub modified: String,
@@ -54,6 +57,11 @@ impl FileRow {
         let entry = item.entry();
         let texts = RowTexts {
             name: format::name_column(item),
+            full_name: if item.is_directory_like() {
+                format!("[{}]", entry.name.to_string_lossy())
+            } else {
+                entry.name.to_string_lossy().into_owned()
+            },
             extension: item.extension().to_owned(),
             size: format::size_column(item),
             modified: format::modified(entry.modified, tz),

@@ -73,6 +73,27 @@ const BASE_CSS: &str = "
     outline: none;
     transition: none;
 }
+/* List view: rows tight (padding as LIST_CELL_PADDING and
+   LIST_CELL_SIDE_PADDING in panel_view.rs, which also sets the 20rem
+   width), the cursor as in details. */
+.dc-list-view > child {
+    min-height: 0;
+    padding: 1px 6px;
+    margin: 0;
+    border-radius: 0;
+    outline: none;
+    transition: none;
+}
+.dc-panel .dc-list-view > child:selected {
+    background-color: var(--dc-cursor-bg-color);
+    color: var(--dc-cursor-fg-color);
+}
+.dc-panel:not(.dc-active) .dc-list-view > child:selected {
+    background-color: transparent;
+    color: inherit;
+    box-shadow: inset 0 0 0 1px var(--dc-inactive-cursor-color);
+}
+.dc-list-header button { padding: 2px 6px; min-height: 0; border-radius: 0; }
 .dc-marked { color: var(--dc-marked-color); }
 /* A menu dropped from the menu bar hangs from its item: sharp corner there,
    framed in the accent. */

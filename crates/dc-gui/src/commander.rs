@@ -17,7 +17,7 @@ use gtk::{gdk, glib};
 use crate::copy_dialog;
 use crate::launch::{self, LaunchError};
 use crate::operations::{OperationsUi, QueueMemory};
-use crate::panel_view::PanelView;
+use crate::panel_view::{PanelView, ViewMode};
 use crate::splitter::Splitter;
 use crate::settings::Settings;
 use crate::{dialogs, keys};
@@ -119,6 +119,8 @@ impl Commander {
             Command::MarkInvert => panel.invert_marks(),
             Command::ChangeDirToRoot => panel.change_dir(PathBuf::from("/")),
             Command::ChangeDirToHome => panel.change_dir(glib::home_dir()),
+            Command::BriefView => panel.set_view_mode(ViewMode::List),
+            Command::ColumnsView => panel.set_view_mode(ViewMode::Details),
             Command::LeftEqualRight => self.panels[0].change_dir(self.panels[1].path()),
             Command::RightEqualLeft => self.panels[1].change_dir(self.panels[0].path()),
             Command::PanelsSplitterPerPos { percent } => {

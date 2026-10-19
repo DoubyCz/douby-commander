@@ -65,6 +65,10 @@ pub enum Command {
     MarkInvert,
     ChangeDirToRoot,
     ChangeDirToHome,
+    /// Ctrl+F1: the active panel shows names only, in columns ("List").
+    BriefView,
+    /// Ctrl+F2: the active panel shows all columns ("Details").
+    ColumnsView,
     /// Left panel shows the directory of the right one (`<` above the left panel).
     LeftEqualRight,
     /// Right panel shows the directory of the left one (`>` above the right panel).
@@ -95,7 +99,7 @@ impl TrashChoice {
 
 impl Command {
     /// All commands with default parameters, for listings and for parsing.
-    pub const ALL: [Self; 28] = [
+    pub const ALL: [Self; 30] = [
         Self::Open,
         Self::ChangeDirToParent,
         Self::EnterDir,
@@ -121,6 +125,8 @@ impl Command {
         Self::MarkInvert,
         Self::ChangeDirToRoot,
         Self::ChangeDirToHome,
+        Self::BriefView,
+        Self::ColumnsView,
         Self::LeftEqualRight,
         Self::RightEqualLeft,
         Self::PanelsSplitterPerPos { percent: 50 },
@@ -155,6 +161,8 @@ impl Command {
             Self::MarkInvert => "cm_MarkInvert",
             Self::ChangeDirToRoot => "cm_ChangeDirToRoot",
             Self::ChangeDirToHome => "cm_ChangeDirToHome",
+            Self::BriefView => "cm_BriefView",
+            Self::ColumnsView => "cm_ColumnsView",
             Self::LeftEqualRight => "cm_LeftEqualRight",
             Self::RightEqualLeft => "cm_RightEqualLeft",
             Self::PanelsSplitterPerPos { .. } => "cm_PanelsSplitterPerPos",

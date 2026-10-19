@@ -165,9 +165,10 @@ const MENU: &[(Caption, &[Entry])] = &[
     (
         NC_("main menu", "_Show"),
         &[
-            Item(NC_("main menu", "Brief view"), "cm_BriefView"),
-            Item(NC_("main menu", "Full"), "cm_ColumnsView"),
-            Item(NC_("main menu", "Thumbnails"), "cm_ThumbnailsView"),
+            // "Brief view", "Full", "Thumbnails" in the original.
+            Item(NC_("main menu", "_List"), "cm_BriefView"),
+            Item(NC_("main menu", "_Details"), "cm_ColumnsView"),
+            Item(NC_("main menu", "_Icons"), "cm_ThumbnailsView"),
             Separator,
             Item(NC_("main menu", "_Quick View Panel"), "cm_QuickView"),
             Item(NC_("main menu", "_Tree View Panel"), "cm_TreeView"),
