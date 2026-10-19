@@ -1,0 +1,20 @@
+[package]
+name = "dc-ops"
+description = "File operations of Double Commander running in background threads, with queues"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+dc-core.workspace = true
+dc-i18n.workspace = true
+dc-vfs.workspace = true
+jiff.workspace = true
+rustix.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true
+
+[lints]
+workspace = true

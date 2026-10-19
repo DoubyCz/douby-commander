@@ -1,0 +1,1420 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the doubycmd package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: doubycmd\n"
+"Report-Msgid-Bugs-To: douby@douby.cz\n"
+"POT-Creation-Date: 2026-10-19 20:02+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: crates/dc-core/src/command.rs:206
+#, rust-format
+msgid "Unknown command {command}"
+msgstr ""
+
+#: crates/dc-core/src/command.rs:208
+#, rust-format
+msgid "Command {command} does not accept parameter {param}"
+msgstr ""
+
+#: crates/dc-core/src/format.rs:30
+msgctxt "size unit, tera"
+msgid "T"
+msgstr ""
+
+#: crates/dc-core/src/format.rs:31
+msgctxt "size unit, giga"
+msgid "G"
+msgstr ""
+
+#: crates/dc-core/src/format.rs:32
+msgctxt "size unit, mega"
+msgid "M"
+msgstr ""
+
+#: crates/dc-core/src/format.rs:33
+msgctxt "size unit, kilo"
+msgid "K"
+msgstr ""
+
+#: crates/dc-core/src/format.rs:41
+msgctxt "size column"
+msgid "<DIR>"
+msgstr ""
+
+#: crates/dc-core/src/format.rs:42
+msgctxt "size column"
+msgid "<LNK>"
+msgstr ""
+
+#: crates/dc-core/src/format.rs:104
+#, rust-format
+msgid ""
+"Selected: {selected_size} of {total_size}, files: {selected_files} of "
+"{total_files}, folders: {selected_dirs} of {total_dirs}"
+msgstr ""
+
+#: crates/dc-core/src/keymap.rs:166
+#, rust-format
+msgid "Invalid shortcut {shortcut}"
+msgstr ""
+
+#: crates/dc-gui/src/commander.rs:165
+msgid "No text editor found. Set one in the VISUAL or EDITOR variable."
+msgstr ""
+
+#: crates/dc-gui/src/commander.rs:166
+msgid ""
+"No terminal found. Install xdg-terminal-exec or set the TERMINAL variable."
+msgstr ""
+
+#: crates/dc-gui/src/commander.rs:167
+msgid "No application is set for text files (text/plain)."
+msgstr ""
+
+#: crates/dc-gui/src/commander.rs:171
+#, rust-format
+msgid "Cannot open {path} in an editor"
+msgstr ""
+
+#: crates/dc-gui/src/commander.rs:275
+#, rust-format
+msgid "Delete selected \"{name}\" into trash can?"
+msgstr ""
+
+#: crates/dc-gui/src/commander.rs:277
+#, rust-format
+msgid "Delete selected \"{name}\"?"
+msgstr ""
+
+#: crates/dc-gui/src/commander.rs:285
+#, rust-format
+msgid "Delete {count} selected file/directory into trash can?"
+msgid_plural "Delete {count} selected files/directories into trash can?"
+msgstr[0] ""
+msgstr[1] ""
+
+#: crates/dc-gui/src/commander.rs:290
+#, rust-format
+msgid "Delete {count} selected file/directory?"
+msgid_plural "Delete {count} selected files/directories?"
+msgstr[0] ""
+msgstr[1] ""
+
+#: crates/dc-gui/src/commander.rs:332
+#, rust-format
+msgid "Copy selected \"{name}\"?"
+msgstr ""
+
+#: crates/dc-gui/src/commander.rs:332
+#, rust-format
+msgid "Rename/move selected \"{name}\"?"
+msgstr ""
+
+#: crates/dc-gui/src/commander.rs:338
+#, rust-format
+msgid "Copy {count} selected file/directory?"
+msgid_plural "Copy {count} selected files/directories?"
+msgstr[0] ""
+msgstr[1] ""
+
+#: crates/dc-gui/src/commander.rs:341
+#, rust-format
+msgid "Rename/move {count} selected file/directory?"
+msgid_plural "Rename/move {count} selected files/directories?"
+msgstr[0] ""
+msgstr[1] ""
+
+#: crates/dc-gui/src/copy_dialog.rs:37
+msgctxt "when file exists"
+msgid "Ask"
+msgstr ""
+
+#: crates/dc-gui/src/copy_dialog.rs:38
+msgctxt "when file exists"
+msgid "Overwrite"
+msgstr ""
+
+#: crates/dc-gui/src/copy_dialog.rs:39
+msgctxt "when file exists"
+msgid "Overwrite Older"
+msgstr ""
+
+#: crates/dc-gui/src/copy_dialog.rs:40
+msgctxt "when file exists"
+msgid "Skip"
+msgstr ""
+
+#: crates/dc-gui/src/copy_dialog.rs:44
+msgctxt "when directory exists"
+msgid "Ask"
+msgstr ""
+
+#: crates/dc-gui/src/copy_dialog.rs:45
+msgctxt "when directory exists"
+msgid "Merge"
+msgstr ""
+
+#: crates/dc-gui/src/copy_dialog.rs:46
+msgctxt "when directory exists"
+msgid "Skip"
+msgstr ""
+
+#: crates/dc-gui/src/copy_dialog.rs:50
+msgctxt "when cannot set property"
+msgid "Ask"
+msgstr ""
+
+#: crates/dc-gui/src/copy_dialog.rs:51
+msgctxt "when cannot set property"
+msgid "Don't set anymore"
+msgstr ""
+
+#: crates/dc-gui/src/copy_dialog.rs:52
+msgctxt "when cannot set property"
+msgid "Ignore errors"
+msgstr ""
+
+#: crates/dc-gui/src/copy_dialog.rs:58
+msgid "Copy file(s)"
+msgstr ""
+
+#: crates/dc-gui/src/copy_dialog.rs:58
+msgid "Move file(s)"
+msgstr ""
+
+#: crates/dc-gui/src/copy_dialog.rs:68
+msgctxt "button"
+msgid "O_ptions"
+msgstr ""
+
+#: crates/dc-gui/src/copy_dialog.rs:70
+#, rust-format
+msgid "A_dd To Queue #{number} ({key})"
+msgstr ""
+
+#: crates/dc-gui/src/copy_dialog.rs:78 crates/dc-gui/src/progress_window.rs:275
+msgctxt "button"
+msgid "_Start"
+msgstr ""
+
+#: crates/dc-gui/src/copy_dialog.rs:140 crates/dc-gui/src/dialogs.rs:141
+msgid "New queue"
+msgstr ""
+
+#: crates/dc-gui/src/copy_dialog.rs:298
+msgid "When _file exists"
+msgstr ""
+
+#: crates/dc-gui/src/copy_dialog.rs:299
+msgid "When dir_ectory exists"
+msgstr ""
+
+#: crates/dc-gui/src/copy_dialog.rs:300
+msgid "When ca_nnot set property"
+msgstr ""
+
+#: crates/dc-gui/src/copy_dialog.rs:313
+msgid "C_heck free space"
+msgstr ""
+
+#: crates/dc-gui/src/copy_dialog.rs:314
+msgid "Fo_llow links"
+msgstr ""
+
+#: crates/dc-gui/src/copy_dialog.rs:315
+msgid "Cop_y attributes"
+msgstr ""
+
+#: crates/dc-gui/src/copy_dialog.rs:316
+msgid "Drop readonly fla_g"
+msgstr ""
+
+#: crates/dc-gui/src/copy_dialog.rs:317
+msgid "Copy d_ate/time"
+msgstr ""
+
+#: crates/dc-gui/src/copy_dialog.rs:318
+msgid "Copy o_wnership"
+msgstr ""
+
+#: crates/dc-gui/src/copy_dialog.rs:319
+msgid "_Reserve space"
+msgstr ""
+
+#: crates/dc-gui/src/copy_dialog.rs:320
+msgid "Copy on write"
+msgstr ""
+
+#: crates/dc-gui/src/dialogs.rs:19
+msgid "Create new directory"
+msgstr ""
+
+#: crates/dc-gui/src/dialogs.rs:27
+msgid "_Input new directory name:"
+msgstr ""
+
+#: crates/dc-gui/src/dialogs.rs:93
+#, rust-format
+msgid "A_dd To Queue #{number}"
+msgstr ""
+
+#: crates/dc-gui/src/dialogs.rs:164 crates/dc-ops/src/operation.rs:86
+msgctxt "button"
+msgid "_No"
+msgstr ""
+
+#: crates/dc-gui/src/dialogs.rs:164 crates/dc-ops/src/operation.rs:85
+msgctxt "button"
+msgid "_Yes"
+msgstr ""
+
+#: crates/dc-gui/src/dialogs.rs:262
+msgctxt "button"
+msgid "Ot_her"
+msgstr ""
+
+#: crates/dc-gui/src/dialogs.rs:309
+msgctxt "button"
+msgid "_OK"
+msgstr ""
+
+#: crates/dc-gui/src/dialogs.rs:313 crates/dc-ops/src/operation.rs:92
+msgctxt "button"
+msgid "_Cancel"
+msgstr ""
+
+#: crates/dc-gui/src/function_bar.rs:25
+msgctxt "function key"
+msgid "View"
+msgstr ""
+
+#: crates/dc-gui/src/function_bar.rs:26
+msgctxt "function key"
+msgid "Edit"
+msgstr ""
+
+#: crates/dc-gui/src/function_bar.rs:27
+msgctxt "function key"
+msgid "Copy"
+msgstr ""
+
+#: crates/dc-gui/src/function_bar.rs:28
+msgctxt "function key"
+msgid "Move"
+msgstr ""
+
+#: crates/dc-gui/src/function_bar.rs:29
+msgctxt "function key"
+msgid "Directory"
+msgstr ""
+
+#: crates/dc-gui/src/function_bar.rs:30
+msgctxt "function key"
+msgid "Delete"
+msgstr ""
+
+#: crates/dc-gui/src/function_bar.rs:31
+msgctxt "function key"
+msgid "Terminal"
+msgstr ""
+
+#: crates/dc-gui/src/function_bar.rs:32
+msgctxt "function key"
+msgid "Exit"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:37
+msgctxt "main menu"
+msgid "_Files"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:39
+msgctxt "main menu"
+msgid "Create Symbolic _Link..."
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:40
+msgctxt "main menu"
+msgid "Create _Hard Link..."
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:41
+msgctxt "main menu"
+msgid "Create _Directory"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:43
+msgctxt "main menu"
+msgid "Change _Attributes..."
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:44
+msgctxt "main menu"
+msgid "Show _File Properties"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:45
+msgctxt "main menu"
+msgid "Edit Co_mment..."
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:46
+msgctxt "main menu"
+msgid "Calculate _Occupied Space"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:47
+msgctxt "main menu"
+msgid "Compare by _Contents"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:48
+msgctxt "main menu"
+msgid "Multi-_Rename Tool"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:50
+msgctxt "main menu"
+msgid "_Pack Files..."
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:51
+msgctxt "main menu"
+msgid "_Extract Files..."
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:52
+msgctxt "main menu"
+msgid "_Test Archive(s)"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:53
+msgctxt "main menu"
+msgid "Spl_it File..."
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:54
+msgctxt "main menu"
+msgid "Com_bine Files..."
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:55
+msgctxt "main menu"
+msgid "Calculate Check_sum..."
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:56
+msgctxt "main menu"
+msgid "_Verify Checksum..."
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:58
+msgctxt "main menu"
+msgid "Wipe"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:59
+msgctxt "main menu"
+msgid "Delete"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:61
+msgctxt "main menu"
+msgid "E_xit"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:65
+msgctxt "main menu"
+msgid "_Mark"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:67
+msgctxt "main menu"
+msgid "Select a _Group..."
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:68
+msgctxt "main menu"
+msgid "Unselect a Gro_up..."
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:69
+msgctxt "main menu"
+msgid "_Select All"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:70
+msgctxt "main menu"
+msgid "_Unselect All"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:71
+msgctxt "main menu"
+msgid "_Invert Selection"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:72
+msgctxt "main menu"
+msgid "Select All with the Same E_xtension"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:73
+msgctxt "main menu"
+msgid "Unselect All with the Same Ex_tension"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:75
+msgctxt "main menu"
+msgid "Sa_ve Selection"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:76
+msgctxt "main menu"
+msgid "_Restore Selection"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:77
+msgctxt "main menu"
+msgid "Save S_election to File..."
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:78
+msgctxt "main menu"
+msgid "_Load Selection from File..."
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:79
+msgctxt "main menu"
+msgid "Load Selection from Clip_board"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:81
+msgctxt "main menu"
+msgid "Copy _Filename(s) to Clipboard"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:82
+msgctxt "main menu"
+msgid "Copy Filename(s) with Full _Path"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:83
+msgctxt "main menu"
+msgid "Copy all shown _columns"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:85
+msgctxt "main menu"
+msgid "Compare Directories"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:89
+msgctxt "main menu"
+msgid "_Commands"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:91
+msgctxt "main menu"
+msgid "_Search..."
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:92
+msgctxt "main menu"
+msgid "New search instance..."
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:93
+msgctxt "main menu"
+msgid "View current search instances"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:94
+msgctxt "main menu"
+msgid "Directory _Hotlist"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:95
+msgctxt "main menu"
+msgid "Syn_chronize dirs..."
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:97
+msgctxt "main menu"
+msgid "Run _Terminal"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:98
+msgctxt "main menu"
+msgid "Execute _internal command..."
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:100
+msgctxt "main menu"
+msgid "_Flat view"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:101
+msgctxt "main menu"
+msgid "Open _VFS List"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:103
+msgctxt "main menu"
+msgid "Open Stash"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:104
+msgctxt "main menu"
+msgid "Swap _Panels"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:105
+msgctxt "main menu"
+msgid "Target _= Source"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:107
+msgctxt "main menu"
+msgid "Sho_w Occupied Space"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:111
+msgctxt "main menu"
+msgid "_Network"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:113
+msgctxt "main menu"
+msgid "Network _Connect..."
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:114
+msgctxt "main menu"
+msgid "Network _Disconnect"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:118
+msgctxt "main menu"
+msgid "_Tabs"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:120
+msgctxt "main menu"
+msgid "_New Tab"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:121
+msgctxt "main menu"
+msgid "_Rename Tab"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:122
+msgctxt "main menu"
+msgid "Open _Folder in a New Tab"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:124
+msgctxt "main menu"
+msgid "_Close Tab"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:125
+msgctxt "main menu"
+msgid "Close _All Tabs"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:126
+msgctxt "main menu"
+msgid "Close Duplicate Tabs"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:129
+msgctxt "main menu"
+msgid "Tab _Options"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:131
+msgctxt "main menu"
+msgid "_Normal"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:132
+msgctxt "main menu"
+msgid "_Locked"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:133
+msgctxt "main menu"
+msgid "Locked with _Directory Changes Allowed"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:134
+msgctxt "main menu"
+msgid "Locked with Directories Opened in New _Tabs"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:136
+msgctxt "main menu"
+msgid "Set all tabs to Normal"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:137
+msgctxt "main menu"
+msgid "Set all tabs to Locked"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:138
+msgctxt "main menu"
+msgid "All tabs Locked with Dir Changes Allowed"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:139
+msgctxt "main menu"
+msgid "All tabs Locked with Dir Opened in New Tabs"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:143
+msgctxt "main menu"
+msgid "Switch to Nex_t Tab"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:144
+msgctxt "main menu"
+msgid "Switch to _Previous Tab"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:146
+msgctxt "main menu"
+msgid "_Save Tabs to File"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:147
+msgctxt "main menu"
+msgid "_Load Tabs from File"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:148 crates/dc-gui/src/menu.rs:158
+msgctxt "main menu"
+msgid "Save current tabs to a New Favorite Tabs"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:149
+msgctxt "main menu"
+msgid "Load tabs from Favorite Tabs"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:151 crates/dc-gui/src/menu.rs:199
+msgctxt "main menu"
+msgid "Configuration of folder tabs"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:152 crates/dc-gui/src/menu.rs:161
+#: crates/dc-gui/src/menu.rs:197
+msgctxt "main menu"
+msgid "Configuration of Favorite Tabs"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:156
+msgctxt "main menu"
+msgid "F_avorites"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:159
+msgctxt "main menu"
+msgid "Resave on the last Favorite Tabs loaded"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:160
+msgctxt "main menu"
+msgid "Reload the last Favorite Tabs loaded"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:166
+msgctxt "main menu"
+msgid "_Show"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:168
+msgctxt "main menu"
+msgid "Brief view"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:169
+msgctxt "main menu"
+msgid "Full"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:170
+msgctxt "main menu"
+msgid "Thumbnails"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:172
+msgctxt "main menu"
+msgid "_Quick View Panel"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:173
+msgctxt "main menu"
+msgid "_Tree View Panel"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:175
+msgctxt "main menu"
+msgid "Sort by _Name"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:176
+msgctxt "main menu"
+msgid "Sort by _Extension"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:177
+msgctxt "main menu"
+msgid "Sort by _Size"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:178
+msgctxt "main menu"
+msgid "Sort by _Date"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:179
+msgctxt "main menu"
+msgid "Sort by _Attributes"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:181
+msgctxt "main menu"
+msgid "Re_verse Order"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:182
+msgctxt "main menu"
+msgid "_Refresh"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:184
+msgctxt "main menu"
+msgid "Show _Hidden/System Files"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:186
+msgctxt "main menu"
+msgid "_Horizontal Panels Mode"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:188
+msgctxt "main menu"
+msgid "Operations _Viewer"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:192
+msgctxt "main menu"
+msgid "C_onfiguration"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:194
+msgctxt "main menu"
+msgid "_Options..."
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:196
+msgctxt "main menu"
+msgid "Configuration of Directory Hotlist"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:198
+msgctxt "main menu"
+msgid "Configuration of File _Associations"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:200
+msgctxt "main menu"
+msgid "Configuration of Archivers"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:202
+msgctxt "main menu"
+msgid "Save Position"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:203
+msgctxt "main menu"
+msgid "Save Settings"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:207
+msgctxt "main menu"
+msgid "_Help"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:209
+msgctxt "main menu"
+msgid "_Contents"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:210
+msgctxt "main menu"
+msgid "_Keyboard"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:211
+msgctxt "main menu"
+msgid "_Visit Douby Commander Website"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:213
+msgctxt "main menu"
+msgid "_About"
+msgstr ""
+
+#: crates/dc-gui/src/operations.rs:226
+#, rust-format
+msgctxt "operations row"
+msgid "{number}: {operation} - {percent}"
+msgstr ""
+
+#: crates/dc-gui/src/operations.rs:232
+#, rust-format
+msgctxt "operations row"
+msgid ""
+"{queue} ({count})\n"
+"{operation} - {percent}"
+msgstr ""
+
+#: crates/dc-gui/src/panel_column.rs:74
+#, rust-format
+msgctxt "drive tooltip"
+msgid "{path} ({type})"
+msgstr ""
+
+#: crates/dc-gui/src/panel_column.rs:115
+#, rust-format
+msgid "{free} free"
+msgstr ""
+
+#: crates/dc-gui/src/panel_column.rs:117
+#, rust-format
+msgid "{free} of {total} free"
+msgstr ""
+
+#: crates/dc-gui/src/panel_column.rs:147
+msgid "Open drive list"
+msgstr ""
+
+#: crates/dc-gui/src/panel_column.rs:157
+msgid "Show current directory of the right panel in the left panel"
+msgstr ""
+
+#: crates/dc-gui/src/panel_column.rs:159
+msgid "Show current directory of the left panel in the right panel"
+msgstr ""
+
+#: crates/dc-gui/src/panel_column.rs:162
+msgid "Directory Hotlist"
+msgstr ""
+
+#: crates/dc-gui/src/panel_column.rs:163
+msgid "Go to root directory"
+msgstr ""
+
+#: crates/dc-gui/src/panel_column.rs:164
+msgid "Go to parent directory"
+msgstr ""
+
+#: crates/dc-gui/src/panel_column.rs:165
+msgid "Go to home directory"
+msgstr ""
+
+#: crates/dc-gui/src/panel_column.rs:182 crates/dc-gui/src/toolbar.rs:73
+#, rust-format
+msgctxt "tooltip of a disabled button"
+msgid "{hint} - {reason}"
+msgstr ""
+
+#: crates/dc-gui/src/panel_view.rs:27
+msgid "Name"
+msgstr ""
+
+#: crates/dc-gui/src/panel_view.rs:28
+msgid "Ext"
+msgstr ""
+
+#: crates/dc-gui/src/panel_view.rs:29
+msgid "Size"
+msgstr ""
+
+#: crates/dc-gui/src/panel_view.rs:30
+msgid "Date"
+msgstr ""
+
+#: crates/dc-gui/src/panel_view.rs:31
+msgid "Attr"
+msgstr ""
+
+#: crates/dc-gui/src/panel_view.rs:444
+#, rust-format
+msgid "(SEARCH: {text})"
+msgstr ""
+
+#: crates/dc-gui/src/panel_view.rs:478
+#, rust-format
+msgid "Cannot open {path}"
+msgstr ""
+
+#: crates/dc-gui/src/progress_window.rs:53
+msgid "From:"
+msgstr ""
+
+#: crates/dc-gui/src/progress_window.rs:54
+msgid "To:"
+msgstr ""
+
+#: crates/dc-gui/src/progress_window.rs:63
+msgctxt "button"
+msgid "_To panel"
+msgstr ""
+
+#: crates/dc-gui/src/progress_window.rs:65
+msgctxt "button"
+msgid "_View all"
+msgstr ""
+
+#: crates/dc-gui/src/progress_window.rs:217
+#, rust-format
+msgctxt "progress window title"
+msgid "{percent} {operation}"
+msgstr ""
+
+#: crates/dc-gui/src/progress_window.rs:218
+#, rust-format
+msgctxt "progress window title"
+msgid "{percent} {operation} - paused"
+msgstr ""
+
+#: crates/dc-gui/src/progress_window.rs:220
+#, rust-format
+msgctxt "progress window title"
+msgid "[{count}] {percent} {operation} - {queue}"
+msgstr ""
+
+#: crates/dc-gui/src/progress_window.rs:223
+#, rust-format
+msgctxt "progress window title"
+msgid "[{count}] {percent} {operation} - {queue} - paused"
+msgstr ""
+
+#: crates/dc-gui/src/progress_window.rs:243
+msgid "Are you sure that you want to cancel this operation?"
+msgstr ""
+
+#: crates/dc-gui/src/progress_window.rs:269 crates/dc-gui/src/splitter.rs:209
+#, rust-format
+msgid "{percent}%"
+msgstr ""
+
+#: crates/dc-gui/src/progress_window.rs:275
+msgctxt "button"
+msgid "_Pause"
+msgstr ""
+
+#: crates/dc-gui/src/progress_window.rs:312
+#, rust-format
+msgid "Speed {speed}/s, time remaining {time}"
+msgstr ""
+
+#: crates/dc-gui/src/progress_window.rs:315
+#, rust-format
+msgid "Speed {speed}/s"
+msgstr ""
+
+#: crates/dc-gui/src/texts.rs:10
+msgid "Not implemented yet"
+msgstr ""
+
+#: crates/dc-gui/src/texts.rs:18
+#, rust-format
+msgctxt "caption with shortcut"
+msgid "{caption} {shortcut}"
+msgstr ""
+
+#: crates/dc-gui/src/toolbar.rs:24
+msgctxt "toolbar"
+msgid "Refresh"
+msgstr ""
+
+#: crates/dc-gui/src/toolbar.rs:25
+msgctxt "toolbar"
+msgid "Run Terminal"
+msgstr ""
+
+#: crates/dc-gui/src/toolbar.rs:26
+msgctxt "toolbar"
+msgid "Options..."
+msgstr ""
+
+#: crates/dc-gui/src/toolbar.rs:28
+msgctxt "toolbar"
+msgid "Brief View"
+msgstr ""
+
+#: crates/dc-gui/src/toolbar.rs:29
+msgctxt "toolbar"
+msgid "Columns View"
+msgstr ""
+
+#: crates/dc-gui/src/toolbar.rs:30
+msgctxt "toolbar"
+msgid "Thumbnails View"
+msgstr ""
+
+#: crates/dc-gui/src/toolbar.rs:32
+msgctxt "toolbar"
+msgid "Flat view"
+msgstr ""
+
+#: crates/dc-gui/src/toolbar.rs:34
+msgctxt "toolbar"
+msgid "Go to previous entry in history"
+msgstr ""
+
+#: crates/dc-gui/src/toolbar.rs:35
+msgctxt "toolbar"
+msgid "Go to next entry in history"
+msgstr ""
+
+#: crates/dc-gui/src/toolbar.rs:37
+msgctxt "toolbar"
+msgid "Select a Group..."
+msgstr ""
+
+#: crates/dc-gui/src/toolbar.rs:38
+msgctxt "toolbar"
+msgid "Unselect a Group..."
+msgstr ""
+
+#: crates/dc-gui/src/toolbar.rs:39
+msgctxt "toolbar"
+msgid "Invert Selection"
+msgstr ""
+
+#: crates/dc-gui/src/toolbar.rs:41
+msgctxt "toolbar"
+msgid "Pack Files..."
+msgstr ""
+
+#: crates/dc-gui/src/toolbar.rs:42
+msgctxt "toolbar"
+msgid "Extract Files..."
+msgstr ""
+
+#: crates/dc-gui/src/toolbar.rs:44
+msgctxt "toolbar"
+msgid "Network Connect..."
+msgstr ""
+
+#: crates/dc-gui/src/toolbar.rs:45
+msgctxt "toolbar"
+msgid "Search..."
+msgstr ""
+
+#: crates/dc-gui/src/toolbar.rs:46
+msgctxt "toolbar"
+msgid "Multi-Rename Tool"
+msgstr ""
+
+#: crates/dc-gui/src/toolbar.rs:47
+msgctxt "toolbar"
+msgid "Synchronize dirs..."
+msgstr ""
+
+#: crates/dc-gui/src/toolbar.rs:48
+msgctxt "toolbar"
+msgid "Copy Filename(s) with Full Path"
+msgstr ""
+
+#: crates/dc-gui/src/toolbar.rs:84
+#, rust-format
+msgctxt "tooltip with shortcut"
+msgid "{hint} ({shortcut})"
+msgstr ""
+
+#: crates/dc-ops/src/delete.rs:145
+#, rust-format
+msgid "Cannot delete directory {path}"
+msgstr ""
+
+#: crates/dc-ops/src/delete.rs:147 crates/dc-ops/src/transfer.rs:476
+#: crates/dc-vfs/src/lib.rs:87
+#, rust-format
+msgid "Can not delete file {path}"
+msgstr ""
+
+#: crates/dc-ops/src/delete.rs:178
+#, rust-format
+msgid "File {path} is marked as read-only. Delete it?"
+msgstr ""
+
+#: crates/dc-ops/src/delete.rs:206
+#, rust-format
+msgid "Can not delete \"{path}\" to trash! Delete directly?"
+msgstr ""
+
+#: crates/dc-ops/src/delete.rs:243
+msgid "Deleting"
+msgstr ""
+
+#: crates/dc-ops/src/manager.rs:25
+msgid "Out of queue"
+msgstr ""
+
+#: crates/dc-ops/src/manager.rs:26
+#, rust-format
+msgid "Queue {number}"
+msgstr ""
+
+#: crates/dc-ops/src/operation.rs:87
+msgctxt "button"
+msgid "A_ll"
+msgstr ""
+
+#: crates/dc-ops/src/operation.rs:88
+msgctxt "button"
+msgid "_Skip"
+msgstr ""
+
+#: crates/dc-ops/src/operation.rs:89
+msgctxt "button"
+msgid "S_kip All"
+msgstr ""
+
+#: crates/dc-ops/src/operation.rs:90
+msgctxt "button"
+msgid "_Retry"
+msgstr ""
+
+#: crates/dc-ops/src/operation.rs:91
+msgctxt "button"
+msgid "_Abort"
+msgstr ""
+
+#: crates/dc-ops/src/operation.rs:93
+msgctxt "button"
+msgid "I_gnore All"
+msgstr ""
+
+#: crates/dc-ops/src/operation.rs:94
+msgctxt "button"
+msgid "_Overwrite"
+msgstr ""
+
+#: crates/dc-ops/src/operation.rs:95
+msgctxt "button"
+msgid "Overwrite _All"
+msgstr ""
+
+#: crates/dc-ops/src/operation.rs:96
+msgctxt "button"
+msgid "Overwrite All Ol_der"
+msgstr ""
+
+#: crates/dc-ops/src/operation.rs:97
+msgctxt "button"
+msgid "Overwrite All S_maller"
+msgstr ""
+
+#: crates/dc-ops/src/operation.rs:98
+msgctxt "button"
+msgid "Overwrite All _Larger"
+msgstr ""
+
+#: crates/dc-ops/src/operation.rs:99
+msgctxt "button"
+msgid "R_ename"
+msgstr ""
+
+#: crates/dc-ops/src/operation.rs:100
+msgctxt "button"
+msgid "A_uto-rename source files"
+msgstr ""
+
+#: crates/dc-ops/src/operation.rs:101
+msgctxt "button"
+msgid "Auto-rename tar_get files"
+msgstr ""
+
+#: crates/dc-ops/src/operation.rs:102
+msgctxt "button"
+msgid "_Merge"
+msgstr ""
+
+#: crates/dc-ops/src/operation.rs:103
+msgctxt "button"
+msgid "Mer_ge All"
+msgstr ""
+
+#: crates/dc-ops/src/transfer.rs:299
+#, rust-format
+msgid "Follow symlink \"{path}\"?"
+msgstr ""
+
+#: crates/dc-ops/src/transfer.rs:440
+#, rust-format
+msgid "Cannot move directory {path}"
+msgstr ""
+
+#: crates/dc-ops/src/transfer.rs:461
+#, rust-format
+msgid "Cannot move file {path}"
+msgstr ""
+
+#: crates/dc-ops/src/transfer.rs:493
+msgid "Cannot open existing file"
+msgstr ""
+
+#: crates/dc-ops/src/transfer.rs:498
+msgid "Cannot create file"
+msgstr ""
+
+#: crates/dc-ops/src/transfer.rs:518
+#, rust-format
+msgid "Cannot copy file {from} to {to}"
+msgstr ""
+
+#: crates/dc-ops/src/transfer.rs:620
+msgid "Error reading from file"
+msgstr ""
+
+#: crates/dc-ops/src/transfer.rs:646
+msgid "No enough free space on target drive, Retry?"
+msgstr ""
+
+#: crates/dc-ops/src/transfer.rs:654
+msgid "Error writing to file"
+msgstr ""
+
+#: crates/dc-ops/src/transfer.rs:668
+msgid "Delete the partially copied file ?"
+msgstr ""
+
+#: crates/dc-ops/src/transfer.rs:685
+msgid "No enough free space on target drive, Continue?"
+msgstr ""
+
+#: crates/dc-ops/src/transfer.rs:712
+#, rust-format
+msgid "Error creating symlink {path}"
+msgstr ""
+
+#: crates/dc-ops/src/transfer.rs:726 crates/dc-vfs/src/lib.rs:86
+#, rust-format
+msgid "Can not create directory {path}!"
+msgstr ""
+
+#: crates/dc-ops/src/transfer.rs:747
+#, rust-format
+msgid "Cannot overwrite directory \"{target}\" with non-directory \"{source}\""
+msgstr ""
+
+#: crates/dc-ops/src/transfer.rs:797
+#, rust-format
+msgid "{size} bytes, {time}"
+msgstr ""
+
+#: crates/dc-ops/src/transfer.rs:801
+msgid "Overwrite:"
+msgstr ""
+
+#: crates/dc-ops/src/transfer.rs:803
+msgid "With file:"
+msgstr ""
+
+#: crates/dc-ops/src/transfer.rs:834
+msgid "Filename:"
+msgstr ""
+
+#: crates/dc-ops/src/transfer.rs:850
+#, rust-format
+msgid "Cannot rename file {from} to {to}"
+msgstr ""
+
+#: crates/dc-ops/src/transfer.rs:867
+#, rust-format
+msgid "Folder {path} exists, merge?"
+msgstr ""
+
+#: crates/dc-ops/src/transfer.rs:889
+#, rust-format
+msgid "You can not copy/move a file \"{path}\" to itself!"
+msgstr ""
+
+#: crates/dc-ops/src/transfer.rs:905
+#, rust-format
+msgid "Cannot copy special file {path}"
+msgstr ""
+
+#: crates/dc-ops/src/transfer.rs:917 crates/dc-vfs/src/lib.rs:83
+#, rust-format
+msgid "Cannot read {path}"
+msgstr ""
+
+#: crates/dc-ops/src/transfer.rs:967
+#, rust-format
+msgid "Can not set owner/group for \"{path}\""
+msgstr ""
+
+#: crates/dc-ops/src/transfer.rs:976
+#, rust-format
+msgid "Can not set attributes for \"{path}\""
+msgstr ""
+
+#: crates/dc-ops/src/transfer.rs:983
+#, rust-format
+msgid "Can not set extended attributes for \"{path}\""
+msgstr ""
+
+#: crates/dc-ops/src/transfer.rs:992
+#, rust-format
+msgid "Can not set date/time for \"{path}\""
+msgstr ""
+
+#: crates/dc-ops/src/transfer.rs:1045
+msgid "Copying"
+msgstr ""
+
+#: crates/dc-ops/src/transfer.rs:1046
+msgid "Moving"
+msgstr ""
+
+#: crates/dc-ops/src/transfer.rs:1119
+#, rust-format
+msgid "Copy ({number}) {name}"
+msgstr ""
+
+#: crates/dc-vfs/src/lib.rs:82
+#, rust-format
+msgid "Cannot read directory {path}"
+msgstr ""
+
+#: crates/dc-vfs/src/lib.rs:85
+#, rust-format
+msgid "Directory {path} exists!"
+msgstr ""
+
+#: crates/dc-vfs/src/lib.rs:88
+#, rust-format
+msgid "Can not delete \"{path}\" to trash!"
+msgstr ""

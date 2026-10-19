@@ -1,0 +1,19 @@
+[package]
+name = "dc-core"
+description = "GUI independent core of Double Commander: panel model, sorting, selection"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+dc-i18n.workspace = true
+dc-vfs.workspace = true
+jiff.workspace = true
+unicode-normalization.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true
+
+[lints]
+workspace = true

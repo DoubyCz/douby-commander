@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Icons taken from the original Double Commander (pixmaps/dctheme/scalable), GPL. -->
+<gresources>
+  <gresource prefix="/cz/douby/DoubyCommander">
+    <file preprocess="xml-stripblanks">icons/scalable/actions/cm_briefview.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/cm_columnsview.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/cm_copyfullnamestoclip.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/cm_extractfiles.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/cm_flatview.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/cm_markinvert.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/cm_markminus.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/cm_markplus.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/cm_multirename.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/cm_networkconnect.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/cm_options.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/cm_packfiles.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/cm_refresh.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/cm_runterm.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/cm_search.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/cm_syncdirs.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/cm_thumbnailsview.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/cm_viewhistorynext.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/actions/cm_viewhistoryprev.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/devices/camera-photo.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/devices/drive-harddisk.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/devices/drive-optical.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/devices/drive-removable-media.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/devices/drive-removable-media-usb.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/devices/media-flash.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/devices/media-floppy.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/devices/media-optical.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/devices/network-wired.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/places/folder.svg</file>
+  </gresource>
+</gresources>

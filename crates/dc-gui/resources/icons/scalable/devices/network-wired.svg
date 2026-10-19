@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <defs>
+  <linearGradient id="linearGradient12810">
+   <stop stop-color="#fff" offset="0"/>
+   <stop stop-color="#e5e5e5" offset="1"/>
+  </linearGradient>
+  <radialGradient id="radialGradient12962" cx="30.204" cy="44.565" r="6.566" gradientTransform="matrix(1 7.1069e-17 -4.3595e-17 .33846 -5.0366e-14 29.482)" gradientUnits="userSpaceOnUse">
+   <stop offset="0"/>
+   <stop stop-opacity="0" offset="1"/>
+  </radialGradient>
+  <linearGradient id="linearGradient3152" x1="84.999" x2="62.591" y1="25.21" y2="12.022" gradientTransform="matrix(1.3741 0 0 1.3741 -85.102 -12.388)" gradientUnits="userSpaceOnUse" xlink:href="#linearGradient12810"/>
+  <radialGradient id="radialGradient3156" cx="88.593" cy="33.399" r="7.0056" gradientTransform="matrix(.88944 .20922 -.17864 .75945 -34.977 -11.864)" gradientUnits="userSpaceOnUse">
+   <stop stop-color="#cccccd" offset="0"/>
+   <stop stop-color="#adadae" offset="0"/>
+   <stop stop-color="#8f8f90" stop-opacity="0" offset="1"/>
+  </radialGradient>
+  <linearGradient id="linearGradient3159" x1="88.75" x2="92.062" y1="31.656" y2="36.656" gradientTransform="matrix(1.3741 0 0 1.3741 -84.459 -12.067)" gradientUnits="userSpaceOnUse">
+   <stop stop-color="#515152" offset="0"/>
+   <stop stop-color="#515152" stop-opacity="0" offset="1"/>
+  </linearGradient>
+  <linearGradient id="linearGradient3166" x1="65.624" x2="87.529" y1="21.46" y2="21.46" gradientTransform="matrix(1.3741 0 0 1.3741 -85.102 -12.388)" gradientUnits="userSpaceOnUse" xlink:href="#linearGradient12810"/>
+ </defs>
+ <metadata>
+  <rdf:RDF>
+   <cc:Work rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Jakub Steiner</dc:title>
+     </cc:Agent>
+    </dc:creator>
+    <dc:source>http://jimmac.musichall.cz</dc:source>
+    <cc:license rdf:resource="http://creativecommons.org/licenses/publicdomain/"/>
+    <dc:title>Network</dc:title>
+   </cc:Work>
+   <cc:License rdf:about="http://creativecommons.org/licenses/publicdomain/">
+    <cc:permits rdf:resource="http://creativecommons.org/ns#Reproduction"/>
+    <cc:permits rdf:resource="http://creativecommons.org/ns#Distribution"/>
+    <cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks"/>
+   </cc:License>
+  </rdf:RDF>
+ </metadata>
+ <g>
+  <g fill-rule="evenodd">
+   <path transform="matrix(2.7527 1.4384 -2.4554 4.6796 48.4 -223.04)" d="m36.77 44.565a6.566 2.2223 0 1 1-13.132 0 6.566 2.2223 0 1 1 13.132 0z" color="#000000" fill="url(#radialGradient12962)" opacity=".40642"/>
+   <path d="m12.801 5.8182-7.6433 6.6986 0.25764 6.1404 17.992 16.188 11.594-10.735 0.25764-6.6986-22.457-11.594z" color="#000000" fill="#484848" stroke="#4d4d4d" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2"/>
+   <path d="m5.0704 12.658 0.24671 5.9211 18.257 16.036-0.24671-6.4145-18.257-15.543z" color="#000000" fill="#a6a6a6"/>
+   <path d="m23.327 28.201v6.5379l11.596-10.732 0.24671-6.6613-11.842 10.855z" color="#000000" fill="#7f7f7f"/>
+   <path d="m5.0704 12.669 18.503 15.779 11.596-10.855-22.451-11.842-7.6481 6.9189z" color="#000000" fill="url(#linearGradient3166)"/>
+  </g>
+  <g fill="#ffc11a" fill-rule="evenodd">
+   <path d="m6.2665 11.645 2.8747 2.0003s0.67846 0.24671 0.98685 0c0.30839-0.24671 0.24671-0.98685 0.24671-0.98685l-2.8747-2.2579-1.2336 1.2445z" color="#000000"/>
+   <path d="m8.401 9.6711 2.9606 2.0003s0.67846 0.24671 0.98685 0c0.30839-0.24671 0.24671-0.98685 0.24671-0.98685l-2.8747-2.2579-1.3194 1.2445z" color="#000000"/>
+   <path d="m10.584 7.7348 2.8747 2.0861s0.67846 0.24671 0.98685 0c0.30839-0.24671 0.24671-0.98685 0.24671-0.98685l-2.9606-2.3438-1.1477 1.2445z" color="#000000"/>
+  </g>
+  <path d="m12.83 6.3689-7.0819 6.636 0.23872 5.3459 17.271 15.515 11.086-10.29 0.23871-5.6054-21.753-11.601z" color="#000000" fill="none" opacity=".34225" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10"/>
+  <path d="m31.564 28.211s5.8398 2.3187 8.9315 7.0421c3.0917 4.7234 4.8092 11.594 4.8092 11.594" color="#000000" fill="none" stroke="url(#linearGradient3159)" stroke-linecap="round" stroke-linejoin="bevel" stroke-miterlimit="10" stroke-width="5"/>
+  <g fill-rule="evenodd">
+   <path d="m32.201 26.733c-0.83283 0.10088-1.4913 0.75356-1.5995 1.5855-0.10822 0.83191 0.36135 1.6313 1.1406 1.9419 0 0 4.8833 2.6652 6.5189 5.164 1.7888 2.7328 2.9825 7.1981 2.9825 7.1981 0.25341 0.98198 1.2549 1.5726 2.2369 1.3192 0.98198-0.25342 1.5726-1.2549 1.3192-2.2369 0 0-1.1005-4.7116-3.4413-8.2879-2.4941-3.8104-8.2395-6.5405-8.2395-6.5405-0.28855-0.12568-0.60456-0.17506-0.91769-0.14339z" color="#000000" fill="url(#radialGradient3156)"/>
+   <path d="m15.926 15.865 15.05 11.349c1.727 1.1102 3.3923-0.18504 4.4408-1.4803 1.0485-1.2952 0.8635-2.8372-0.24671-3.7007l-16.036-8.635-3.2073 2.4671z" color="#000000" fill="#a0a0a1"/>
+   <path d="m15.309 15.865 15.42 9.3751c0.8635 0.61678 2.7138-0.12336 3.454-0.98685 0.74014-0.8635 0.12336-2.0971-0.49342-2.4671l-14.679-8.7583-3.7007 2.8372z" color="#000000" fill="url(#linearGradient3152)"/>
+  </g>
+ </g>
+</svg>

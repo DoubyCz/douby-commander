@@ -1,0 +1,31 @@
+[package]
+name = "dc-gui"
+description = "GTK 4 user interface of Double Commander"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "doubycmd"
+path = "src/main.rs"
+
+[dependencies]
+dc-core.workspace = true
+dc-i18n.workspace = true
+dc-ops.workspace = true
+dc-vfs.workspace = true
+gtk.workspace = true
+jiff.workspace = true
+
+[features]
+# Builds against the GTK API up to 4.22 (the system's), so that everything
+# deprecated there shows up (`deprecated` is denied). Normal builds keep
+# the 4.14 baseline for older distributions. Used by check.sh.
+gtk-latest = ["gtk/v4_22"]
+
+[build-dependencies]
+glib-build-tools.workspace = true
+
+[lints]
+workspace = true

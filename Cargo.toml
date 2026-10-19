@@ -1,0 +1,52 @@
+[workspace]
+resolver = "3"
+members = ["crates/*"]
+
+[workspace.package]
+version = "0.0.1"
+edition = "2024"
+rust-version = "1.92"
+license = "GPL-2.0-or-later"
+authors = ["Jiří Doubravský <douby@douby.cz>"]
+repository = "https://github.com/DoubyCz/douby-commander"
+
+[workspace.dependencies]
+dc-core = { path = "crates/dc-core" }
+dc-i18n = { path = "crates/dc-i18n" }
+dc-ops = { path = "crates/dc-ops" }
+dc-vfs = { path = "crates/dc-vfs" }
+# gettext of glibc, nothing is built from source.
+gettext-rs = { version = "0.8.0", features = ["gettext-system"] }
+glib-build-tools = "0.22.8"
+gtk = { package = "gtk4", version = "0.11.5", features = ["v4_14"] }
+jiff = "0.2.38"
+# Safe wrappers of system calls (statvfs) without unsafe code of our own.
+rustix = { version = "1.1.5", features = ["fs"] }
+tempfile = "3.27.0"
+thiserror = "2.0.21"
+# Only moving to trash is used, listing and restoring (which need chrono) are not.
+trash = { version = "5.2.9", default-features = false }
+unicode-normalization = "0.1.26"
+
+# Strict on purpose: the compiler and clippy should say what not to do.
+# Every warning is fixed before a step counts as done (see check.sh).
+[workspace.lints.rust]
+unsafe_code = "forbid"
+missing_debug_implementations = "warn"
+# Deprecated API is an error, not a warning (with `--features gtk-latest`
+# also everything GTK deprecated up to its newest version).
+deprecated = "deny"
+
+[workspace.lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+# An exception to a lint states why, and `#[expect]` reports when it is no
+# longer needed; plain `#[allow]` is not used.
+allow_attributes = "warn"
+allow_attributes_without_reason = "warn"
+# No debugging leftovers and no shortcuts that hide failures.
+dbg_macro = "warn"
+todo = "warn"
+unimplemented = "warn"
+print_stdout = "warn"
+print_stderr = "warn"
+unwrap_used = "warn"

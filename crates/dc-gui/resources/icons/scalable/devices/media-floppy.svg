@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48" height="48" version="1.0" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <defs>
+  <radialGradient id="radialGradient6719" cx="605.71" cy="486.65" r="117.14" gradientTransform="matrix(-2.7744 0 0 1.9697 112.76 -872.89)" gradientUnits="userSpaceOnUse" xlink:href="#linearGradient5060"/>
+  <linearGradient id="linearGradient5060">
+   <stop offset="0"/>
+   <stop stop-opacity="0" offset="1"/>
+  </linearGradient>
+  <radialGradient id="radialGradient6717" cx="605.71" cy="486.65" r="117.14" gradientTransform="matrix(2.7744 0 0 1.9697 -1891.6 -872.89)" gradientUnits="userSpaceOnUse" xlink:href="#linearGradient5060"/>
+  <linearGradient id="linearGradient6715" x1="302.86" x2="302.86" y1="366.65" y2="609.51" gradientTransform="matrix(2.7744 0 0 1.9697 -1892.2 -872.89)" gradientUnits="userSpaceOnUse">
+   <stop stop-opacity="0" offset="0"/>
+   <stop offset=".5"/>
+   <stop stop-opacity="0" offset="1"/>
+  </linearGradient>
+  <linearGradient id="linearGradient2269" x1="40.885" x2="16.88" y1="71.869" y2="-.38931" gradientTransform="matrix(.97661 0 0 1.1398 .56422 -3.2712)" gradientUnits="userSpaceOnUse">
+   <stop stop-color="#1e2d69" offset="0"/>
+   <stop stop-color="#78a7e0" offset="1"/>
+  </linearGradient>
+  <linearGradient id="linearGradient2283" x1="13.784" x2="33.075" y1="-.99673" y2="55.702" gradientTransform="matrix(.98543 0 0 1.1482 .64107 -2.9339)" gradientUnits="userSpaceOnUse">
+   <stop stop-color="#fff" offset="0"/>
+   <stop stop-color="#fff" stop-opacity="0" offset="1"/>
+  </linearGradient>
+  <linearGradient id="linearGradient2348" x1="20.125" x2="28.562" y1="21.844" y2="42.469" gradientTransform="matrix(1.0677 0 0 1.1215 -1.3689 -5.5745)" gradientUnits="userSpaceOnUse">
+   <stop stop-color="#858585" offset="0"/>
+   <stop stop-color="#cbcbcb" offset=".5"/>
+   <stop stop-color="#6b6b6b" offset="1"/>
+  </linearGradient>
+ </defs>
+ <metadata>
+  <rdf:RDF>
+   <cc:Work rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:title>Media Floppy</dc:title>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Tuomas Kuosmanen</dc:title>
+     </cc:Agent>
+    </dc:creator>
+    <dc:source>http://www.tango-project.org</dc:source>
+    <dc:subject>
+     <rdf:Bag>
+      <rdf:li>save</rdf:li>
+      <rdf:li>document</rdf:li>
+      <rdf:li>store</rdf:li>
+      <rdf:li>file</rdf:li>
+      <rdf:li>io</rdf:li>
+      <rdf:li>floppy</rdf:li>
+      <rdf:li>media</rdf:li>
+     </rdf:Bag>
+    </dc:subject>
+    <dc:contributor>
+     <cc:Agent>
+      <dc:title>Jakub Steiner</dc:title>
+     </cc:Agent>
+    </dc:contributor>
+    <cc:license rdf:resource="http://creativecommons.org/licenses/publicdomain/"/>
+   </cc:Work>
+   <cc:License rdf:about="http://creativecommons.org/licenses/publicdomain/">
+    <cc:permits rdf:resource="http://creativecommons.org/ns#Reproduction"/>
+    <cc:permits rdf:resource="http://creativecommons.org/ns#Distribution"/>
+    <cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks"/>
+   </cc:License>
+  </rdf:RDF>
+ </metadata>
+ <g transform="matrix(.024158 0 0 .020868 45.237 41.654)">
+  <rect x="-1559.3" y="-150.7" width="1339.6" height="478.36" color="black" fill="url(#linearGradient6715)" opacity=".40206"/>
+  <path d="m-219.62-150.68v478.33c142.87 0.90045 345.4-107.17 345.4-239.2 0-132.03-159.44-239.13-345.4-239.13z" color="black" fill="url(#radialGradient6717)" opacity=".40206"/>
+  <path d="m-1559.3-150.68v478.33c-142.87 0.90045-345.4-107.17-345.4-239.2 0-132.03 159.44-239.13 345.4-239.13z" color="black" fill="url(#radialGradient6719)" opacity=".40206"/>
+ </g>
+ <g>
+  <path d="m4.5578 3.5676h38.89c0.58929 0 1.0637 0.47441 1.0637 1.0637v37.765c0 0.58929-0.47441 1.0637-1.0637 1.0637h-36.89l-3.0637-3.0637v-35.765c0-0.58929 0.47441-1.0637 1.0637-1.0637z" fill="url(#linearGradient2269)" stroke="#25375f" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="9" y="4" width="30" height="23" fill="#fff"/>
+  <rect x="9" y="4" width="30" height="4" rx=".12621" ry=".12621" fill="#d31c00"/>
+ </g>
+ <g>
+  <rect x="6" y="6" width="2" height="2" rx=".12621" ry=".12621" opacity=".73864"/>
+  <g stroke="#000">
+   <path d="m11 12.5h26" opacity=".13068"/>
+   <path d="m11 17.5h26" opacity=".13068"/>
+   <path d="m11 22.5h26" opacity=".13068"/>
+  </g>
+ </g>
+ <g>
+  <path d="m4.6189 4.5277h38.768c0.069919 0 0.12621 0.056289 0.12621 0.12621v37.648c0 0.069919-0.056289 0.12621-0.12621 0.12621h-36.459l-2.4356-2.3914v-35.383c0-0.069919 0.056289-0.12621 0.12621-0.12621z" fill="none" opacity=".59659" stroke="url(#linearGradient2283)" stroke-linecap="round"/>
+  <path d="m14.114 28.562h19.75c0.88797 0 1.6028 0.75091 1.6028 1.6837v13.202h-22.955v-13.202c0-0.93274 0.71486-1.6837 1.6028-1.6837z" fill="url(#linearGradient2348)" stroke="#525252"/>
+  <rect x="16.464" y="30.457" width="5.0298" height="10.066" rx=".75121" ry=".75121" fill="#4967a2" stroke="#525252"/>
+ </g>
+</svg>

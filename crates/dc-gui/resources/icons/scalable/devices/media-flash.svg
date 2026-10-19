@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <defs>
+  <linearGradient id="linearGradient6105" x1="22.797" x2="22.797" y1="39.68" y2="46.636" gradientTransform="matrix(1 0 0 .934 0 1.558)" gradientUnits="userSpaceOnUse">
+   <stop stop-color="#eeeeec" offset="0"/>
+   <stop stop-color="#dededa" offset=".89189"/>
+   <stop stop-color="#838375" offset="1"/>
+  </linearGradient>
+  <linearGradient id="linearGradient6202" x1="29.375" x2="22.102" y1="21.741" y2="7.6786" gradientUnits="userSpaceOnUse">
+   <stop stop-color="#edd400" offset="0"/>
+   <stop stop-color="#c3af07" offset=".5"/>
+   <stop stop-color="#ffeb3e" offset="1"/>
+  </linearGradient>
+  <linearGradient id="linearGradient6208" x1="21.617" x2="26.444" y1="4.6076" y2="47.007" gradientTransform="matrix(1 0 0 .98252 0 -.070767)" gradientUnits="userSpaceOnUse">
+   <stop stop-color="#555753" offset="0"/>
+   <stop stop-color="#3e3f3c" offset="1"/>
+  </linearGradient>
+  <linearGradient id="linearGradient6216" x1="16.846" x2="30.508" y1="8.6785" y2="78.505" gradientUnits="userSpaceOnUse">
+   <stop stop-color="#fff" offset="0"/>
+   <stop stop-color="#fff" stop-opacity="0" offset="1"/>
+  </linearGradient>
+  <filter id="filter5339" x="-.068966" y="-.62069" width="1.1379" height="2.2414">
+   <feGaussianBlur stdDeviation="1.1886709"/>
+  </filter>
+ </defs>
+ <metadata>
+  <rdf:RDF>
+   <cc:Work rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Jakub Steiner</dc:title>
+     </cc:Agent>
+    </dc:creator>
+    <dc:source>http://jimmac.musichall.cz</dc:source>
+    <cc:license rdf:resource="http://creativecommons.org/licenses/publicdomain/"/>
+    <dc:title>Generic Flash Media</dc:title>
+    <dc:subject>
+     <rdf:Bag>
+      <rdf:li>flash</rdf:li>
+      <rdf:li>memory</rdf:li>
+      <rdf:li>removable</rdf:li>
+      <rdf:li>photo</rdf:li>
+     </rdf:Bag>
+    </dc:subject>
+    <dc:rights>
+     <cc:Agent>
+      <dc:title>Novell, Inc., Jakub Steiner</dc:title>
+     </cc:Agent>
+    </dc:rights>
+   </cc:Work>
+   <cc:License rdf:about="http://creativecommons.org/licenses/publicdomain/">
+    <cc:permits rdf:resource="http://creativecommons.org/ns#Reproduction"/>
+    <cc:permits rdf:resource="http://creativecommons.org/ns#Distribution"/>
+    <cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks"/>
+   </cc:License>
+  </rdf:RDF>
+ </metadata>
+ <g>
+  <g>
+   <rect transform="matrix(.96581 0 0 1 .82194 0)" x="3.3588" y="41.99" width="41.366" height="4.5962" rx="2.3794" ry="2.2981" color="#000000" filter="url(#filter5339)" opacity=".43373"/>
+   <path id="path4291" d="m5.5 3.2369v40.382c0.069706 1.0502 0.99874 2.1024 2.3834 1.9974h31.852c0.89357-0.04311 1.7778-0.7862 1.7647-2.2579v-36.93c0-0.71654-0.23125-1.1979-0.75626-1.7137 0 0-2.749-2.8355-2.749-2.8355-0.28726-0.27138-0.46396-0.37912-1.2595-0.37912h-30c-0.9375 0.061407-1.2978 0.99997-1.2353 1.7369z" color="black" fill="url(#linearGradient6208)" fill-rule="evenodd" stroke="#2e3436" stroke-dashoffset=".8"/>
+   <rect x="9.5" y="5.6161" width="27.977" height="17" rx="1.8974" ry="1.8974" color="black" fill="#edd400" fill-rule="evenodd" stroke="#2e3436" stroke-dashoffset=".8" stroke-width="3"/>
+  </g>
+  <rect x="9.5" y="5.6161" width="27.977" height="17" rx="1.8974" ry="1.8974" color="black" fill="url(#linearGradient6202)" fill-rule="evenodd" stroke="#c4a000" stroke-dashoffset=".8"/>
+  <rect transform="matrix(1 0 -.0055327 .99998 0 0)" x="10.578" y="6.6162" width="26" height="15" rx="1.1461" ry="1.1461" color="black" fill="none" opacity=".44944" stroke="#fff" stroke-dashoffset=".8"/>
+  <g fill="#fff" fill-rule="evenodd">
+   <path d="m12 6.1161v6c7.2049-2.8603 15.058 3.978 23 2v-7.9281h1v15.928h-1v-6c-8.663 1.9407-15.554-5.0456-23-2v8h-1v-16h1z" color="black" opacity=".44944"/>
+   <path d="m13 6.1161v4.7348l1-0.23922v-4.4956h-1z" color="black" opacity=".44944"/>
+   <path d="m15 10.612v-4.4956h1v4.4072l-1 0.088388z" color="black" opacity=".44944"/>
+   <path d="m17 10.523v-4.4072h1v4.5581l-1-0.15083z" color="black" opacity=".44944"/>
+   <path d="m19 10.895v-4.779h1v5l-1-0.22097z" color="black" opacity=".44944"/>
+   <path d="m21 11.275v-5.1585h1v5.3353l-1-0.17678z" color="black" opacity=".44944"/>
+   <path d="m23 11.805v-5.6889h1v5.8214l-1-0.13258z" color="black" opacity=".44944"/>
+   <path d="m25 12.335v-6.2192h1v6.396l-1-0.17678z" color="black" opacity=".44944"/>
+   <path d="m27 12.733v-6.6169h1v6.7937l-1-0.17678z" color="black" opacity=".44944"/>
+   <path d="m29 13.219v-7.1031h1v7.1915l-1-0.088388z" color="black" opacity=".44944"/>
+   <path d="m31 13.396v-7.2798h1v7.2798l-1-1e-6z" color="black" opacity=".44944"/>
+   <path d="m33 13.396v-7.2798h1v7.1473l-1 0.13258z" color="black" opacity=".44944"/>
+   <path d="m13 22.07v-7.4307l1-0.11433v7.545h-1z" color="black" opacity=".44944"/>
+   <path d="m15 14.481v7.5892h1v-7.7218l-1 0.13258z" color="black" opacity=".44944"/>
+   <path d="m17 14.348v7.7218h1v-7.6075l-1-0.11433z" color="black" opacity=".44944"/>
+   <path d="m19 14.772v7.2981h1v-7.0771l-1-0.22097z" color="black" opacity=".44944"/>
+   <path d="m21 15.232v6.8379h1v-6.5727l-1-0.26516z" color="black" opacity=".44944"/>
+   <path d="m23 15.851v6.2192h1v-5.8656l-1-0.35355z" color="black" opacity=".44944"/>
+   <path d="m25 16.381v5.6889h1v-5.4237l-1-0.26516z" color="black" opacity=".44944"/>
+   <path d="m27 16.823v5.2469h1v-5.0701l-1-0.17678z" color="black" opacity=".44944"/>
+   <path d="m29 17.177v4.8934h1v-4.8492l-1-0.044194z" color="black" opacity=".44944"/>
+   <path d="m31 17.398v4.6724h1v-4.805l-1 0.13258z" color="black" opacity=".44944"/>
+   <path d="m33 17.354v4.7166h1v-4.8934l-1 0.17678z" color="black" opacity=".44944"/>
+  </g>
+  <g fill-rule="evenodd">
+   <rect x="8" y="35.116" width="31" height="11" rx=".81718" ry=".81718" color="black" fill="#2e3436"/>
+   <rect x="9" y="36.116" width="29" height="9" rx=".12968" ry=".12968" color="black" fill="url(#linearGradient6105)"/>
+   <rect x="9" y="36.116" width="29" height="3" rx=".12968" ry=".12968" color="black" fill="#8f5902"/>
+   <rect x="11" y="37.116" width="10.036" height="2" rx=".12968" ry=".12968" color="black" fill="#e9b96e"/>
+   <rect x="22.964" y="37.116" width="4.0364" height="2" rx=".12968" ry=".12968" color="black" fill="#e9b96e"/>
+  </g>
+  <path d="m6.8125 2.5c-0.14109 0.0092414-0.14702 0.005736-0.21875 0.125s-0.1077 0.36682-0.09375 0.53125c0.001465 0.031233 0.001465 0.062517 0 0.09375v40.312c0.03409 0.5136 0.4648 1.1268 1.3125 1.0625 0.020828-6.51e-4 0.041672-6.51e-4 0.0625 0h31.812c0.35473-0.017114 0.82204-0.20659 0.8125-1.2812v-36.906c-1e-6 -0.50713-0.034819-0.60436-0.4375-1-0.010645-0.010185-0.021065-0.020604-0.03125-0.03125 0 0-2.6587-2.7504-2.7188-2.8125-0.059691-0.056392-0.029281-0.028176-0.03125-0.03125s-0.031319-0.031273-0.03125-0.03125c1.38e-4 4.67e-5 -0.14569-0.03125-0.5-0.03125h-29.938z" color="black" fill="none" opacity=".17978" stroke="url(#linearGradient6216)" stroke-dashoffset=".8" xlink:href="#path4291"/>
+ </g>
+</svg>
