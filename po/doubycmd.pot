@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: doubycmd\n"
 "Report-Msgid-Bugs-To: douby@douby.cz\n"
-"POT-Creation-Date: 2026-10-19 22:28+0200\n"
+"POT-Creation-Date: 2026-10-19 22:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,12 +18,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: crates/dc-core/src/command.rs:239
+#: crates/dc-core/src/command.rs:258
 #, rust-format
 msgid "Unknown command {command}"
 msgstr ""
 
-#: crates/dc-core/src/command.rs:241
+#: crates/dc-core/src/command.rs:260
 #, rust-format
 msgid "Command {command} does not accept parameter {param}"
 msgstr ""
@@ -65,71 +65,71 @@ msgid ""
 "{total_files}, folders: {selected_dirs} of {total_dirs}"
 msgstr ""
 
-#: crates/dc-core/src/keymap.rs:166
+#: crates/dc-core/src/keymap.rs:167
 #, rust-format
 msgid "Invalid shortcut {shortcut}"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:174
+#: crates/dc-gui/src/commander.rs:188
 msgid "No text editor found. Set one in the VISUAL or EDITOR variable."
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:175
+#: crates/dc-gui/src/commander.rs:189
 msgid ""
 "No terminal found. Install xdg-terminal-exec or set the TERMINAL variable."
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:176
+#: crates/dc-gui/src/commander.rs:190
 msgid "No application is set for text files (text/plain)."
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:180
+#: crates/dc-gui/src/commander.rs:194
 #, rust-format
 msgid "Cannot open {path} in an editor"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:284
+#: crates/dc-gui/src/commander.rs:298
 #, rust-format
 msgid "Delete selected \"{name}\" into trash can?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:286
+#: crates/dc-gui/src/commander.rs:300
 #, rust-format
 msgid "Delete selected \"{name}\"?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:294
+#: crates/dc-gui/src/commander.rs:308
 #, rust-format
 msgid "Delete {count} selected file/directory into trash can?"
 msgid_plural "Delete {count} selected files/directories into trash can?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: crates/dc-gui/src/commander.rs:299
+#: crates/dc-gui/src/commander.rs:313
 #, rust-format
 msgid "Delete {count} selected file/directory?"
 msgid_plural "Delete {count} selected files/directories?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: crates/dc-gui/src/commander.rs:341
+#: crates/dc-gui/src/commander.rs:355
 #, rust-format
 msgid "Copy selected \"{name}\"?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:341
+#: crates/dc-gui/src/commander.rs:355
 #, rust-format
 msgid "Rename/move selected \"{name}\"?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:347
+#: crates/dc-gui/src/commander.rs:361
 #, rust-format
 msgid "Copy {count} selected file/directory?"
 msgid_plural "Copy {count} selected files/directories?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: crates/dc-gui/src/commander.rs:350
+#: crates/dc-gui/src/commander.rs:364
 #, rust-format
 msgid "Rename/move {count} selected file/directory?"
 msgid_plural "Rename/move {count} selected files/directories?"
@@ -965,12 +965,12 @@ msgstr ""
 msgid "Attr"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:1147
+#: crates/dc-gui/src/panel_view.rs:1178
 #, rust-format
 msgid "(SEARCH: {text})"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:1177
+#: crates/dc-gui/src/panel_view.rs:1208
 #, rust-format
 msgid "Cannot open {path}"
 msgstr ""

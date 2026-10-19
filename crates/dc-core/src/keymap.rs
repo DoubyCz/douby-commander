@@ -13,6 +13,7 @@ use std::str::FromStr;
 use dc_i18n::{fill, gettext};
 
 use crate::command::{Command, Direction, RangeStep, TrashChoice};
+use crate::sort::SortColumn;
 
 /// A key without modifiers.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -264,6 +265,10 @@ impl Keymap {
             (ctrl(Key::Char('R')), Command::Refresh),
             (ctrl(Key::F(1)), Command::BriefView),
             (ctrl(Key::F(2)), Command::ColumnsView),
+            (ctrl(Key::F(3)), Command::SortBy(SortColumn::Name)),
+            (ctrl(Key::F(4)), Command::SortBy(SortColumn::Extension)),
+            (ctrl(Key::F(5)), Command::SortBy(SortColumn::Modified)),
+            (ctrl(Key::F(6)), Command::SortBy(SortColumn::Size)),
             (Shortcut::new(Modifiers { ctrl: true, shift: true, ..Modifiers::NONE }, Key::F(1)), Command::ThumbnailsView),
             (ctrl(Key::Char('A')), Command::MarkMarkAll),
             (ctrl(Key::NumPlus), Command::MarkMarkAll),
@@ -322,8 +327,14 @@ mod tests {
     fn defaults_cover_every_command() {
         let keymap = Keymap::with_defaults();
         // Like in the original, these are reached by buttons only.
-        let without_shortcut =
-            [Command::LeftEqualRight, Command::RightEqualLeft, Command::PanelsSplitterPerPos { percent: 50 }];
+        let without_shortcut = [
+            Command::LeftEqualRight,
+            Command::RightEqualLeft,
+            Command::PanelsSplitterPerPos { percent: 50 },
+            // Menu only, as in the original.
+            Command::SortBy(SortColumn::Attributes),
+            Command::ReverseOrder,
+        ];
         for command in Command::ALL.into_iter().filter(|command| !without_shortcut.contains(command)) {
             assert!(!keymap.shortcuts(command).is_empty(), "{command} has no default shortcut");
         }

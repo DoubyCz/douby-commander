@@ -997,6 +997,33 @@ impl PanelView {
         }
     }
 
+    /// `cm_SortByName` and the like, as a click on the header: the same
+    /// column again reverses, a new one starts descending for size and date
+    /// (largest, newest first) as `DoSortByFunctions` of the original.
+    pub fn sort_by(&self, column: SortColumn) {
+        let current = self.panel.borrow().sorting();
+        let direction = if current.column == column {
+            current.direction.reversed()
+        } else if matches!(column, SortColumn::Size | SortColumn::Modified) {
+            SortDirection::Descending
+        } else {
+            SortDirection::Ascending
+        };
+        self.set_sorting(Sorting { column, direction });
+    }
+
+    /// `cm_ReverseOrder`.
+    pub fn reverse_order(&self) {
+        let current = self.panel.borrow().sorting();
+        self.set_sorting(Sorting { direction: current.direction.reversed(), ..current });
+    }
+
+    fn set_sorting(&self, sorting: Sorting) {
+        self.panel.borrow_mut().set_sorting(sorting);
+        // Rows, status and the arrows of all headers.
+        self.refresh();
+    }
+
     /// Shows `sorting` in a header (its arrow), unless it shows it already.
     /// Changing it tells the panel through the sorter, which then sees no
     /// change and stops.

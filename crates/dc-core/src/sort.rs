@@ -2,7 +2,7 @@ use std::cmp::Ordering;
 
 use crate::FileItem;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum SortColumn {
     Name,
     Extension,
@@ -15,6 +15,16 @@ pub enum SortColumn {
 pub enum SortDirection {
     Ascending,
     Descending,
+}
+
+impl SortDirection {
+    #[must_use]
+    pub fn reversed(self) -> Self {
+        match self {
+            Self::Ascending => Self::Descending,
+            Self::Descending => Self::Ascending,
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

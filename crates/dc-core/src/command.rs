@@ -12,6 +12,8 @@ use std::str::FromStr;
 
 use dc_i18n::{fill, gettext};
 
+use crate::sort::SortColumn;
+
 /// Arrow directions, as on screen.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Direction {
@@ -81,6 +83,11 @@ pub enum Command {
     ColumnsView,
     /// Ctrl+Shift+F1: the active panel shows icons and previews ("Icons").
     ThumbnailsView,
+    /// Ctrl+F3 to Ctrl+F6: sort the active panel, as a click on the column
+    /// header; again the same reverses.
+    SortBy(SortColumn),
+    /// Reverse the sort direction of the active panel.
+    ReverseOrder,
     /// Left panel shows the directory of the right one (`<` above the left panel).
     LeftEqualRight,
     /// Right panel shows the directory of the left one (`>` above the right panel).
@@ -111,7 +118,7 @@ impl TrashChoice {
 
 impl Command {
     /// All commands with default parameters, for listings and for parsing.
-    pub const ALL: [Self; 34] = [
+    pub const ALL: [Self; 40] = [
         Self::Open,
         Self::ChangeDirToParent,
         Self::EnterDir,
@@ -143,6 +150,12 @@ impl Command {
         Self::BriefView,
         Self::ColumnsView,
         Self::ThumbnailsView,
+        Self::SortBy(SortColumn::Name),
+        Self::SortBy(SortColumn::Extension),
+        Self::SortBy(SortColumn::Size),
+        Self::SortBy(SortColumn::Modified),
+        Self::SortBy(SortColumn::Attributes),
+        Self::ReverseOrder,
         Self::LeftEqualRight,
         Self::RightEqualLeft,
         Self::PanelsSplitterPerPos { percent: 50 },
@@ -183,6 +196,12 @@ impl Command {
             Self::BriefView => "cm_BriefView",
             Self::ColumnsView => "cm_ColumnsView",
             Self::ThumbnailsView => "cm_ThumbnailsView",
+            Self::SortBy(SortColumn::Name) => "cm_SortByName",
+            Self::SortBy(SortColumn::Extension) => "cm_SortByExt",
+            Self::SortBy(SortColumn::Size) => "cm_SortBySize",
+            Self::SortBy(SortColumn::Modified) => "cm_SortByDate",
+            Self::SortBy(SortColumn::Attributes) => "cm_SortByAttr",
+            Self::ReverseOrder => "cm_ReverseOrder",
             Self::LeftEqualRight => "cm_LeftEqualRight",
             Self::RightEqualLeft => "cm_RightEqualLeft",
             Self::PanelsSplitterPerPos { .. } => "cm_PanelsSplitterPerPos",
