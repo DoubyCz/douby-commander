@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: doubycmd\n"
 "Report-Msgid-Bugs-To: douby@douby.cz\n"
-"POT-Creation-Date: 2026-10-19 20:02+0200\n"
+"POT-Creation-Date: 2026-10-19 21:55+0200\n"
 "PO-Revision-Date: 2026-10-19 18:45+0200\n"
 "Last-Translator: Jiří Doubravský <douby@douby.cz>\n"
 "Language-Team: Czech\n"
@@ -17,12 +17,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: crates/dc-core/src/command.rs:206
+#: crates/dc-core/src/command.rs:211
 #, rust-format
 msgid "Unknown command {command}"
 msgstr "Neznámý příkaz {command}"
 
-#: crates/dc-core/src/command.rs:208
+#: crates/dc-core/src/command.rs:213
 #, rust-format
 msgid "Command {command} does not accept parameter {param}"
 msgstr "Příkaz {command} nepřijímá parametr {param}"
@@ -71,38 +71,38 @@ msgstr ""
 msgid "Invalid shortcut {shortcut}"
 msgstr "Neplatná klávesová zkratka {shortcut}"
 
-#: crates/dc-gui/src/commander.rs:165
+#: crates/dc-gui/src/commander.rs:171
 msgid "No text editor found. Set one in the VISUAL or EDITOR variable."
 msgstr ""
 "Nenalezen žádný textový editor. Nastavte ho v proměnné VISUAL nebo EDITOR."
 
-#: crates/dc-gui/src/commander.rs:166
+#: crates/dc-gui/src/commander.rs:172
 msgid ""
 "No terminal found. Install xdg-terminal-exec or set the TERMINAL variable."
 msgstr ""
 "Nenalezen žádný terminál. Nainstalujte xdg-terminal-exec nebo nastavte "
 "proměnnou TERMINAL."
 
-#: crates/dc-gui/src/commander.rs:167
+#: crates/dc-gui/src/commander.rs:173
 msgid "No application is set for text files (text/plain)."
 msgstr "Pro textové soubory (text/plain) není nastavená žádná aplikace."
 
-#: crates/dc-gui/src/commander.rs:171
+#: crates/dc-gui/src/commander.rs:177
 #, rust-format
 msgid "Cannot open {path} in an editor"
 msgstr "Nelze otevřít {path} v editoru"
 
-#: crates/dc-gui/src/commander.rs:275
+#: crates/dc-gui/src/commander.rs:281
 #, rust-format
 msgid "Delete selected \"{name}\" into trash can?"
 msgstr "Opravdu přesunout \"{name}\" do koše?"
 
-#: crates/dc-gui/src/commander.rs:277
+#: crates/dc-gui/src/commander.rs:283
 #, rust-format
 msgid "Delete selected \"{name}\"?"
 msgstr "Opravdu smazat \"{name}\"?"
 
-#: crates/dc-gui/src/commander.rs:285
+#: crates/dc-gui/src/commander.rs:291
 #, rust-format
 msgid "Delete {count} selected file/directory into trash can?"
 msgid_plural "Delete {count} selected files/directories into trash can?"
@@ -110,7 +110,7 @@ msgstr[0] "Opravdu přesunout {count} vybranou položku do koše?"
 msgstr[1] "Opravdu přesunout {count} vybrané položky do koše?"
 msgstr[2] "Opravdu přesunout {count} vybraných položek do koše?"
 
-#: crates/dc-gui/src/commander.rs:290
+#: crates/dc-gui/src/commander.rs:296
 #, rust-format
 msgid "Delete {count} selected file/directory?"
 msgid_plural "Delete {count} selected files/directories?"
@@ -118,17 +118,17 @@ msgstr[0] "Opravdu smazat {count} vybranou položku?"
 msgstr[1] "Opravdu smazat {count} vybrané položky?"
 msgstr[2] "Opravdu smazat {count} vybraných položek?"
 
-#: crates/dc-gui/src/commander.rs:332
+#: crates/dc-gui/src/commander.rs:338
 #, rust-format
 msgid "Copy selected \"{name}\"?"
 msgstr "Kopírovat \"{name}\"?"
 
-#: crates/dc-gui/src/commander.rs:332
+#: crates/dc-gui/src/commander.rs:338
 #, rust-format
 msgid "Rename/move selected \"{name}\"?"
 msgstr "Přejmenovat nebo přesunout \"{name}\"?"
 
-#: crates/dc-gui/src/commander.rs:338
+#: crates/dc-gui/src/commander.rs:344
 #, rust-format
 msgid "Copy {count} selected file/directory?"
 msgid_plural "Copy {count} selected files/directories?"
@@ -136,7 +136,7 @@ msgstr[0] "Kopírovat {count} vybranou položku?"
 msgstr[1] "Kopírovat {count} vybrané položky?"
 msgstr[2] "Kopírovat {count} vybraných položek?"
 
-#: crates/dc-gui/src/commander.rs:341
+#: crates/dc-gui/src/commander.rs:347
 #, rust-format
 msgid "Rename/move {count} selected file/directory?"
 msgid_plural "Rename/move {count} selected files/directories?"
@@ -212,56 +212,56 @@ msgstr "_Možnosti"
 msgid "A_dd To Queue #{number} ({key})"
 msgstr "Při_dat do fronty #{number} ({key})"
 
-#: crates/dc-gui/src/copy_dialog.rs:78 crates/dc-gui/src/progress_window.rs:275
+#: crates/dc-gui/src/copy_dialog.rs:79 crates/dc-gui/src/progress_window.rs:275
 msgctxt "button"
 msgid "_Start"
 msgstr "_Spustit"
 
-#: crates/dc-gui/src/copy_dialog.rs:140 crates/dc-gui/src/dialogs.rs:141
+#: crates/dc-gui/src/copy_dialog.rs:141 crates/dc-gui/src/dialogs.rs:142
 msgid "New queue"
 msgstr "Nová fronta"
 
-#: crates/dc-gui/src/copy_dialog.rs:298
+#: crates/dc-gui/src/copy_dialog.rs:299
 msgid "When _file exists"
 msgstr "Když _soubor existuje"
 
-#: crates/dc-gui/src/copy_dialog.rs:299
+#: crates/dc-gui/src/copy_dialog.rs:300
 msgid "When dir_ectory exists"
 msgstr "Když _složka existuje"
 
-#: crates/dc-gui/src/copy_dialog.rs:300
+#: crates/dc-gui/src/copy_dialog.rs:301
 msgid "When ca_nnot set property"
 msgstr "Když _nelze nastavit vlastnost"
 
-#: crates/dc-gui/src/copy_dialog.rs:313
+#: crates/dc-gui/src/copy_dialog.rs:314
 msgid "C_heck free space"
 msgstr "Zkontrolovat _volné místo"
 
-#: crates/dc-gui/src/copy_dialog.rs:314
+#: crates/dc-gui/src/copy_dialog.rs:315
 msgid "Fo_llow links"
 msgstr "Následovat _odkazy"
 
-#: crates/dc-gui/src/copy_dialog.rs:315
+#: crates/dc-gui/src/copy_dialog.rs:316
 msgid "Cop_y attributes"
 msgstr "Kopírovat _atributy"
 
-#: crates/dc-gui/src/copy_dialog.rs:316
+#: crates/dc-gui/src/copy_dialog.rs:317
 msgid "Drop readonly fla_g"
 msgstr "Zrušit příznak _jen pro čtení"
 
-#: crates/dc-gui/src/copy_dialog.rs:317
+#: crates/dc-gui/src/copy_dialog.rs:318
 msgid "Copy d_ate/time"
 msgstr "Kopírovat _datum a čas"
 
-#: crates/dc-gui/src/copy_dialog.rs:318
+#: crates/dc-gui/src/copy_dialog.rs:319
 msgid "Copy o_wnership"
 msgstr "Kopírovat _vlastníka"
 
-#: crates/dc-gui/src/copy_dialog.rs:319
+#: crates/dc-gui/src/copy_dialog.rs:320
 msgid "_Reserve space"
 msgstr "_Rezervovat místo"
 
-#: crates/dc-gui/src/copy_dialog.rs:320
+#: crates/dc-gui/src/copy_dialog.rs:321
 msgid "Copy on write"
 msgstr "Kopírovat při zápisu (reflink)"
 
@@ -278,27 +278,27 @@ msgstr "_Název nové složky:"
 msgid "A_dd To Queue #{number}"
 msgstr "Při_dat do fronty #{number}"
 
-#: crates/dc-gui/src/dialogs.rs:164 crates/dc-ops/src/operation.rs:86
+#: crates/dc-gui/src/dialogs.rs:165 crates/dc-ops/src/operation.rs:86
 msgctxt "button"
 msgid "_No"
 msgstr "_Ne"
 
-#: crates/dc-gui/src/dialogs.rs:164 crates/dc-ops/src/operation.rs:85
+#: crates/dc-gui/src/dialogs.rs:165 crates/dc-ops/src/operation.rs:85
 msgctxt "button"
 msgid "_Yes"
 msgstr "_Ano"
 
-#: crates/dc-gui/src/dialogs.rs:262
+#: crates/dc-gui/src/dialogs.rs:263
 msgctxt "button"
 msgid "Ot_her"
 msgstr "_Další"
 
-#: crates/dc-gui/src/dialogs.rs:309
+#: crates/dc-gui/src/dialogs.rs:310
 msgctxt "button"
 msgid "_OK"
 msgstr "_OK"
 
-#: crates/dc-gui/src/dialogs.rs:313 crates/dc-ops/src/operation.rs:92
+#: crates/dc-gui/src/dialogs.rs:314 crates/dc-ops/src/operation.rs:92
 msgctxt "button"
 msgid "_Cancel"
 msgstr "_Zrušit"

@@ -78,6 +78,12 @@ impl Commander {
         match command {
             Command::Open => panel.open_current(),
             Command::ChangeDirToParent => panel.go_up(),
+            Command::EnterDir => {
+                // Only into a directory: not up from `..`, and files stay closed.
+                if panel.panel().current_item().is_some_and(|item| !item.is_parent() && item.is_directory_like()) {
+                    panel.open_current();
+                }
+            }
             Command::FocusSwap => {
                 let other = 1 - self.active.get();
                 self.set_active(other);

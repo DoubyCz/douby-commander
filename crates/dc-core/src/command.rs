@@ -26,6 +26,9 @@ pub enum Command {
     /// Enter: open the directory or the file under the cursor.
     Open,
     ChangeDirToParent,
+    /// Alt+Right: into the directory under the cursor, as Enter; on `..` and
+    /// on files nothing. Our own command (the original has history there).
+    EnterDir,
     /// Tab: make the other panel active.
     FocusSwap,
     /// Space: toggle the mark of the item under the cursor.
@@ -92,9 +95,10 @@ impl TrashChoice {
 
 impl Command {
     /// All commands with default parameters, for listings and for parsing.
-    pub const ALL: [Self; 27] = [
+    pub const ALL: [Self; 28] = [
         Self::Open,
         Self::ChangeDirToParent,
+        Self::EnterDir,
         Self::FocusSwap,
         Self::ToggleMark,
         Self::ToggleMarkMoveDown,
@@ -128,6 +132,7 @@ impl Command {
         match self {
             Self::Open => "cm_Open",
             Self::ChangeDirToParent => "cm_ChangeDirToParent",
+            Self::EnterDir => "cm_EnterDir",
             Self::FocusSwap => "cm_FocusSwap",
             Self::ToggleMark => "cm_ToggleMark",
             Self::ToggleMarkMoveDown => "cm_ToggleMarkMoveDown",
