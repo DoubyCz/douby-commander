@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Application
+Name=Douby Commander
+GenericName=File Manager
+GenericName[cs]=Správce souborů
+Comment=Two-panel file manager, a tribute to Double Commander
+Comment[cs]=Dvoupanelový správce souborů, pocta Double Commanderu
+Icon=cz.douby.DoubyCommander
+Exec=doubycmd
+Terminal=false
+StartupNotify=true
+Categories=System;FileTools;FileManager;
+Keywords=folder;manager;explore;disk;filesystem;orthodox;copy;queue;commander;
+Keywords[cs]=složka;správce;soubory;disk;kopírovat;fronta;commander;

@@ -28,10 +28,10 @@ colors change at once, with no setup.
 - Adjustable panel divider, drive list with free space
 - English and Czech
 
-## Building
+## Installing
 
 There are no packages yet, so build from source. You need Rust 1.92 or newer, GTK 4.14
-or newer with development files, and gettext.
+or newer with development files, and gettext. First install them for your distribution.
 
 Arch Linux (Omarchy):
 
@@ -53,16 +53,17 @@ sudo dnf install gcc pkgconf-pkg-config gtk4-devel gettext
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 
-Then:
+Then, the same everywhere:
 
 ```sh
 git clone https://github.com/DoubyCz/douby-commander.git
 cd douby-commander
-cargo build --release
-ln -s "$PWD/target/release/doubycmd" ~/.local/bin/doubycmd
+./install.sh
 ```
 
-Translations are loaded from the build directory for now, so keep the clone.
+This builds it and installs it for you into `~/.local`, with a launcher entry and an icon.
+For all users: `cargo build --release && sudo PREFIX=/usr/local ./install.sh --no-build`.
+`./install.sh --uninstall` removes it (with the same `PREFIX`).
 
 ## License
 
