@@ -577,38 +577,19 @@ impl PanelView {
         }
     }
 
-    /// Scrolls to `value` unless the cursor would not be fully visible
-    /// there (the directory changed meanwhile); then it stays as it is.
+    /// Scrolls back to `value`, as the directory was scrolled when left.
+    /// No estimate of where the cursor is: an estimate one row off refused
+    /// views with the cursor on the bottom row.
     fn restore_scroll(&self, value: f64) {
-        let items = self.store.n_items();
         let Some(adjustment) = self.scroll_adjustment() else { return };
-        if items == 0 || adjustment.upper() <= 0.0 {
+        if self.store.n_items() == 0 || adjustment.upper() <= 0.0 {
             return;
         }
-        let cursor = position(self.panel.borrow().cursor());
-        // Where the cursor is along the scrolling, and the size of a step.
-        let (start, step) = match self.mode.get() {
-            ViewMode::Details => {
-                // The header scrolls with the rows, it counts as one more row.
-                let row_height = adjustment.upper() / f64::from(items + 1);
-                (f64::from(cursor + 1) * row_height, row_height)
-            }
-            ViewMode::List => {
-                let rows = u32::try_from(self.list_rows()).unwrap_or(1);
-                let column_width = adjustment.upper() / f64::from(items.div_ceil(rows));
-                (f64::from(cursor / rows) * column_width, column_width)
-            }
-            ViewMode::Icons => {
-                let columns = u32::try_from(self.icon_columns()).unwrap_or(1);
-                let row_height = adjustment.upper() / f64::from(items.div_ceil(columns));
-                (f64::from(cursor / columns) * row_height, row_height)
-            }
-        };
-        let value = value.clamp(0.0, (adjustment.upper() - adjustment.page_size()).max(0.0));
-        let margin = if self.mode.get() == ViewMode::Details { step } else { 0.0 };
-        if start >= value + margin && start + step <= value + adjustment.page_size() {
-            adjustment.set_value(value);
-        }
+        adjustment.set_value(value.clamp(0.0, (adjustment.upper() - adjustment.page_size()).max(0.0)));
+        // Should the directory have changed meanwhile, the cursor is
+        // brought into view by the least scrolling; otherwise this keeps
+        // the restored view as it is.
+        self.scroll_to_row(position(self.panel.borrow().cursor()), gtk::ListScrollFlags::NONE);
     }
 
     pub fn path(&self) -> PathBuf {
