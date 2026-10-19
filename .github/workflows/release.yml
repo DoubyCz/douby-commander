@@ -1,8 +1,9 @@
 # Builds the packages and publishes a GitHub release when a version tag
 # (v0.0.2, ...) is pushed. Nothing runs on ordinary pushes.
 #
-# Built on Ubuntu 24.04, so the binaries need GTK 4.14 and glibc 2.39 or
-# newer: Arch, Fedora 40+, Debian 13, Ubuntu 24.04 and later.
+# Built in Debian 13, the oldest system with libadwaita 1.6 (CSS variables),
+# so the binaries need GTK 4.16, libadwaita 1.6 and glibc 2.41 or newer:
+# Arch, Fedora 42+, Debian 13, Ubuntu 25.04 and later.
 
 name: Release
 
@@ -15,14 +16,16 @@ permissions:
 
 jobs:
   release:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
+    container: debian:13
     steps:
-      - uses: actions/checkout@v5
-
       - name: Build dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends libgtk-4-dev gettext
+          apt-get update
+          apt-get install -y --no-install-recommends ca-certificates curl git jq gh \
+            build-essential pkg-config libgtk-4-dev libadwaita-1-dev gettext desktop-file-utils
+
+      - uses: actions/checkout@v5
 
       - uses: dtolnay/rust-toolchain@stable
 
@@ -63,11 +66,11 @@ jobs:
           cat > notes.md <<EOF
           Alpha version, many features are not done yet. See the README.
 
-          Install (x86_64, needs GTK 4.14 and glibc 2.39 or newer):
+          Install (x86_64, needs GTK 4.16, libadwaita 1.6 and glibc 2.41 or newer):
 
           - Debian, Ubuntu: \`sudo apt install ./douby-commander_$VERSION-1_amd64.deb\`
           - Fedora, RHEL and derivatives: \`sudo dnf install ./douby-commander-$VERSION-1.x86_64.rpm\`
           - Arch and others: \`tar -xzf douby-commander-$VERSION-x86_64-linux.tar.gz -C ~/.local\`
             (or \`sudo tar ... -C /usr/local\` for all users)
           EOF
-          gh release create "$GITHUB_REF_NAME" dist/* --title "Douby Commander $VERSION" --notes-file notes.md --prerelease
+          gh release create "$GITHUB_REF_NAME" dist/* --repo "$GITHUB_REPOSITORY" --title "Douby Commander $VERSION" --notes-file notes.md --prerelease

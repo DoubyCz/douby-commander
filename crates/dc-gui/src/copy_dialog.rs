@@ -72,7 +72,8 @@ pub fn show(parent: Option<&gtk::Window>, request: &Request, on_ok: impl FnOnce(
     ));
     let queue_menu = gtk::Box::new(gtk::Orientation::Vertical, 0);
     let popover = gtk::Popover::builder().child(&queue_menu).build();
-    let more_queues = gtk::MenuButton::builder().label("▾").popover(&popover).build();
+    // Without a label the button shows the theme's own arrow ("▾" of the original).
+    let more_queues = gtk::MenuButton::builder().popover(&popover).build();
     let cancel = gtk::Button::with_mnemonic(&dialogs::cancel_label());
     // rsDlgOpStart
     let start = gtk::Button::with_mnemonic(&pgettext("button", "_Start"));

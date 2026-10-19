@@ -15,14 +15,15 @@ dc-core.workspace = true
 dc-i18n.workspace = true
 dc-ops.workspace = true
 dc-vfs.workspace = true
+adw.workspace = true
 gtk.workspace = true
 jiff.workspace = true
 
 [features]
-# Builds against the GTK API up to 4.22 (the system's), so that everything
-# deprecated there shows up (`deprecated` is denied). Normal builds keep
-# the 4.14 baseline for older distributions. Used by check.sh.
-gtk-latest = ["gtk/v4_22"]
+# Builds against the GTK and libadwaita API of the system (4.22, 1.9), so
+# that everything deprecated there shows up (`deprecated` is denied).
+# Normal builds keep the 4.16 / 1.6 baseline. Used by check.sh.
+gtk-latest = ["gtk/v4_22", "adw/v1_9"]
 
 # Packages for the GitHub releases. Their files come from the staging tree
 # that `DESTDIR=target/stage PREFIX=/usr ./install.sh --no-build` makes.
@@ -52,8 +53,9 @@ assets = [
 ]
 
 [package.metadata.generate-rpm.requires]
-gtk4 = ">= 4.14"
-glibc = ">= 2.39"
+gtk4 = ">= 4.16"
+libadwaita = ">= 1.6"
+glibc = ">= 2.41"
 
 [build-dependencies]
 glib-build-tools.workspace = true

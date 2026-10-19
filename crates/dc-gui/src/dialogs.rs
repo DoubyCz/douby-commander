@@ -93,7 +93,8 @@ pub fn confirm_operation(
         gtk::Button::with_mnemonic(&fill(&gettext("A_dd To Queue #{number}"), &[("number", &last_queue)]));
     let queue_menu = gtk::Box::new(gtk::Orientation::Vertical, 0);
     let popover = gtk::Popover::builder().child(&queue_menu).build();
-    let more_queues = gtk::MenuButton::builder().label("▾").popover(&popover).build();
+    // Without a label the button shows the theme's own arrow ("▾" of the original).
+    let more_queues = gtk::MenuButton::builder().popover(&popover).build();
     let cancel = gtk::Button::with_mnemonic(&cancel_label());
     let ok = gtk::Button::with_mnemonic(&ok_label());
     ok.add_css_class("suggested-action");

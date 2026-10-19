@@ -34,9 +34,11 @@ const ICONS: &str = "/cz/douby/DoubyCommander/icons";
 fn main() -> glib::ExitCode {
     dc_i18n::init(&locale_dir());
     gtk::gio::resources_register_include!("dc-gui.gresource").expect("bundled resources are valid");
-    let app = gtk::Application::builder().application_id(APP_ID).build();
+    // libadwaita: its stylesheet colors every widget through CSS variables,
+    // which the palette of the theme sets (theme.rs).
+    let app = adw::Application::builder().application_id(APP_ID).build();
     app.connect_startup(|_| load_style());
-    app.connect_activate(window::build);
+    app.connect_activate(|app| window::build(app.upcast_ref()));
     app.run()
 }
 

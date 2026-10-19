@@ -2,7 +2,7 @@
 
 ![Douby Commander in six Omarchy themes](docs/poster.webp)
 
-A two-panel file manager for Linux, written in Rust with GTK 4.
+A two-panel file manager for Linux, written in Rust with GTK 4 and libadwaita.
 
 Douby Commander is a tribute to [Double Commander](https://github.com/doublecmd/doublecmd),
 the great open-source file manager inspired by Total Commander. It rewrites Double Commander
@@ -31,13 +31,13 @@ colors change at once, with no setup.
 ## Installing
 
 Ready-made packages are the quickest way, nothing to compile. Download one from
-[Releases](https://github.com/DoubyCz/douby-commander/releases) (x86_64, needs GTK 4.14
-and glibc 2.39 or newer) and install it:
+[Releases](https://github.com/DoubyCz/douby-commander/releases) (x86_64, needs GTK 4.16,
+libadwaita 1.6 and glibc 2.41 or newer) and install it:
 
 | System | Command |
 |---|---|
-| Debian 13, Ubuntu 24.04 and newer | `sudo apt install ./douby-commander_*_amd64.deb` |
-| Fedora 40+, RHEL 10 and derivatives | `sudo dnf install ./douby-commander-*.x86_64.rpm` |
+| Debian 13, Ubuntu 25.04 and newer | `sudo apt install ./douby-commander_*_amd64.deb` |
+| Fedora 42 and newer | `sudo dnf install ./douby-commander-*.x86_64.rpm` |
 | Arch, Omarchy and others | `tar -xzf douby-commander-*-x86_64-linux.tar.gz -C ~/.local` |
 
 The tarball can also go to `/usr/local` for all users (`sudo tar ... -C /usr/local`).
@@ -45,27 +45,27 @@ Douby Commander then shows up in the application launcher.
 
 ### From source
 
-Only when no package fits, e.g. another architecture. You need Rust 1.92 or newer,
-GTK 4.14 or newer with development files, and gettext. First install them for your
-distribution.
+Only when no package fits, e.g. another architecture or RHEL 10. You need Rust 1.92 or
+newer, GTK 4.16 and libadwaita 1.6 or newer with development files, and gettext. First
+install them for your distribution.
 
 Arch Linux (Omarchy):
 
 ```sh
-sudo pacman -S --needed base-devel rust gtk4 gettext
+sudo pacman -S --needed base-devel rust gtk4 libadwaita gettext
 ```
 
-Debian 13, Ubuntu 24.04 and newer:
+Debian 13, Ubuntu 25.04 and newer:
 
 ```sh
-sudo apt install build-essential pkg-config libgtk-4-dev gettext
+sudo apt install build-essential pkg-config libgtk-4-dev libadwaita-1-dev gettext
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 
 Fedora, RHEL 10 and derivatives:
 
 ```sh
-sudo dnf install gcc pkgconf-pkg-config gtk4-devel gettext
+sudo dnf install gcc pkgconf-pkg-config gtk4-devel libadwaita-devel gettext
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 

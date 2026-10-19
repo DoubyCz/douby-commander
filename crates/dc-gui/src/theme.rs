@@ -3,9 +3,11 @@
 //!
 //! - Light/dark mode and icons come from GTK itself (`color-scheme`,
 //!   `gtk-theme`, `icon-theme`), which switches them in running apps.
-//! - Our own colors are named (`@dc_*`) and default to colors of the GTK
-//!   theme, never to fixed values.
-//! - A palette stylesheet may override them and the main widgets. On Omarchy
+//! - Widgets are libadwaita's, colored through its CSS variables
+//!   (`--accent-bg-color`, `--window-bg-color`, ...). Our own colors are
+//!   variables too (`--dc-*`) and default to libadwaita's, never to fixed
+//!   values.
+//! - A palette stylesheet sets these variables on `:root`. On Omarchy
 //!   it is generated from the theme's colors by the template
 //!   `extras/omarchy/doubycmd.css.tpl` on every theme change; its
 //!   directory is watched and the stylesheet reloaded right away.
@@ -19,16 +21,23 @@ use std::time::Duration;
 use gtk::prelude::*;
 use gtk::{gdk, gio, glib};
 
-/// Base style. Colors only through the names below, which a palette may redefine.
+/// Base style. Colors only through CSS variables: those of libadwaita
+/// (`--accent-bg-color`, `--view-bg-color`, ...) and ours (`--dc-*`), which
+/// default to libadwaita's. A palette redefines them on `:root`.
 const BASE_CSS: &str = "
-@define-color dc_marked_color #e01b24;
-@define-color dc_active_path_bg_color @theme_selected_bg_color;
-@define-color dc_active_path_fg_color @theme_selected_fg_color;
-@define-color dc_inactive_cursor_color @theme_selected_bg_color;
-@define-color dc_current_drive_color alpha(@theme_selected_bg_color, 0.35);
-@define-color dc_menu_border_color @theme_selected_bg_color;
-@define-color dc_wave_bg_color @theme_selected_bg_color;
-@define-color dc_wave_fg_color @theme_bg_color;
+:root {
+    --dc-marked-color: var(--red-3);
+    --dc-cursor-bg-color: color-mix(in srgb, var(--accent-bg-color) 45%, var(--view-bg-color));
+    --dc-cursor-fg-color: var(--view-fg-color);
+    --dc-active-path-bg-color: var(--accent-bg-color);
+    --dc-active-path-fg-color: var(--accent-fg-color);
+    --dc-inactive-cursor-color: var(--accent-bg-color);
+    --dc-current-drive-color: color-mix(in srgb, var(--accent-bg-color) 35%, transparent);
+    --dc-menu-border-color: var(--accent-bg-color);
+    --dc-menu-item-bg-color: color-mix(in srgb, var(--accent-bg-color) 30%, var(--popover-bg-color));
+    --dc-wave-bg-color: var(--accent-bg-color);
+    --dc-wave-fg-color: var(--accent-fg-color);
+}
 
 /* Startup wave over the function keys (function_bar.rs): a button with
    .dc-wave is shown inverted, the transition fades it in and out. */
@@ -38,18 +47,23 @@ const BASE_CSS: &str = "
 .dc-function-bar button.dc-wave,
 .dc-function-bar button.dc-wave:disabled {
     background-image: none;
-    background-color: @dc_wave_bg_color;
-    color: @dc_wave_fg_color;
-    /* Disabled buttons are dimmed by the GTK theme; the wave lights all alike. */
+    background-color: var(--dc-wave-bg-color);
+    color: var(--dc-wave-fg-color);
+    /* Disabled buttons are dimmed; the wave lights all alike. */
     filter: none;
+    opacity: 1;
 }
 
 .dc-path { padding: 2px 6px; }
-.dc-active .dc-path { background: @dc_active_path_bg_color; color: @dc_active_path_fg_color; }
+.dc-active .dc-path { background: var(--dc-active-path-bg-color); color: var(--dc-active-path-fg-color); }
+.dc-panel columnview > listview > row:selected {
+    background-color: var(--dc-cursor-bg-color);
+    color: var(--dc-cursor-fg-color);
+}
 .dc-panel:not(.dc-active) columnview > listview > row:selected {
     background-color: transparent;
     color: inherit;
-    box-shadow: inset 0 0 0 1px @dc_inactive_cursor_color;
+    box-shadow: inset 0 0 0 1px var(--dc-inactive-cursor-color);
 }
 /* The cursor is the highlighted row, as in the original. The focus ring of
    the GTK theme (accent colored and animated, so it trails behind the
@@ -59,25 +73,27 @@ const BASE_CSS: &str = "
     outline: none;
     transition: none;
 }
-.dc-marked { color: @dc_marked_color; }
+.dc-marked { color: var(--dc-marked-color); }
 /* A menu dropped from the menu bar hangs from its item: sharp corner there,
    framed in the accent. */
 menubar > item > popover > contents {
     border-top-left-radius: 0;
-    border: 1px solid @dc_menu_border_color;
+    border: 1px solid var(--dc-menu-border-color);
 }
-/* No underline of the GTK theme under the open or hovered menu bar item. */
+/* The open or hovered menu bar item: tinted, no underline. */
 menubar > item:hover,
 menubar > item:selected,
 menubar > item.active,
 menubar > item:focus-visible {
+    background-color: var(--dc-menu-item-bg-color);
+    color: var(--window-fg-color);
     box-shadow: none;
 }
 .dc-status { padding: 2px 6px; }
 .dc-bar button { padding: 2px 4px; min-height: 0; }
-.dc-current-drive { background: @dc_current_drive_color; }
-.dc-tab { padding: 2px 10px; border-radius: 4px 4px 0 0; background: alpha(currentColor, 0.08); }
-.dc-active .dc-tab { background: @dc_current_drive_color; }
+.dc-current-drive { background: var(--dc-current-drive-color); }
+.dc-tab { padding: 2px 10px; border-radius: 4px 4px 0 0; background: color-mix(in srgb, currentColor 8%, transparent); }
+.dc-active .dc-tab { background: var(--dc-current-drive-color); }
 ";
 
 /// Name of the palette stylesheet the Omarchy template produces.
