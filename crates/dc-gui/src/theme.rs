@@ -93,7 +93,8 @@ const BASE_CSS: &str = "
     color: inherit;
     box-shadow: inset 0 0 0 1px var(--dc-inactive-cursor-color);
 }
-.dc-list-header button { padding: 2px 6px; min-height: 0; border-radius: 0; }
+/* The arrow of the sort column, in both headers, in the accent. */
+.dc-panel columnview > header > button sort-indicator { color: var(--accent-bg-color); }
 .dc-marked { color: var(--dc-marked-color); }
 /* A menu dropped from the menu bar hangs from its item: sharp corner there,
    framed in the accent. */

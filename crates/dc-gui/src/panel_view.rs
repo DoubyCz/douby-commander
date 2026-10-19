@@ -42,8 +42,8 @@ pub struct PanelView {
     column_view: gtk::ColumnView,
     /// List: names only, in columns side by side, scrolled horizontally.
     grid_view: gtk::GridView,
-    /// Sort headers above the list view, with the arrow of each.
-    list_headers: Vec<(SortColumn, gtk::Image)>,
+    /// Sort headers above the list view: the details columns without rows.
+    list_header: gtk::ColumnView,
     /// Shows one of the two views; both are views of the same rows.
     views: gtk::Stack,
     mode: Cell<ViewMode>,
@@ -113,9 +113,16 @@ impl PanelView {
             .vexpand(true)
             .vscrollbar_policy(gtk::PolicyType::Never)
             .build();
-        let header_row = gtk::Box::builder().css_classes(["dc-list-header"]).build();
+        // Sort headers of the list view: a details table without rows, so
+        // they look and work exactly as the details header.
+        let list_header = gtk::ColumnView::builder()
+            .model(&gtk::NoSelection::new(Some(gio::ListStore::new::<FileRow>())))
+            .reorderable(false)
+            .focusable(false)
+            .build();
+        list_header.add_css_class("data-table");
         let list_box = gtk::Box::new(gtk::Orientation::Vertical, 0);
-        list_box.append(&header_row);
+        list_box.append(&list_header);
         list_box.append(&list);
 
         let views = gtk::Stack::builder().vexpand(true).build();
@@ -128,22 +135,6 @@ impl PanelView {
         root.append(&views);
         root.append(&status_label);
 
-        let list_headers = COLUMNS
-            .iter()
-            .map(|(sort_column, _, title)| {
-                let arrow = gtk::Image::builder().visible(false).build();
-                let content = gtk::Box::builder().spacing(4).build();
-                content.append(&gtk::Label::builder().label(gettext(*title)).xalign(0.0).hexpand(true).build());
-                content.append(&arrow);
-                let button = gtk::Button::builder().child(&content).focusable(false).build();
-                button.add_css_class("flat");
-                // The name takes the room, the others as in the details header.
-                button.set_hexpand(matches!(sort_column, SortColumn::Name));
-                header_row.append(&button);
-                (*sort_column, button, arrow)
-            })
-            .collect::<Vec<_>>();
-
         let view = Rc::new_cyclic(|this| Self {
             panel: RefCell::new(Panel::new(path.clone())),
             source: LocalFs,
@@ -152,7 +143,7 @@ impl PanelView {
             selection,
             column_view,
             grid_view,
-            list_headers: list_headers.iter().map(|(column, _, arrow)| (*column, arrow.clone())).collect(),
+            list_header,
             views,
             mode: Cell::new(ViewMode::Details),
             path_label,
@@ -166,14 +157,6 @@ impl PanelView {
         });
         view.setup_columns();
         view.setup_list_view(&list);
-        for (column, button, _) in list_headers {
-            let weak = Rc::downgrade(&view);
-            button.connect_clicked(move |_| {
-                if let Some(view) = weak.upgrade() {
-                    view.sort_by(column);
-                }
-            });
-        }
         view.connect_signals();
 
         let loaded = view.panel.borrow_mut().load(&view.source, path, None);
@@ -475,6 +458,16 @@ impl PanelView {
                 .expand(matches!(sort_column, SortColumn::Name))
                 .build();
             self.column_view.append_column(&column);
+
+            // The same column in the header of the list view, without cells.
+            let header_column = gtk::ColumnViewColumn::builder()
+                .id(id)
+                .title(gettext(title))
+                .factory(&gtk::SignalListItemFactory::new())
+                .sorter(&gtk::CustomSorter::new(|_, _| gtk::Ordering::Equal))
+                .expand(matches!(sort_column, SortColumn::Name))
+                .build();
+            self.list_header.append_column(&header_column);
         }
 
         let first = self.column_view.columns().item(0).and_downcast::<gtk::ColumnViewColumn>();
@@ -604,38 +597,31 @@ impl PanelView {
         }
     }
 
-    /// A click on a sort header of the list view: the same as in the
-    /// details header, which shows it too. A new column starts descending
-    /// for size and date (newest, largest first), as in the original.
-    fn sort_by(&self, column: SortColumn) {
-        let current = self.panel.borrow().sorting();
-        let descending = if current.column == column {
-            current.direction == SortDirection::Ascending
-        } else {
-            matches!(column, SortColumn::Size | SortColumn::Modified)
-        };
-        let order = if descending { gtk::SortType::Descending } else { gtk::SortType::Ascending };
-        let columns = self.column_view.columns();
-        let header = (0..columns.n_items())
+    /// Shows `sorting` in a header (its arrow), unless it shows it already.
+    /// Changing it tells the panel through the sorter, which then sees no
+    /// change and stops.
+    fn show_sorting_in(header: &gtk::ColumnView, sorting: Sorting) {
+        let shown = header.sorter().and_downcast::<gtk::ColumnViewSorter>().and_then(|sorter| sorting_from_header(&sorter));
+        if shown == Some(sorting) {
+            return;
+        }
+        let id = COLUMNS.iter().find(|(column, ..)| *column == sorting.column).map(|(_, id, _)| *id);
+        let columns = header.columns();
+        let column = (0..columns.n_items())
             .filter_map(|index| columns.item(index).and_downcast::<gtk::ColumnViewColumn>())
-            .find(|candidate| candidate.id().as_deref() == COLUMNS.iter().find(|(c, ..)| *c == column).map(|(_, id, _)| *id));
-        // Through the details header, whose sorter tells the panel.
-        self.column_view.sort_by_column(header.as_ref(), order);
+            .find(|candidate| candidate.id().as_deref() == id);
+        let order = match sorting.direction {
+            SortDirection::Ascending => gtk::SortType::Ascending,
+            SortDirection::Descending => gtk::SortType::Descending,
+        };
+        header.sort_by_column(column.as_ref(), order);
     }
 
-    /// The arrow in the list view's headers, after the panel's sorting.
+    /// Both headers show the panel's sorting.
     fn update_list_headers(&self) {
         let sorting = self.panel.borrow().sorting();
-        for (column, arrow) in &self.list_headers {
-            let shown = *column == sorting.column;
-            arrow.set_visible(shown);
-            if shown {
-                arrow.set_icon_name(Some(match sorting.direction {
-                    SortDirection::Ascending => "pan-up-symbolic",
-                    SortDirection::Descending => "pan-down-symbolic",
-                }));
-            }
-        }
+        Self::show_sorting_in(&self.column_view, sorting);
+        Self::show_sorting_in(&self.list_header, sorting);
     }
 
     fn connect_signals(self: &Rc<Self>) {
@@ -656,11 +642,15 @@ impl PanelView {
             }
         });
 
-        if let Some(sorter) = self.column_view.sorter().and_downcast::<gtk::ColumnViewSorter>() {
+        // A click on either header sorts the panel; the other header then
+        // shows it too (`update_list_headers`), without sorting again.
+        for header in [&self.column_view, &self.list_header] {
+            let Some(sorter) = header.sorter().and_downcast::<gtk::ColumnViewSorter>() else { continue };
             let weak = Rc::downgrade(self);
             sorter.connect_changed(move |sorter, _| {
                 if let Some(view) = weak.upgrade()
                     && let Some(sorting) = sorting_from_header(sorter)
+                    && sorting != view.panel.borrow().sorting()
                 {
                     view.panel.borrow_mut().set_sorting(sorting);
                     view.refresh();
