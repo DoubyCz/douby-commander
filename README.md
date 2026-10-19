@@ -13,7 +13,7 @@ the name and the abbreviation DC.
 It follows the theme of [Omarchy](https://omarchy.org/) live: switch the theme and the
 colors change at once, with no setup.
 
-> **Alpha (0.0.3).** Many features are not done yet. Most menu items and toolbar buttons
+> **Alpha (0.0.4).** Many features are not done yet. Most menu items and toolbar buttons
 > are not connected, and there is no settings dialog. Expect rough edges.
 
 ## What works
