@@ -107,6 +107,15 @@ impl Commander {
             Command::CopySamePanel => self.transfer(TransferMode::Copy, true),
             Command::Rename => self.transfer(TransferMode::Move, false),
             Command::MakeDir => self.make_dir(),
+            Command::RunTerm => {
+                if let Err(err) = launch::open_terminal(&panel.path()) {
+                    let detail = match err {
+                        LaunchError::Spawn(err) => err.to_string(),
+                        _ => gettext("No terminal found. Install xdg-terminal-exec or set the TERMINAL variable."),
+                    };
+                    dialogs::show_error(panel.window().as_ref(), &gettext("Cannot run the terminal"), &detail);
+                }
+            }
             Command::Delete { trash } => self.delete(trash),
             Command::Exit => {
                 if let Some(window) = panel.window() {

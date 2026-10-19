@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: doubycmd\n"
 "Report-Msgid-Bugs-To: douby@douby.cz\n"
-"POT-Creation-Date: 2026-10-19 22:34+0200\n"
+"POT-Creation-Date: 2026-10-19 22:35+0200\n"
 "PO-Revision-Date: 2026-10-19 18:45+0200\n"
 "Last-Translator: Jiří Doubravský <douby@douby.cz>\n"
 "Language-Team: Czech\n"
@@ -17,12 +17,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: crates/dc-core/src/command.rs:258
+#: crates/dc-core/src/command.rs:262
 #, rust-format
 msgid "Unknown command {command}"
 msgstr "Neznámý příkaz {command}"
 
-#: crates/dc-core/src/command.rs:260
+#: crates/dc-core/src/command.rs:264
 #, rust-format
 msgid "Command {command} does not accept parameter {param}"
 msgstr "Příkaz {command} nepřijímá parametr {param}"
@@ -71,38 +71,42 @@ msgstr ""
 msgid "Invalid shortcut {shortcut}"
 msgstr "Neplatná klávesová zkratka {shortcut}"
 
-#: crates/dc-gui/src/commander.rs:188
-msgid "No text editor found. Set one in the VISUAL or EDITOR variable."
-msgstr ""
-"Nenalezen žádný textový editor. Nastavte ho v proměnné VISUAL nebo EDITOR."
-
-#: crates/dc-gui/src/commander.rs:189
+#: crates/dc-gui/src/commander.rs:114 crates/dc-gui/src/commander.rs:198
 msgid ""
 "No terminal found. Install xdg-terminal-exec or set the TERMINAL variable."
 msgstr ""
 "Nenalezen žádný terminál. Nainstalujte xdg-terminal-exec nebo nastavte "
 "proměnnou TERMINAL."
 
-#: crates/dc-gui/src/commander.rs:190
+#: crates/dc-gui/src/commander.rs:116
+msgid "Cannot run the terminal"
+msgstr "Nelze spustit terminál"
+
+#: crates/dc-gui/src/commander.rs:197
+msgid "No text editor found. Set one in the VISUAL or EDITOR variable."
+msgstr ""
+"Nenalezen žádný textový editor. Nastavte ho v proměnné VISUAL nebo EDITOR."
+
+#: crates/dc-gui/src/commander.rs:199
 msgid "No application is set for text files (text/plain)."
 msgstr "Pro textové soubory (text/plain) není nastavená žádná aplikace."
 
-#: crates/dc-gui/src/commander.rs:194
+#: crates/dc-gui/src/commander.rs:203
 #, rust-format
 msgid "Cannot open {path} in an editor"
 msgstr "Nelze otevřít {path} v editoru"
 
-#: crates/dc-gui/src/commander.rs:298
+#: crates/dc-gui/src/commander.rs:307
 #, rust-format
 msgid "Delete selected \"{name}\" into trash can?"
 msgstr "Opravdu přesunout \"{name}\" do koše?"
 
-#: crates/dc-gui/src/commander.rs:300
+#: crates/dc-gui/src/commander.rs:309
 #, rust-format
 msgid "Delete selected \"{name}\"?"
 msgstr "Opravdu smazat \"{name}\"?"
 
-#: crates/dc-gui/src/commander.rs:308
+#: crates/dc-gui/src/commander.rs:317
 #, rust-format
 msgid "Delete {count} selected file/directory into trash can?"
 msgid_plural "Delete {count} selected files/directories into trash can?"
@@ -110,7 +114,7 @@ msgstr[0] "Opravdu přesunout {count} vybranou položku do koše?"
 msgstr[1] "Opravdu přesunout {count} vybrané položky do koše?"
 msgstr[2] "Opravdu přesunout {count} vybraných položek do koše?"
 
-#: crates/dc-gui/src/commander.rs:313
+#: crates/dc-gui/src/commander.rs:322
 #, rust-format
 msgid "Delete {count} selected file/directory?"
 msgid_plural "Delete {count} selected files/directories?"
@@ -118,17 +122,17 @@ msgstr[0] "Opravdu smazat {count} vybranou položku?"
 msgstr[1] "Opravdu smazat {count} vybrané položky?"
 msgstr[2] "Opravdu smazat {count} vybraných položek?"
 
-#: crates/dc-gui/src/commander.rs:355
+#: crates/dc-gui/src/commander.rs:364
 #, rust-format
 msgid "Copy selected \"{name}\"?"
 msgstr "Kopírovat \"{name}\"?"
 
-#: crates/dc-gui/src/commander.rs:355
+#: crates/dc-gui/src/commander.rs:364
 #, rust-format
 msgid "Rename/move selected \"{name}\"?"
 msgstr "Přejmenovat nebo přesunout \"{name}\"?"
 
-#: crates/dc-gui/src/commander.rs:361
+#: crates/dc-gui/src/commander.rs:370
 #, rust-format
 msgid "Copy {count} selected file/directory?"
 msgid_plural "Copy {count} selected files/directories?"
@@ -136,7 +140,7 @@ msgstr[0] "Kopírovat {count} vybranou položku?"
 msgstr[1] "Kopírovat {count} vybrané položky?"
 msgstr[2] "Kopírovat {count} vybraných položek?"
 
-#: crates/dc-gui/src/commander.rs:364
+#: crates/dc-gui/src/commander.rs:373
 #, rust-format
 msgid "Rename/move {count} selected file/directory?"
 msgid_plural "Rename/move {count} selected files/directories?"
@@ -303,42 +307,42 @@ msgctxt "button"
 msgid "_Cancel"
 msgstr "_Zrušit"
 
-#: crates/dc-gui/src/function_bar.rs:25
+#: crates/dc-gui/src/function_bar.rs:19
 msgctxt "function key"
 msgid "View"
 msgstr "Zobrazit"
 
-#: crates/dc-gui/src/function_bar.rs:26
+#: crates/dc-gui/src/function_bar.rs:20
 msgctxt "function key"
 msgid "Edit"
 msgstr "Upravit"
 
-#: crates/dc-gui/src/function_bar.rs:27
+#: crates/dc-gui/src/function_bar.rs:21
 msgctxt "function key"
 msgid "Copy"
 msgstr "Kopírovat"
 
-#: crates/dc-gui/src/function_bar.rs:28
+#: crates/dc-gui/src/function_bar.rs:22
 msgctxt "function key"
 msgid "Move"
 msgstr "Přesunout"
 
-#: crates/dc-gui/src/function_bar.rs:29
+#: crates/dc-gui/src/function_bar.rs:23
 msgctxt "function key"
 msgid "Directory"
 msgstr "Nová složka"
 
-#: crates/dc-gui/src/function_bar.rs:30
+#: crates/dc-gui/src/function_bar.rs:24
 msgctxt "function key"
 msgid "Delete"
 msgstr "Smazat"
 
-#: crates/dc-gui/src/function_bar.rs:31
+#: crates/dc-gui/src/function_bar.rs:25
 msgctxt "function key"
 msgid "Terminal"
 msgstr "Terminál"
 
-#: crates/dc-gui/src/function_bar.rs:32
+#: crates/dc-gui/src/function_bar.rs:26
 msgctxt "function key"
 msgid "Exit"
 msgstr "Ukončit"

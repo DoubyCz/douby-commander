@@ -65,6 +65,8 @@ pub enum Command {
     Rename,
     /// F7: create a directory in the active panel.
     MakeDir,
+    /// F9: the terminal in the directory of the active panel.
+    RunTerm,
     /// F8, Del: delete marked items, or the one under the cursor.
     Delete { trash: TrashChoice },
     /// Alt+X: close the application.
@@ -118,7 +120,7 @@ impl TrashChoice {
 
 impl Command {
     /// All commands with default parameters, for listings and for parsing.
-    pub const ALL: [Self; 40] = [
+    pub const ALL: [Self; 41] = [
         Self::Open,
         Self::ChangeDirToParent,
         Self::EnterDir,
@@ -139,6 +141,7 @@ impl Command {
         Self::CopySamePanel,
         Self::Rename,
         Self::MakeDir,
+        Self::RunTerm,
         Self::Delete { trash: TrashChoice::Setting },
         Self::Exit,
         Self::Refresh,
@@ -185,6 +188,7 @@ impl Command {
             Self::CopySamePanel => "cm_CopySamePanel",
             Self::Rename => "cm_Rename",
             Self::MakeDir => "cm_MakeDir",
+            Self::RunTerm => "cm_RunTerm",
             Self::Delete { .. } => "cm_Delete",
             Self::Exit => "cm_Exit",
             Self::Refresh => "cm_Refresh",

@@ -14,22 +14,16 @@ use gtk::{gdk, glib};
 use crate::commander::Commander;
 use crate::texts;
 
-enum Slot {
-    Command(Command),
-    /// Command not implemented yet, shown disabled with the original's key.
-    NotYet(&'static str),
-}
-
 /// Captions are translated when the buttons are built.
-const BUTTONS: [((&str, &str), Slot); 8] = [
-    (NC_("function key", "View"), Slot::Command(Command::View)),
-    (NC_("function key", "Edit"), Slot::Command(Command::Edit)),
-    (NC_("function key", "Copy"), Slot::Command(Command::Copy)),
-    (NC_("function key", "Move"), Slot::Command(Command::Rename)),
-    (NC_("function key", "Directory"), Slot::Command(Command::MakeDir)),
-    (NC_("function key", "Delete"), Slot::Command(Command::Delete { trash: TrashChoice::Setting })),
-    (NC_("function key", "Terminal"), Slot::NotYet("F9")),
-    (NC_("function key", "Exit"), Slot::Command(Command::Exit)),
+const BUTTONS: [((&str, &str), Command); 8] = [
+    (NC_("function key", "View"), Command::View),
+    (NC_("function key", "Edit"), Command::Edit),
+    (NC_("function key", "Copy"), Command::Copy),
+    (NC_("function key", "Move"), Command::Rename),
+    (NC_("function key", "Directory"), Command::MakeDir),
+    (NC_("function key", "Delete"), Command::Delete { trash: TrashChoice::Setting }),
+    (NC_("function key", "Terminal"), Command::RunTerm),
+    (NC_("function key", "Exit"), Command::Exit),
 ];
 
 /// Startup wave: first button lights up this long after the window shows...
@@ -71,7 +65,7 @@ pub fn build(commander: &Rc<Commander>) -> FunctionBar {
     bar.add_css_class("dc-function-bar");
     let mut buttons = Vec::with_capacity(BUTTONS.len());
 
-    for ((context, caption), slot) in BUTTONS {
+    for ((context, caption), command) in BUTTONS {
         let caption = pgettext(context, caption);
         let button = gtk::Button::builder()
             // Clicking must not take the keyboard focus away from the panel.
@@ -80,23 +74,14 @@ pub fn build(commander: &Rc<Commander>) -> FunctionBar {
             .build();
         button.add_css_class("flat");
 
-        match slot {
-            Slot::Command(command) => {
-                let key = shortcut_caption(&commander.keymap().shortcuts(command));
-                button.set_label(&texts::with_shortcut(&caption, &key));
-                let commander = Rc::downgrade(commander);
-                button.connect_clicked(move |_| {
-                    if let Some(commander) = commander.upgrade() {
-                        commander.execute(with_held_shift(command));
-                    }
-                });
+        let key = shortcut_caption(&commander.keymap().shortcuts(command));
+        button.set_label(&texts::with_shortcut(&caption, &key));
+        let commander = Rc::downgrade(commander);
+        button.connect_clicked(move |_| {
+            if let Some(commander) = commander.upgrade() {
+                commander.execute(with_held_shift(command));
             }
-            Slot::NotYet(key) => {
-                button.set_label(&texts::with_shortcut(&caption, key));
-                button.set_sensitive(false);
-                button.set_tooltip_text(Some(&texts::not_implemented()));
-            }
-        }
+        });
         bar.append(&button);
         buttons.push(button);
     }
