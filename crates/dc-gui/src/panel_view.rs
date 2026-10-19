@@ -294,10 +294,15 @@ impl PanelView {
 
     /// Moves keyboard focus to the row under the cursor.
     pub fn focus(&self) {
-        let cursor = self.panel.borrow().cursor();
+        let cursor = position(self.panel.borrow().cursor());
+        // The highlight follows the panel's cursor; after new rows it would
+        // stay on the first one while the cursor is elsewhere.
+        self.syncing.set(true);
+        self.selection.set_selected(cursor);
+        self.syncing.set(false);
         // FOCUS only picks the focused row inside the list, the widget itself
         // has to take keyboard focus too.
-        self.scroll_to_row(position(cursor), gtk::ListScrollFlags::FOCUS);
+        self.scroll_to_row(cursor, gtk::ListScrollFlags::FOCUS);
         self.list_widget().grab_focus();
     }
 
