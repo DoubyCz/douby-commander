@@ -338,8 +338,14 @@ impl Panel {
     pub fn selection_info(&self) -> SelectionInfo {
         self.items.iter().filter(|item| !item.is_parent()).fold(SelectionInfo::default(), |mut info, item| {
             if item.is_directory_like() {
+                // A calculated size counts as the bytes of the directory.
+                let size = item.size();
                 info.total_dirs += 1;
-                info.selected_dirs += usize::from(item.selected);
+                info.total_bytes += size;
+                if item.selected {
+                    info.selected_dirs += 1;
+                    info.selected_bytes += size;
+                }
             } else {
                 let size = item.entry().size;
                 info.total_files += 1;
@@ -351,6 +357,18 @@ impl Panel {
             }
             info
         })
+    }
+
+    /// Stores the calculated size of the directory `name`; its index, or
+    /// `None` when it is not listed (any more).
+    pub fn set_calculated_size(&mut self, name: &OsStr, size: u64) -> Option<usize> {
+        let index = self.position_of(name)?;
+        let item = &mut self.items[index];
+        if !item.is_directory_like() {
+            return None;
+        }
+        item.calculated_size = Some(size);
+        Some(index)
     }
 
     fn sort_items(&mut self) {

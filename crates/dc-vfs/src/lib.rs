@@ -105,6 +105,33 @@ impl std::error::Error for Error {
 
 pub type Result<T> = std::result::Result<T, Error>;
 
+/// Bytes of all files in the tree under `dir` (Space on a directory in
+/// the original). Links are not followed and count as nothing, unreadable
+/// parts are left out. `None` once `cancel` is set, checked at every item.
+#[must_use]
+pub fn tree_size(dir: &Path, cancel: &std::sync::atomic::AtomicBool) -> Option<u64> {
+    use std::sync::atomic::Ordering;
+
+    let mut total: u64 = 0;
+    let mut pending = vec![dir.to_owned()];
+    while let Some(current) = pending.pop() {
+        let Ok(entries) = std::fs::read_dir(&current) else { continue };
+        for entry in entries.filter_map(std::result::Result::ok) {
+            if cancel.load(Ordering::Relaxed) {
+                return None;
+            }
+            // DirEntry::metadata does not follow links.
+            let Ok(metadata) = entry.metadata() else { continue };
+            if metadata.is_dir() {
+                pending.push(entry.path());
+            } else if metadata.is_file() {
+                total += metadata.len();
+            }
+        }
+    }
+    (!cancel.load(Ordering::Relaxed)).then_some(total)
+}
+
 /// A browsable tree of files.
 ///
 /// `Send + Sync` because file operations use it from worker threads.
@@ -143,4 +170,28 @@ pub trait FileSource: Send + Sync {
     /// # Errors
     /// [`Error::Trash`] when there is no usable trash for the item.
     fn move_to_trash(&self, path: &Path) -> Result<()>;
+}
+
+#[cfg(test)]
+mod tests {
+    use std::fs;
+    use std::os::unix::fs::symlink;
+    use std::sync::atomic::AtomicBool;
+
+    use super::*;
+
+    #[test]
+    fn tree_size_sums_files_without_following_links() {
+        let tmp = tempfile::tempdir().unwrap();
+        let tree = tmp.path().join("tree");
+        fs::create_dir_all(tree.join("a/b")).unwrap();
+        fs::write(tree.join("one"), [0_u8; 100]).unwrap();
+        fs::write(tree.join("a/b/two"), [0_u8; 23]).unwrap();
+        let outside = tmp.path().join("big");
+        fs::write(&outside, [0_u8; 5000]).unwrap();
+        symlink(&outside, tree.join("link")).unwrap();
+
+        assert_eq!(tree_size(&tree, &AtomicBool::new(false)), Some(123));
+        assert_eq!(tree_size(&tree, &AtomicBool::new(true)), None, "cancelled");
+    }
 }

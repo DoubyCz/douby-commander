@@ -34,9 +34,13 @@ fn unit_letter(unit: char) -> String {
     }
 }
 
-/// The Size column: `<DIR>`, `<LNK>` for links to directories, or the size.
+/// The Size column: `<DIR>`, `<LNK>` for links to directories, or the
+/// size; a directory with its calculated size shows that.
 #[must_use]
 pub fn size_column(item: &FileItem) -> String {
+    if let Some(calculated) = item.calculated_size() {
+        return size(calculated);
+    }
     match item.entry().kind {
         EntryKind::Directory => pgettext("size column", "<DIR>"),
         EntryKind::Symlink { to_directory: true } => pgettext("size column", "<LNK>"),

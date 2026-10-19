@@ -1,9 +1,9 @@
 //! List model item of a panel row.
 //!
-//! Texts are fixed for the lifetime of the row, `marked` is a `GObject`
-//! property so cells bound to it restyle themselves when it changes.
+//! Texts are fixed for the lifetime of the row; `marked` and `size-text`
+//! are `GObject` properties, so cells bound to them update themselves.
 
-use std::cell::{Cell, OnceCell};
+use std::cell::{Cell, OnceCell, RefCell};
 
 use dc_core::{FileItem, format};
 use gtk::glib;
@@ -26,7 +26,7 @@ pub struct RowTexts {
 }
 
 mod imp {
-    use super::{Cell, OnceCell, RowTexts, glib};
+    use super::{Cell, OnceCell, RefCell, RowTexts, glib};
     use gtk::prelude::*;
     use gtk::subclass::prelude::*;
 
@@ -36,6 +36,9 @@ mod imp {
         pub texts: OnceCell<RowTexts>,
         #[property(get, set)]
         marked: Cell<bool>,
+        /// The Size column; changes when a directory's size is calculated.
+        #[property(get, set)]
+        size_text: RefCell<String>,
     }
 
     #[glib::object_subclass]
@@ -68,7 +71,10 @@ impl FileRow {
             attributes: if item.is_parent() { String::new() } else { format::attributes(entry.mode, entry.kind) },
             directory: item.is_directory_like(),
         };
-        let row: Self = glib::Object::builder().property("marked", item.is_selected()).build();
+        let row: Self = glib::Object::builder()
+            .property("marked", item.is_selected())
+            .property("size-text", &texts.size)
+            .build();
         row.imp().texts.set(texts).expect("texts are set only here");
         row
     }

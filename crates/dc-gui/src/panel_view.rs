@@ -5,8 +5,10 @@
 //! show the sort indicator and report clicks.
 
 use std::cell::{Cell, Ref, RefCell};
-use std::collections::HashMap;
-use std::ffi::OsStr;
+use std::collections::{HashMap, VecDeque};
+use std::ffi::{OsStr, OsString};
+use std::sync::Arc;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::path::{Path, PathBuf};
 use std::rc::{Rc, Weak};
 use std::time::{Duration, Instant};
@@ -47,6 +49,8 @@ pub struct PanelView {
     /// Shows one of the two views; both are views of the same rows.
     views: gtk::Stack,
     mode: Cell<ViewMode>,
+    /// Last seen height of a details row, the list view uses the same.
+    details_row_height: Cell<i32>,
     path_label: gtk::Label,
     status_label: gtk::Label,
     root: gtk::Box,
@@ -58,7 +62,24 @@ pub struct PanelView {
     /// Scroll position of directories left for a subdirectory, restored
     /// when coming back up, so the list looks as it did before.
     scroll_memory: RefCell<HashMap<PathBuf, (ViewMode, f64)>>,
+    size_jobs: RefCell<SizeJobs>,
     this: Weak<Self>,
+}
+
+/// Sizes of directories to calculate (Space), one after another in a
+/// worker thread, so that the panel stays usable meanwhile. Leaving the
+/// directory cancels them: the results would not be shown anyway.
+#[derive(Debug, Default)]
+struct SizeJobs {
+    /// Directory whose items are calculated.
+    dir: PathBuf,
+    queue: VecDeque<OsString>,
+    /// Being calculated now.
+    current: Option<OsString>,
+    /// Set to stop the calculation running for `dir`.
+    cancel: Arc<AtomicBool>,
+    /// A task works the queue off.
+    running: bool,
 }
 
 type PathListener = Box<dyn Fn(&Path)>;
@@ -146,6 +167,7 @@ impl PanelView {
             list_header,
             views,
             mode: Cell::new(ViewMode::Details),
+            details_row_height: Cell::new(0),
             path_label,
             status_label,
             root,
@@ -153,6 +175,7 @@ impl PanelView {
             type_ahead: RefCell::new(TypeAhead::default()),
             path_listeners: RefCell::default(),
             scroll_memory: RefCell::default(),
+            size_jobs: RefCell::default(),
             this: this.clone(),
         });
         view.setup_columns();
@@ -205,9 +228,89 @@ impl PanelView {
         self.after_marking();
     }
 
+    /// Space: toggles the mark; a directory being marked gets its size
+    /// calculated in the background (once per listing).
     pub fn toggle_selection(&self) {
+        let directory = self
+            .panel
+            .borrow()
+            .current_item()
+            .filter(|item| !item.is_parent() && item.is_directory_like() && item.calculated_size().is_none())
+            .map(|item| item.entry().name.clone());
         self.panel.borrow_mut().toggle_selection_at_cursor();
         self.after_marking();
+        let marked = self.panel.borrow().current_item().is_some_and(dc_core::FileItem::is_selected);
+        if let Some(name) = directory
+            && marked
+        {
+            self.calculate_size(name);
+        }
+    }
+
+    /// Queues the size of directory `name` of the current directory.
+    fn calculate_size(&self, name: OsString) {
+        let dir = self.path();
+        let mut jobs = self.size_jobs.borrow_mut();
+        if jobs.dir != dir {
+            Self::cancel_size_jobs(&mut jobs, dir);
+        }
+        if jobs.current.as_ref() == Some(&name) || jobs.queue.contains(&name) {
+            return;
+        }
+        jobs.queue.push_back(name);
+        if jobs.running {
+            return;
+        }
+        jobs.running = true;
+        drop(jobs);
+
+        let weak = self.this.clone();
+        glib::spawn_future_local(async move {
+            loop {
+                let Some(view) = weak.upgrade() else { return };
+                let job = {
+                    let mut jobs = view.size_jobs.borrow_mut();
+                    jobs.current = jobs.queue.pop_front();
+                    if jobs.current.is_none() {
+                        jobs.running = false;
+                    }
+                    jobs.current.clone().map(|name| (jobs.dir.clone(), name, Arc::clone(&jobs.cancel)))
+                };
+                // Not kept while waiting, the panel may go away meanwhile.
+                drop(view);
+                let Some((dir, name, cancel)) = job else { return };
+
+                let (path, stop) = (dir.join(&name), Arc::clone(&cancel));
+                let size = gio::spawn_blocking(move || dc_vfs::tree_size(&path, &stop)).await.ok().flatten();
+
+                let Some(view) = weak.upgrade() else { return };
+                view.size_jobs.borrow_mut().current = None;
+                if let Some(size) = size
+                    && !cancel.load(Ordering::Relaxed)
+                    && view.path() == dir
+                {
+                    view.show_calculated_size(&name, size);
+                }
+            }
+        });
+    }
+
+    /// Stops calculating sizes and forgets the queue, the panel shows `dir` now.
+    fn cancel_size_jobs(jobs: &mut SizeJobs, dir: PathBuf) {
+        jobs.cancel.store(true, Ordering::Relaxed);
+        jobs.cancel = Arc::new(AtomicBool::new(false));
+        jobs.queue.clear();
+        jobs.dir = dir;
+    }
+
+    fn show_calculated_size(&self, name: &OsStr, size: u64) {
+        let index = self.panel.borrow_mut().set_calculated_size(name, size);
+        if let Some(index) = index
+            && let Some(row) = self.store.item(position(index)).and_downcast::<FileRow>()
+        {
+            row.set_size_text(format::size(size));
+        }
+        self.update_status();
     }
 
     /// Shift+PgUp/PgDn/Home/End by default.
@@ -342,6 +445,8 @@ impl PanelView {
     fn arrived(&self, (left, mode, scrolled): (PathBuf, ViewMode, f64)) {
         self.refresh();
         let now = self.path();
+        // Sizes being calculated are of the directory left.
+        Self::cancel_size_jobs(&mut self.size_jobs.borrow_mut(), now.clone());
         if now.parent() == Some(left.as_path()) {
             self.scroll_memory.borrow_mut().insert(left, (mode, scrolled));
         } else if left.parent() == Some(now.as_path())
@@ -427,6 +532,13 @@ impl PanelView {
                     label.set_ellipsize(gtk::pango::EllipsizeMode::End);
                     label.set_width_chars(18);
                 }
+                if numeric {
+                    // Follows the row: a directory's size appears once calculated.
+                    list_item
+                        .property_expression("item")
+                        .chain_property::<FileRow>("size-text")
+                        .bind(&label, "label", Some(list_item));
+                }
                 setup_cell(&this, list_item, &label);
             });
             factory.connect_bind(move |_, object| {
@@ -434,13 +546,14 @@ impl PanelView {
                 let row = list_item.item().and_downcast::<FileRow>().expect("rows are FileRow");
                 let label = list_item.child().and_downcast::<gtk::Label>().expect("child is set up as Label");
                 let texts = row.texts();
-                label.set_text(match sort_column {
-                    SortColumn::Name => &texts.name,
-                    SortColumn::Extension => &texts.extension,
-                    SortColumn::Size => &texts.size,
-                    SortColumn::Modified => &texts.modified,
-                    SortColumn::Attributes => &texts.attributes,
-                });
+                match sort_column {
+                    SortColumn::Name => label.set_text(&texts.name),
+                    SortColumn::Extension => label.set_text(&texts.extension),
+                    // Bound to the row's `size-text` in setup.
+                    SortColumn::Size => {}
+                    SortColumn::Modified => label.set_text(&texts.modified),
+                    SortColumn::Attributes => label.set_text(&texts.attributes),
+                }
                 // Directory names in bold. Pango attributes, not a CSS class:
                 // the classes of the label follow the mark (see setup).
                 let bold = sort_column == SortColumn::Name && texts.directory;
@@ -550,10 +663,26 @@ impl PanelView {
         width - LIST_CELL_SIDE_PADDING
     }
 
-    /// Height of one name in the list view: a line of text and the padding.
+    /// Height of one name in the list view: that of a details row, so both
+    /// views space their rows alike (the grid stretches its rows to it).
+    /// Before any details row was laid out, a line of text and the padding.
     fn list_row_height(&self) -> i32 {
-        let (_, text_height) = self.grid_view.create_pango_layout(Some("Ág")).pixel_size();
-        (text_height + LIST_CELL_PADDING).max(1)
+        let details_row = self
+            .column_view
+            .last_child()
+            .and_then(|list| list.first_child())
+            .map(|row| row.height())
+            .filter(|height| *height > 0);
+        if let Some(height) = details_row {
+            self.details_row_height.set(height);
+        }
+        match self.details_row_height.get() {
+            0 => {
+                let (_, text_height) = self.grid_view.create_pango_layout(Some("Ág")).pixel_size();
+                (text_height + LIST_CELL_PADDING).max(1)
+            }
+            height => height,
+        }
     }
 
     /// Rows per column of the list view.

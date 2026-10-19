@@ -17,6 +17,9 @@ pub struct FileItem {
     pub(crate) sort_extension: String,
     pub(crate) sort_name: String,
     pub(crate) selected: bool,
+    /// Size of a directory's contents once calculated (Space), forgotten
+    /// with the listing.
+    pub(crate) calculated_size: Option<u64>,
 }
 
 impl FileItem {
@@ -49,12 +52,26 @@ impl FileItem {
             name_no_ext,
             extension,
             selected: false,
+            calculated_size: None,
         }
     }
 
     #[must_use]
     pub fn entry(&self) -> &Entry {
         &self.entry
+    }
+
+    /// Size of a directory's contents, when calculated.
+    #[must_use]
+    pub fn calculated_size(&self) -> Option<u64> {
+        self.calculated_size
+    }
+
+    /// Bytes the item stands for: a file's size, a directory's calculated
+    /// size, otherwise nothing.
+    #[must_use]
+    pub fn size(&self) -> u64 {
+        if self.is_directory_like() { self.calculated_size.unwrap_or(0) } else { self.entry.size }
     }
 
     #[must_use]
