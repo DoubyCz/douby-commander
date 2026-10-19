@@ -17,7 +17,7 @@ jobs:
   release:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Build dependencies
         run: |
@@ -44,9 +44,11 @@ jobs:
           cargo deb -p dc-gui --no-build
           cargo generate-rpm -p crates/dc-gui
 
-          # The tarball is a /usr/local tree, owned by root and without its
-          # top directory, so that extracting it does not touch /usr/local itself.
+          # The tarball is a prefix tree for /usr/local or ~/.local, owned by
+          # root and without its top directory, so that extracting it does not
+          # touch the prefix itself. Its launcher finds the program on the PATH.
           DESTDIR=target/tarball PREFIX=/usr/local ./install.sh --no-build
+          install -Dm644 -t target/tarball/usr/local/share/applications extras/linux/cz.douby.DoubyCommander.desktop
           install -Dm644 -t target/tarball/usr/local/share/doc/douby-commander README.md LICENSE.md
           mkdir -p dist
           tar -czf "dist/douby-commander-$VERSION-x86_64-linux.tar.gz" --owner=0 --group=0 --numeric-owner \
@@ -65,7 +67,7 @@ jobs:
 
           - Debian, Ubuntu: \`sudo apt install ./douby-commander_$VERSION-1_amd64.deb\`
           - Fedora, RHEL and derivatives: \`sudo dnf install ./douby-commander-$VERSION-1.x86_64.rpm\`
-          - Others: \`sudo tar -xzf douby-commander-$VERSION-x86_64-linux.tar.gz -C /usr/local\`
-          - Arch: build from source with \`./install.sh\`, see the README.
+          - Arch and others: \`tar -xzf douby-commander-$VERSION-x86_64-linux.tar.gz -C ~/.local\`
+            (or \`sudo tar ... -C /usr/local\` for all users)
           EOF
           gh release create "$GITHUB_REF_NAME" dist/* --title "Douby Commander $VERSION" --notes-file notes.md --prerelease

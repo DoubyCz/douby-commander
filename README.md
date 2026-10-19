@@ -30,14 +30,24 @@ colors change at once, with no setup.
 
 ## Installing
 
-[Releases](https://github.com/DoubyCz/douby-commander/releases) have a `.deb` for Debian
-and Ubuntu, an `.rpm` for Fedora and RHEL-like systems and a `.tar.gz` for others
-(x86_64, GTK 4.14 and glibc 2.39 or newer).
+Ready-made packages are the quickest way, nothing to compile. Download one from
+[Releases](https://github.com/DoubyCz/douby-commander/releases) (x86_64, needs GTK 4.14
+and glibc 2.39 or newer) and install it:
+
+| System | Command |
+|---|---|
+| Debian 13, Ubuntu 24.04 and newer | `sudo apt install ./douby-commander_*_amd64.deb` |
+| Fedora 40+, RHEL 10 and derivatives | `sudo dnf install ./douby-commander-*.x86_64.rpm` |
+| Arch, Omarchy and others | `tar -xzf douby-commander-*-x86_64-linux.tar.gz -C ~/.local` |
+
+The tarball can also go to `/usr/local` for all users (`sudo tar ... -C /usr/local`).
+Douby Commander then shows up in the application launcher.
 
 ### From source
 
-You need Rust 1.92 or newer, GTK 4.14 or newer with development files, and gettext.
-First install them for your distribution.
+Only when no package fits, e.g. another architecture. You need Rust 1.92 or newer,
+GTK 4.14 or newer with development files, and gettext. First install them for your
+distribution.
 
 Arch Linux (Omarchy):
 
