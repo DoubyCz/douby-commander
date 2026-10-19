@@ -1,6 +1,6 @@
 [package]
 name = "dc-gui"
-description = "GTK 4 user interface of Double Commander"
+description = "Douby Commander, a two-panel file manager for Linux"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
@@ -23,6 +23,37 @@ jiff.workspace = true
 # deprecated there shows up (`deprecated` is denied). Normal builds keep
 # the 4.14 baseline for older distributions. Used by check.sh.
 gtk-latest = ["gtk/v4_22"]
+
+# Packages for the GitHub releases. Their files come from the staging tree
+# that `DESTDIR=target/stage PREFIX=/usr ./install.sh --no-build` makes.
+[package.metadata.deb]
+name = "douby-commander"
+maintainer = "Jiří Doubravský <douby@douby.cz>"
+copyright = "Jiří Doubravský; icon and original design by the Double Commander authors"
+extended-description = "Two-panel file manager for Linux in Rust and GTK 4, a tribute to Double Commander."
+section = "utils"
+depends = "$auto"
+assets = [
+    ["../../target/stage/usr/bin/doubycmd", "usr/bin/", "755"],
+    ["../../target/stage/usr/share/applications/cz.douby.DoubyCommander.desktop", "usr/share/applications/", "644"],
+    ["../../target/stage/usr/share/icons/hicolor/scalable/apps/cz.douby.DoubyCommander.svg", "usr/share/icons/hicolor/scalable/apps/", "644"],
+    ["../../target/stage/usr/share/locale/cs/LC_MESSAGES/doubycmd.mo", "usr/share/locale/cs/LC_MESSAGES/", "644"],
+]
+
+[package.metadata.generate-rpm]
+name = "douby-commander"
+summary = "Two-panel file manager, a tribute to Double Commander"
+auto-req = "no"
+assets = [
+    { source = "../../target/stage/usr/bin/doubycmd", dest = "/usr/bin/doubycmd", mode = "755" },
+    { source = "../../target/stage/usr/share/applications/cz.douby.DoubyCommander.desktop", dest = "/usr/share/applications/cz.douby.DoubyCommander.desktop", mode = "644" },
+    { source = "../../target/stage/usr/share/icons/hicolor/scalable/apps/cz.douby.DoubyCommander.svg", dest = "/usr/share/icons/hicolor/scalable/apps/cz.douby.DoubyCommander.svg", mode = "644" },
+    { source = "../../target/stage/usr/share/locale/cs/LC_MESSAGES/doubycmd.mo", dest = "/usr/share/locale/cs/LC_MESSAGES/doubycmd.mo", mode = "644" },
+]
+
+[package.metadata.generate-rpm.requires]
+gtk4 = ">= 4.14"
+glibc = ">= 2.39"
 
 [build-dependencies]
 glib-build-tools.workspace = true

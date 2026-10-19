@@ -30,8 +30,14 @@ colors change at once, with no setup.
 
 ## Installing
 
-There are no packages yet, so build from source. You need Rust 1.92 or newer, GTK 4.14
-or newer with development files, and gettext. First install them for your distribution.
+[Releases](https://github.com/DoubyCz/douby-commander/releases) have a `.deb` for Debian
+and Ubuntu, an `.rpm` for Fedora and RHEL-like systems and a `.tar.gz` for others
+(x86_64, GTK 4.14 and glibc 2.39 or newer).
+
+### From source
+
+You need Rust 1.92 or newer, GTK 4.14 or newer with development files, and gettext.
+First install them for your distribution.
 
 Arch Linux (Omarchy):
 

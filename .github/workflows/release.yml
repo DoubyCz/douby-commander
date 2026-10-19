@@ -1,0 +1,71 @@
+# Builds the packages and publishes a GitHub release when a version tag
+# (v0.0.2, ...) is pushed. Nothing runs on ordinary pushes.
+#
+# Built on Ubuntu 24.04, so the binaries need GTK 4.14 and glibc 2.39 or
+# newer: Arch, Fedora 40+, Debian 13, Ubuntu 24.04 and later.
+
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libgtk-4-dev gettext
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Packaging tools
+        run: cargo install --locked cargo-deb cargo-generate-rpm
+
+      - name: Tag matches the version
+        run: |
+          version=$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name == "dc-gui") | .version')
+          [ "v$version" = "$GITHUB_REF_NAME" ] || { echo "Tag $GITHUB_REF_NAME, but Cargo.toml says $version"; exit 1; }
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+
+      - name: Build
+        run: cargo build --release --locked
+
+      - name: Packages
+        run: |
+          DESTDIR=target/stage PREFIX=/usr ./install.sh --no-build
+          cargo deb -p dc-gui --no-build
+          cargo generate-rpm -p crates/dc-gui
+
+          # The tarball is a /usr/local tree, owned by root and without its
+          # top directory, so that extracting it does not touch /usr/local itself.
+          DESTDIR=target/tarball PREFIX=/usr/local ./install.sh --no-build
+          install -Dm644 -t target/tarball/usr/local/share/doc/douby-commander README.md LICENSE.md
+          mkdir -p dist
+          tar -czf "dist/douby-commander-$VERSION-x86_64-linux.tar.gz" --owner=0 --group=0 --numeric-owner \
+            -C target/tarball/usr/local bin share
+          cp target/debian/*.deb target/generate-rpm/*.rpm dist/
+          ls -l dist
+
+      - name: Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cat > notes.md <<EOF
+          Alpha version, many features are not done yet. See the README.
+
+          Install (x86_64, needs GTK 4.14 and glibc 2.39 or newer):
+
+          - Debian, Ubuntu: \`sudo apt install ./douby-commander_$VERSION-1_amd64.deb\`
+          - Fedora, RHEL and derivatives: \`sudo dnf install ./douby-commander-$VERSION-1.x86_64.rpm\`
+          - Others: \`sudo tar -xzf douby-commander-$VERSION-x86_64-linux.tar.gz -C /usr/local\`
+          - Arch: build from source with \`./install.sh\`, see the README.
+          EOF
+          gh release create "$GITHUB_REF_NAME" dist/* --title "Douby Commander $VERSION" --notes-file notes.md --prerelease
