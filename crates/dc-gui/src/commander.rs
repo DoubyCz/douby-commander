@@ -91,7 +91,7 @@ impl Commander {
             }
             Command::ToggleMark => panel.toggle_selection(),
             Command::ToggleMarkMoveDown => panel.toggle_selection_and_move(true),
-            Command::ToggleMarkMoveUp => panel.toggle_selection_and_move(false),
+            Command::MarkMove(direction) => panel.mark_and_move(direction),
             Command::MarkRange(step) => panel.select_range(step),
             Command::View => {
                 if let Some(path) = panel.current_file() {

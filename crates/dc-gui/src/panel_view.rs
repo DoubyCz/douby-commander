@@ -13,7 +13,7 @@ use std::path::{Path, PathBuf};
 use std::rc::{Rc, Weak};
 use std::time::{Duration, Instant};
 
-use dc_core::command::RangeStep;
+use dc_core::command::{Direction, RangeStep};
 use dc_core::quick_search::{Pattern, TYPING_TIMEOUT, TypeAhead};
 use dc_core::{Panel, SortColumn, SortDirection, Sorting, format};
 use dc_i18n::{N_, fill, gettext};
@@ -311,9 +311,27 @@ impl PanelView {
         }
     }
 
-    /// Insert, Shift+Down (`forward`) and Shift+Up.
+    /// Insert.
     pub fn toggle_selection_and_move(&self, forward: bool) {
         self.panel.borrow_mut().toggle_selection_and_move(forward);
+        self.after_marking();
+    }
+
+    /// Shift+arrows. The step follows the layout: in details up and down by
+    /// an item (left and right nothing), in the list view left and right by
+    /// a column, in the icons view up and down by a row.
+    pub fn mark_and_move(&self, direction: Direction) {
+        let across = |count: usize| isize::try_from(count).unwrap_or(1);
+        let step = match (self.mode.get(), direction) {
+            (ViewMode::Details, Direction::Left | Direction::Right) => return,
+            (ViewMode::Details | ViewMode::List, Direction::Up) | (ViewMode::Icons, Direction::Left) => -1,
+            (ViewMode::Details | ViewMode::List, Direction::Down) | (ViewMode::Icons, Direction::Right) => 1,
+            (ViewMode::List, Direction::Left) => -across(self.list_rows()),
+            (ViewMode::List, Direction::Right) => across(self.list_rows()),
+            (ViewMode::Icons, Direction::Up) => -across(self.icon_columns()),
+            (ViewMode::Icons, Direction::Down) => across(self.icon_columns()),
+        };
+        self.panel.borrow_mut().mark_and_move(step);
         self.after_marking();
     }
 

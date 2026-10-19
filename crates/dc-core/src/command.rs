@@ -12,6 +12,15 @@ use std::str::FromStr;
 
 use dc_i18n::{fill, gettext};
 
+/// Arrow directions, as on screen.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum Direction {
+    Up,
+    Down,
+    Left,
+    Right,
+}
+
 /// Cursor jumps that extend a range selection.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum RangeStep {
@@ -33,10 +42,11 @@ pub enum Command {
     FocusSwap,
     /// Space: toggle the mark of the item under the cursor.
     ToggleMark,
-    /// Insert, Shift+Down: toggle the mark and move down.
+    /// Insert: toggle the mark and move to the next item.
     ToggleMarkMoveDown,
-    /// Shift+Up: toggle the mark and move up.
-    ToggleMarkMoveUp,
+    /// Shift+arrows: mark from the cursor and move there, by an item, or
+    /// in the list and icons views across a column or row.
+    MarkMove(Direction),
     /// Shift+PgUp/PgDn/Home/End: mark a range from the starting point.
     MarkRange(RangeStep),
     /// F3: open the file under the cursor in the terminal text editor
@@ -101,14 +111,17 @@ impl TrashChoice {
 
 impl Command {
     /// All commands with default parameters, for listings and for parsing.
-    pub const ALL: [Self; 31] = [
+    pub const ALL: [Self; 34] = [
         Self::Open,
         Self::ChangeDirToParent,
         Self::EnterDir,
         Self::FocusSwap,
         Self::ToggleMark,
         Self::ToggleMarkMoveDown,
-        Self::ToggleMarkMoveUp,
+        Self::MarkMove(Direction::Up),
+        Self::MarkMove(Direction::Down),
+        Self::MarkMove(Direction::Left),
+        Self::MarkMove(Direction::Right),
         Self::MarkRange(RangeStep::PageUp),
         Self::MarkRange(RangeStep::PageDown),
         Self::MarkRange(RangeStep::First),
@@ -145,7 +158,10 @@ impl Command {
             Self::FocusSwap => "cm_FocusSwap",
             Self::ToggleMark => "cm_ToggleMark",
             Self::ToggleMarkMoveDown => "cm_ToggleMarkMoveDown",
-            Self::ToggleMarkMoveUp => "cm_ToggleMarkMoveUp",
+            Self::MarkMove(Direction::Up) => "cm_MarkMoveUp",
+            Self::MarkMove(Direction::Down) => "cm_MarkMoveDown",
+            Self::MarkMove(Direction::Left) => "cm_MarkMoveLeft",
+            Self::MarkMove(Direction::Right) => "cm_MarkMoveRight",
             Self::MarkRange(RangeStep::PageUp) => "cm_MarkRangePageUp",
             Self::MarkRange(RangeStep::PageDown) => "cm_MarkRangePageDown",
             Self::MarkRange(RangeStep::First) => "cm_MarkRangeToFirst",

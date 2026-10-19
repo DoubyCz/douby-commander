@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: doubycmd\n"
 "Report-Msgid-Bugs-To: douby@douby.cz\n"
-"POT-Creation-Date: 2026-10-19 22:21+0200\n"
+"POT-Creation-Date: 2026-10-19 22:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,12 +18,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: crates/dc-core/src/command.rs:223
+#: crates/dc-core/src/command.rs:239
 #, rust-format
 msgid "Unknown command {command}"
 msgstr ""
 
-#: crates/dc-core/src/command.rs:225
+#: crates/dc-core/src/command.rs:241
 #, rust-format
 msgid "Command {command} does not accept parameter {param}"
 msgstr ""
@@ -965,12 +965,12 @@ msgstr ""
 msgid "Attr"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:1129
+#: crates/dc-gui/src/panel_view.rs:1147
 #, rust-format
 msgid "(SEARCH: {text})"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:1159
+#: crates/dc-gui/src/panel_view.rs:1177
 #, rust-format
 msgid "Cannot open {path}"
 msgstr ""

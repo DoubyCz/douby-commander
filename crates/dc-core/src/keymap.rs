@@ -12,7 +12,7 @@ use std::str::FromStr;
 
 use dc_i18n::{fill, gettext};
 
-use crate::command::{Command, RangeStep, TrashChoice};
+use crate::command::{Command, Direction, RangeStep, TrashChoice};
 
 /// A key without modifiers.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -242,8 +242,10 @@ impl Keymap {
             (shift(Key::Tab), Command::FocusSwap),
             (Shortcut::plain(Key::Space), Command::ToggleMark),
             (Shortcut::plain(Key::Insert), Command::ToggleMarkMoveDown),
-            (shift(Key::Down), Command::ToggleMarkMoveDown),
-            (shift(Key::Up), Command::ToggleMarkMoveUp),
+            (shift(Key::Up), Command::MarkMove(Direction::Up)),
+            (shift(Key::Down), Command::MarkMove(Direction::Down)),
+            (shift(Key::Left), Command::MarkMove(Direction::Left)),
+            (shift(Key::Right), Command::MarkMove(Direction::Right)),
             (shift(Key::PageUp), Command::MarkRange(RangeStep::PageUp)),
             (shift(Key::PageDown), Command::MarkRange(RangeStep::PageDown)),
             (shift(Key::Home), Command::MarkRange(RangeStep::First)),

@@ -215,6 +215,29 @@ impl Panel {
         Ok(true)
     }
 
+    /// Shift+arrows: marks (or unmarks, as the item under the cursor turns)
+    /// the items from the cursor up to the one before the item `step` away,
+    /// then moves there. A step of one is [`Self::toggle_selection_and_move`];
+    /// in the list and icons views a step is a whole column or row. At the
+    /// first or last item only that item is toggled.
+    pub fn mark_and_move(&mut self, step: isize) {
+        self.range = None;
+        let Some(last) = self.items.len().checked_sub(1) else { return };
+        let cursor = self.cursor;
+        let target = cursor.saturating_add_signed(step).min(last);
+        let Some(item) = self.items.get(cursor) else { return };
+        let mark = !item.selected;
+        if target == cursor {
+            self.set_selected(cursor, mark);
+            return;
+        }
+        let range = if target > cursor { cursor..target } else { target + 1..cursor + 1 };
+        for index in range {
+            self.set_selected(index, mark);
+        }
+        self.set_cursor(target);
+    }
+
     /// Insert and Shift+Down (`forward`), Shift+Up: toggles the item under
     /// the cursor, then moves. Going back over the same items unmarks them.
     pub fn toggle_selection_and_move(&mut self, forward: bool) {
@@ -395,6 +418,10 @@ mod tests {
         panel.items().iter().map(FileItem::display_name).collect()
     }
 
+    fn marked_names(panel: &Panel) -> Vec<&str> {
+        panel.items().iter().filter(|item| item.is_selected()).map(FileItem::display_name).collect()
+    }
+
     fn fixture() -> tempfile::TempDir {
         let tmp = tempfile::tempdir().unwrap();
         fs::create_dir(tmp.path().join("docs")).unwrap();
@@ -441,6 +468,34 @@ mod tests {
         assert!(panel.load(&LocalFs, tmp.path().join("missing"), None).is_err());
         assert_eq!(panel.path(), tmp.path());
         assert_eq!(panel.items().len(), 4);
+    }
+
+    #[test]
+    fn mark_and_move_by_a_row_or_column() {
+        let tmp = tempfile::tempdir().unwrap();
+        for name in ["a", "b", "c", "d", "e", "f", "g"] {
+            fs::write(tmp.path().join(name), b"").unwrap();
+        }
+        let mut panel = Panel::new(PathBuf::new());
+        panel.load(&LocalFs, tmp.path().to_owned(), None).unwrap();
+
+        // `..` a b c d e f g; from "a" three on: a b c marked, cursor on d.
+        panel.set_cursor(1);
+        panel.mark_and_move(3);
+        assert_eq!(marked_names(&panel), ["a", "b", "c"]);
+        assert_eq!(panel.cursor(), 4);
+        // Back: d decides (unmarked, so marking) for d c b, cursor on a.
+        panel.mark_and_move(-3);
+        assert_eq!(marked_names(&panel), ["a", "b", "c", "d"]);
+        assert_eq!(panel.cursor(), 1);
+        // Past the end: up to the last item, which stays unmarked.
+        panel.set_cursor(5);
+        panel.mark_and_move(10);
+        assert_eq!(panel.cursor(), 7);
+        assert_eq!(marked_names(&panel), ["a", "b", "c", "d", "e", "f"]);
+        // At the last item: only it toggles.
+        panel.mark_and_move(3);
+        assert_eq!(marked_names(&panel), ["a", "b", "c", "d", "e", "f", "g"]);
     }
 
     #[test]
