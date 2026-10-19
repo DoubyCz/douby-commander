@@ -317,6 +317,10 @@ impl PanelView {
         self.after_marking();
     }
 
+    pub fn end_held_mark(&self) {
+        self.panel.borrow_mut().end_held_mark();
+    }
+
     /// Shift+arrows. The step follows the layout: in details up and down by
     /// an item (left and right nothing), in the list view left and right by
     /// a column, in the icons view up and down by a row.

@@ -77,6 +77,12 @@ pub fn build(app: &gtk::Application) {
     // handler, everything else holds only weak references to it.
     let keys = gtk::EventControllerKey::new();
     keys.set_propagation_phase(gtk::PropagationPhase::Capture);
+    let released = Rc::downgrade(&commander);
+    keys.connect_key_released(move |_, key, _, _| {
+        if let Some(commander) = released.upgrade() {
+            commander.handle_key_released(key);
+        }
+    });
     keys.connect_key_pressed(move |_, key, _, state| commander.handle_key(key, state));
     window.add_controller(keys);
 }

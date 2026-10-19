@@ -16,17 +16,21 @@ pub struct Panel {
     sorting: Sorting,
     show_hidden: bool,
     range: Option<RangeSelection>,
+    /// While Shift is held, Shift+arrows only mark or only unmark, as the
+    /// first item decided; `None` until then and after Shift is released.
+    held_mark: Option<bool>,
 }
 
 /// Running Shift+PgUp/PgDn/Home/End or Shift+click selection.
 ///
 /// Mirrors `FRangeSelectionStartIndex`, `FRangeSelectionEndIndex` and
 /// `FRangeSelectionState` of `TOrderedFileView`: the range always spans from
-/// the anchor to the end, items leaving the range get the opposite state.
+/// the anchor to the cursor. Unlike the original, items leaving the range
+/// keep their state: one hold of Shift never turns anything back, so where
+/// the range ended before does not matter.
 #[derive(Debug, Clone, Copy)]
 struct RangeSelection {
     anchor: usize,
-    end: usize,
     /// Whether the range marks or unmarks, decided by the anchor item.
     mark: bool,
 }
@@ -55,7 +59,15 @@ impl Panel {
     /// Creates an empty panel, call [`Panel::load`] to fill it.
     #[must_use]
     pub fn new(path: PathBuf) -> Self {
-        Self { path, items: Vec::new(), cursor: 0, sorting: Sorting::default(), show_hidden: false, range: None }
+        Self {
+            path,
+            items: Vec::new(),
+            cursor: 0,
+            sorting: Sorting::default(),
+            show_hidden: false,
+            range: None,
+            held_mark: None,
+        }
     }
 
     #[must_use]
@@ -215,18 +227,20 @@ impl Panel {
         Ok(true)
     }
 
-    /// Shift+arrows: marks (or unmarks, as the item under the cursor turns)
-    /// the items from the cursor up to the one before the item `step` away,
-    /// then moves there. A step of one is [`Self::toggle_selection_and_move`];
-    /// in the list and icons views a step is a whole column or row. At the
-    /// first or last item only that item is toggled.
+    /// Shift+arrows: marks (or unmarks) the items from the cursor up to the
+    /// one before the item `step` away, then moves there; in the list and
+    /// icons views a step is a whole column or row. The first item of a
+    /// Shift held down decides: turned to marked, everything until Shift
+    /// is released ([`Self::end_held_mark`]) only gets marked, never
+    /// toggled back, and the other way round. At the first or last item
+    /// only that item changes.
     pub fn mark_and_move(&mut self, step: isize) {
         self.range = None;
         let Some(last) = self.items.len().checked_sub(1) else { return };
         let cursor = self.cursor;
         let target = cursor.saturating_add_signed(step).min(last);
         let Some(item) = self.items.get(cursor) else { return };
-        let mark = !item.selected;
+        let mark = *self.held_mark.get_or_insert(!item.selected);
         if target == cursor {
             self.set_selected(cursor, mark);
             return;
@@ -236,6 +250,13 @@ impl Panel {
             self.set_selected(index, mark);
         }
         self.set_cursor(target);
+    }
+
+    /// Shift was released: the next Shift+arrow, Shift+click or
+    /// Shift+PgUp/PgDn/Home/End decides anew, a range starts anew.
+    pub fn end_held_mark(&mut self) {
+        self.held_mark = None;
+        self.range = None;
     }
 
     /// Insert and Shift+Down (`forward`), Shift+Up: toggles the item under
@@ -282,7 +303,14 @@ impl Panel {
         let target = target.min(last);
 
         let anchor = self.cursor;
-        let range = self.range.unwrap_or(RangeSelection { anchor, end: anchor, mark: !self.items[anchor].selected });
+        let range = if let Some(range) = self.range {
+            range
+        } else {
+            // One hold of Shift only marks or only unmarks, as decided by
+            // its first item (with Shift+arrows too).
+            let mark = *self.held_mark.get_or_insert(!self.items[anchor].selected);
+            RangeSelection { anchor, mark }
+        };
 
         let end = if include_target || target == 0 || target == last {
             target
@@ -294,19 +322,15 @@ impl Panel {
             target
         };
 
-        let span = |end: usize| range.anchor.min(end)..=range.anchor.max(end);
-        let (old, new) = (span(range.end), span(end));
-        for index in old.clone() {
-            if !new.contains(&index) {
-                self.set_selected(index, !range.mark);
-            }
-        }
-        for index in new {
+        // Items left out when the range shrinks stay as they are: within
+        // one hold of Shift nothing turns back (the original unmarks them).
+        let span = range.anchor.min(end)..=range.anchor.max(end);
+        for index in span {
             self.set_selected(index, range.mark);
         }
 
         self.cursor = target;
-        self.range = Some(RangeSelection { end, ..range });
+        self.range = Some(range);
     }
 
     /// `cm_MarkMarkAll` / `cm_MarkUnmarkAll`: every item except `..`.
@@ -484,18 +508,37 @@ mod tests {
         panel.mark_and_move(3);
         assert_eq!(marked_names(&panel), ["a", "b", "c"]);
         assert_eq!(panel.cursor(), 4);
-        // Back: d decides (unmarked, so marking) for d c b, cursor on a.
+        // Back with Shift still held: only marking, d c b, cursor on a.
         panel.mark_and_move(-3);
         assert_eq!(marked_names(&panel), ["a", "b", "c", "d"]);
         assert_eq!(panel.cursor(), 1);
+        // Shift released and pressed again on a marked item: only unmarking,
+        // also over items not marked (e, f stay unmarked).
+        panel.end_held_mark();
+        panel.set_cursor(4);
+        panel.mark_and_move(3);
+        assert_eq!(marked_names(&panel), ["a", "b", "c"]);
+        assert_eq!(panel.cursor(), 7);
+        panel.mark_and_move(-1);
+        assert_eq!(marked_names(&panel), ["a", "b", "c"], "unmarking g, not toggling it");
+        panel.end_held_mark();
+        panel.set_cursor(1);
+        for name in ["a", "b", "c"] {
+            assert!(marked_names(&panel).contains(&name));
+        }
+        panel.mark_and_move(1);
+        panel.mark_and_move(1);
+        panel.mark_and_move(1);
+        assert_eq!(marked_names(&panel), Vec::<&str>::new());
+        panel.end_held_mark();
         // Past the end: up to the last item, which stays unmarked.
         panel.set_cursor(5);
         panel.mark_and_move(10);
         assert_eq!(panel.cursor(), 7);
-        assert_eq!(marked_names(&panel), ["a", "b", "c", "d", "e", "f"]);
-        // At the last item: only it toggles.
+        assert_eq!(marked_names(&panel), ["e", "f"]);
+        // At the last item: only it changes, to marked as Shift is held.
         panel.mark_and_move(3);
-        assert_eq!(marked_names(&panel), ["a", "b", "c", "d", "e", "f", "g"]);
+        assert_eq!(marked_names(&panel), ["e", "f", "g"]);
     }
 
     #[test]
@@ -599,7 +642,7 @@ mod tests {
     }
 
     #[test]
-    fn page_range_stops_before_target_and_shrinks_back() {
+    fn page_range_stops_before_target_and_never_turns_back() {
         let (_tmp, mut panel) = numbered(10); // indexes 0 ("..") to 10
         panel.set_cursor(2);
 
@@ -610,11 +653,12 @@ mod tests {
         panel.select_range_to(8, false); // Shift+PgDn again extends
         assert_eq!(marked(&panel), [2, 3, 4, 5, 6, 7]);
 
-        panel.select_range_to(4, false); // Shift+PgUp shrinks the same range
-        assert_eq!(marked(&panel), [2, 3]);
+        // Shift+PgUp in the same hold: nothing gets unmarked.
+        panel.select_range_to(4, false);
+        assert_eq!(marked(&panel), [2, 3, 4, 5, 6, 7]);
 
         panel.select_range_to(0, false); // past the anchor: other side, ".." is never marked
-        assert_eq!(marked(&panel), [1, 2]);
+        assert_eq!(marked(&panel), [1, 2, 3, 4, 5, 6, 7]);
         assert_eq!(panel.cursor(), 0);
     }
 
@@ -638,7 +682,8 @@ mod tests {
         panel.select_range_to(5, true);
         assert_eq!(marked(&panel), [1, 2, 3, 4, 5]);
 
-        // Starting again on a marked item unmarks the range.
+        // Shift held anew, starting on a marked item: the range unmarks.
+        panel.end_held_mark();
         panel.set_cursor(2);
         panel.select_range_to(4, true);
         assert_eq!(marked(&panel), [1, 5]);

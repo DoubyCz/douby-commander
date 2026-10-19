@@ -137,7 +137,19 @@ impl Commander {
     /// Order matters: a running quick search takes typed characters and
     /// Backspace first (so a space continues the search instead of marking),
     /// then the keymap, and only then a character may start a new search.
+    /// Shift released: a new hold of it decides anew whether Shift+arrows
+    /// mark or unmark.
+    pub fn handle_key_released(&self, key: gdk::Key) {
+        if matches!(key, gdk::Key::Shift_L | gdk::Key::Shift_R) {
+            for panel in &self.panels {
+                panel.end_held_mark();
+            }
+        }
+    }
+
     pub fn handle_key(self: &Rc<Self>, key: gdk::Key, state: gdk::ModifierType) -> glib::Propagation {
+        // A new press of Shift too, in case its release went to another window.
+        self.handle_key_released(key);
         let panel = self.active();
         let typed = keys::typed_char(key, state);
 
