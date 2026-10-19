@@ -13,13 +13,15 @@ the name and the abbreviation DC.
 It follows the theme of [Omarchy](https://omarchy.org/) live: switch the theme and the
 colors change at once, with no setup.
 
-> **Alpha (0.0.1).** Many features are not done yet. Most menu items and toolbar buttons
+> **Alpha (0.0.2).** Many features are not done yet. Most menu items and toolbar buttons
 > are not connected, and there is no settings dialog. Expect rough edges.
 
 ## What works
 
 - Two panels, keyboard driven: Tab, quick search by typing, marking with Insert, Space
-  and Shift
+  and Shift; Alt+Left and Alt+Right go up and into directories
+- Three views: details, list (names in columns) and icons with image previews
+- Space on a directory calculates its size in the background
 - F3 opens a file in your terminal editor (`$VISUAL` or `$EDITOR`), F4 in your desktop
   text editor, Enter in the default application
 - F5 copy and F6 move, with the questions and options of the original, a progress

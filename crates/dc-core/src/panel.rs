@@ -376,7 +376,9 @@ impl Panel {
         self.items.sort_by(|a, b| sorting.compare(a, b));
     }
 
-    fn position_of(&self, name: &OsStr) -> Option<usize> {
+    /// Index of the item `name`, `..` excluded.
+    #[must_use]
+    pub fn position_of(&self, name: &OsStr) -> Option<usize> {
         self.items.iter().position(|item| !item.is_parent() && item.entry().name == name)
     }
 }

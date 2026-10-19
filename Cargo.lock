@@ -86,7 +86,7 @@ checksum = "4e7648175b45a9a48536d676f68d918270699102aa8dab5496df06904c914600"
 
 [[package]]
 name = "dc-core"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
  "dc-i18n",
  "dc-vfs",
@@ -97,7 +97,7 @@ dependencies = [
 
 [[package]]
 name = "dc-gui"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
  "dc-core",
  "dc-i18n",
@@ -111,14 +111,14 @@ dependencies = [
 
 [[package]]
 name = "dc-i18n"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
  "gettext-rs",
 ]
 
 [[package]]
 name = "dc-ops"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
  "dc-core",
  "dc-i18n",
@@ -130,7 +130,7 @@ dependencies = [
 
 [[package]]
 name = "dc-vfs"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
  "dc-i18n",
  "rustix",

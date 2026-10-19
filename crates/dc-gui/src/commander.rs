@@ -121,6 +121,7 @@ impl Commander {
             Command::ChangeDirToHome => panel.change_dir(glib::home_dir()),
             Command::BriefView => panel.set_view_mode(ViewMode::List),
             Command::ColumnsView => panel.set_view_mode(ViewMode::Details),
+            Command::ThumbnailsView => panel.set_view_mode(ViewMode::Icons),
             Command::LeftEqualRight => self.panels[0].change_dir(self.panels[1].path()),
             Command::RightEqualLeft => self.panels[1].change_dir(self.panels[0].path()),
             Command::PanelsSplitterPerPos { percent } => {

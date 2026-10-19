@@ -69,6 +69,8 @@ pub enum Command {
     BriefView,
     /// Ctrl+F2: the active panel shows all columns ("Details").
     ColumnsView,
+    /// Ctrl+Shift+F1: the active panel shows icons and previews ("Icons").
+    ThumbnailsView,
     /// Left panel shows the directory of the right one (`<` above the left panel).
     LeftEqualRight,
     /// Right panel shows the directory of the left one (`>` above the right panel).
@@ -99,7 +101,7 @@ impl TrashChoice {
 
 impl Command {
     /// All commands with default parameters, for listings and for parsing.
-    pub const ALL: [Self; 30] = [
+    pub const ALL: [Self; 31] = [
         Self::Open,
         Self::ChangeDirToParent,
         Self::EnterDir,
@@ -127,6 +129,7 @@ impl Command {
         Self::ChangeDirToHome,
         Self::BriefView,
         Self::ColumnsView,
+        Self::ThumbnailsView,
         Self::LeftEqualRight,
         Self::RightEqualLeft,
         Self::PanelsSplitterPerPos { percent: 50 },
@@ -163,6 +166,7 @@ impl Command {
             Self::ChangeDirToHome => "cm_ChangeDirToHome",
             Self::BriefView => "cm_BriefView",
             Self::ColumnsView => "cm_ColumnsView",
+            Self::ThumbnailsView => "cm_ThumbnailsView",
             Self::LeftEqualRight => "cm_LeftEqualRight",
             Self::RightEqualLeft => "cm_RightEqualLeft",
             Self::PanelsSplitterPerPos { .. } => "cm_PanelsSplitterPerPos",

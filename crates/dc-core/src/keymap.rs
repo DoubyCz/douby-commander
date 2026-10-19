@@ -262,6 +262,7 @@ impl Keymap {
             (ctrl(Key::Char('R')), Command::Refresh),
             (ctrl(Key::F(1)), Command::BriefView),
             (ctrl(Key::F(2)), Command::ColumnsView),
+            (Shortcut::new(Modifiers { ctrl: true, shift: true, ..Modifiers::NONE }, Key::F(1)), Command::ThumbnailsView),
             (ctrl(Key::Char('A')), Command::MarkMarkAll),
             (ctrl(Key::NumPlus), Command::MarkMarkAll),
             (ctrl(Key::NumMinus), Command::MarkUnmarkAll),

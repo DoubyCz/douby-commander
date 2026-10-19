@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: doubycmd\n"
 "Report-Msgid-Bugs-To: douby@douby.cz\n"
-"POT-Creation-Date: 2026-10-19 22:10+0200\n"
+"POT-Creation-Date: 2026-10-19 22:21+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,12 +18,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: crates/dc-core/src/command.rs:219
+#: crates/dc-core/src/command.rs:223
 #, rust-format
 msgid "Unknown command {command}"
 msgstr ""
 
-#: crates/dc-core/src/command.rs:221
+#: crates/dc-core/src/command.rs:225
 #, rust-format
 msgid "Command {command} does not accept parameter {param}"
 msgstr ""
@@ -48,17 +48,17 @@ msgctxt "size unit, kilo"
 msgid "K"
 msgstr ""
 
-#: crates/dc-core/src/format.rs:41
+#: crates/dc-core/src/format.rs:45
 msgctxt "size column"
 msgid "<DIR>"
 msgstr ""
 
-#: crates/dc-core/src/format.rs:42
+#: crates/dc-core/src/format.rs:46
 msgctxt "size column"
 msgid "<LNK>"
 msgstr ""
 
-#: crates/dc-core/src/format.rs:104
+#: crates/dc-core/src/format.rs:108
 #, rust-format
 msgid ""
 "Selected: {selected_size} of {total_size}, files: {selected_files} of "
@@ -70,66 +70,66 @@ msgstr ""
 msgid "Invalid shortcut {shortcut}"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:173
+#: crates/dc-gui/src/commander.rs:174
 msgid "No text editor found. Set one in the VISUAL or EDITOR variable."
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:174
+#: crates/dc-gui/src/commander.rs:175
 msgid ""
 "No terminal found. Install xdg-terminal-exec or set the TERMINAL variable."
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:175
+#: crates/dc-gui/src/commander.rs:176
 msgid "No application is set for text files (text/plain)."
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:179
+#: crates/dc-gui/src/commander.rs:180
 #, rust-format
 msgid "Cannot open {path} in an editor"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:283
+#: crates/dc-gui/src/commander.rs:284
 #, rust-format
 msgid "Delete selected \"{name}\" into trash can?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:285
+#: crates/dc-gui/src/commander.rs:286
 #, rust-format
 msgid "Delete selected \"{name}\"?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:293
+#: crates/dc-gui/src/commander.rs:294
 #, rust-format
 msgid "Delete {count} selected file/directory into trash can?"
 msgid_plural "Delete {count} selected files/directories into trash can?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: crates/dc-gui/src/commander.rs:298
+#: crates/dc-gui/src/commander.rs:299
 #, rust-format
 msgid "Delete {count} selected file/directory?"
 msgid_plural "Delete {count} selected files/directories?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: crates/dc-gui/src/commander.rs:340
+#: crates/dc-gui/src/commander.rs:341
 #, rust-format
 msgid "Copy selected \"{name}\"?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:340
+#: crates/dc-gui/src/commander.rs:341
 #, rust-format
 msgid "Rename/move selected \"{name}\"?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:346
+#: crates/dc-gui/src/commander.rs:347
 #, rust-format
 msgid "Copy {count} selected file/directory?"
 msgid_plural "Copy {count} selected files/directories?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: crates/dc-gui/src/commander.rs:349
+#: crates/dc-gui/src/commander.rs:350
 #, rust-format
 msgid "Rename/move {count} selected file/directory?"
 msgid_plural "Rename/move {count} selected files/directories?"
@@ -945,32 +945,32 @@ msgctxt "tooltip of a disabled button"
 msgid "{hint} - {reason}"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:28
+#: crates/dc-gui/src/panel_view.rs:30
 msgid "Name"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:29
+#: crates/dc-gui/src/panel_view.rs:31
 msgid "Ext"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:30
+#: crates/dc-gui/src/panel_view.rs:32
 msgid "Size"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:31
+#: crates/dc-gui/src/panel_view.rs:33
 msgid "Date"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:32
+#: crates/dc-gui/src/panel_view.rs:34
 msgid "Attr"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:739
+#: crates/dc-gui/src/panel_view.rs:1129
 #, rust-format
 msgid "(SEARCH: {text})"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:769
+#: crates/dc-gui/src/panel_view.rs:1159
 #, rust-format
 msgid "Cannot open {path}"
 msgstr ""

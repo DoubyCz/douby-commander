@@ -93,6 +93,17 @@ const BASE_CSS: &str = "
     color: inherit;
     box-shadow: inset 0 0 0 1px var(--dc-inactive-cursor-color);
 }
+/* Icons view: the cursor and marks as in the other views. */
+.dc-icon-view > child { padding: 6px; border-radius: 6px; outline: none; transition: none; }
+.dc-panel .dc-icon-view > child:selected {
+    background-color: var(--dc-cursor-bg-color);
+    color: var(--dc-cursor-fg-color);
+}
+.dc-panel:not(.dc-active) .dc-icon-view > child:selected {
+    background-color: transparent;
+    color: inherit;
+    box-shadow: inset 0 0 0 1px var(--dc-inactive-cursor-color);
+}
 /* The arrow of the sort column, in both headers, in the accent. */
 .dc-panel columnview > header > button sort-indicator { color: var(--accent-bg-color); }
 .dc-marked { color: var(--dc-marked-color); }

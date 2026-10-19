@@ -44,8 +44,13 @@ pub struct PanelView {
     column_view: gtk::ColumnView,
     /// List: names only, in columns side by side, scrolled horizontally.
     grid_view: gtk::GridView,
-    /// Sort headers above the list view: the details columns without rows.
-    list_header: gtk::ColumnView,
+    /// Icons: icons or previews with names, in rows, scrolled vertically.
+    icon_view: gtk::GridView,
+    /// Sort headers above the list and icons views: the details columns
+    /// without rows, so they look and work exactly as the details header.
+    sort_headers: [gtk::ColumnView; 2],
+    /// Previews of images in the icons view.
+    thumbnails: RefCell<Thumbnails>,
     /// Shows one of the two views; both are views of the same rows.
     views: gtk::Stack,
     mode: Cell<ViewMode>,
@@ -92,6 +97,8 @@ pub enum ViewMode {
     Details,
     /// Names only, in columns side by side, scrolled horizontally.
     List,
+    /// Icons or previews with the name below, scrolled vertically.
+    Icons,
 }
 
 impl ViewMode {
@@ -99,8 +106,79 @@ impl ViewMode {
         match self {
             Self::Details => "details",
             Self::List => "list",
+            Self::Icons => "icons",
         }
     }
+}
+
+/// Size of an icon or preview in the icons view (`gThumbSize` of the
+/// original, 128×128).
+const ICON_SIZE: i32 = 128;
+/// Previews are made this much larger, sharp on scaled displays.
+const THUMBNAIL_SCALE: i32 = 2;
+
+/// Previews of images for the icons view, made one after another in a
+/// worker thread for the items shown, kept for the current directory only.
+#[derive(Debug, Default)]
+struct Thumbnails {
+    dir: PathBuf,
+    ready: HashMap<OsString, gdk::Texture>,
+    /// Asked for (queued, being made, or failed), not asked again.
+    requested: std::collections::HashSet<OsString>,
+    queue: VecDeque<OsString>,
+    cancel: Arc<AtomicBool>,
+    running: bool,
+}
+
+/// Pixels of a preview, made in a worker thread: textures are made from
+/// them in the main thread.
+struct PreviewPixels {
+    width: i32,
+    height: i32,
+    stride: usize,
+    alpha: bool,
+    bytes: glib::Bytes,
+}
+
+/// A preview of the image `path`: the desktop's own (`~/.cache/thumbnails`,
+/// shared with other file managers) if there is a valid one, else the
+/// image scaled down to `size`.
+fn load_preview(path: &Path, size: i32) -> Option<PreviewPixels> {
+    let file = gio::File::for_path(path);
+    let cached = file
+        .query_info("thumbnail::path,thumbnail::is-valid", gio::FileQueryInfoFlags::NONE, None::<&gio::Cancellable>)
+        .ok()
+        .filter(|info| info.boolean("thumbnail::is-valid"))
+        .and_then(|info| info.attribute_byte_string("thumbnail::path"));
+    let pixbuf = match cached {
+        Some(thumbnail) => gtk::gdk_pixbuf::Pixbuf::from_file(thumbnail.as_str()),
+        None => gtk::gdk_pixbuf::Pixbuf::from_file_at_scale(path, size, size, true),
+    }
+    .ok()?;
+    Some(PreviewPixels {
+        width: pixbuf.width(),
+        height: pixbuf.height(),
+        stride: usize::try_from(pixbuf.rowstride()).ok()?,
+        alpha: pixbuf.has_alpha(),
+        bytes: pixbuf.read_pixel_bytes(),
+    })
+}
+
+impl PreviewPixels {
+    fn texture(&self) -> gdk::Texture {
+        let format = if self.alpha { gdk::MemoryFormat::R8g8b8a8 } else { gdk::MemoryFormat::R8g8b8 };
+        gdk::MemoryTexture::new(self.width, self.height, format, &self.bytes, self.stride).upcast()
+    }
+}
+
+/// Icon of a file type for the icons view, by name as the desktop does.
+fn type_icon(name: &OsStr, directory: bool) -> (gio::Icon, bool) {
+    if directory {
+        return (gio::ThemedIcon::new("folder").upcast(), false);
+    }
+    let (content_type, _) = gio::content_type_guess(Some(Path::new(name)), None);
+    let image = content_type.starts_with("image/");
+    (gio::content_type_get_icon(&content_type), image)
 }
 
 /// Space around a name in the list view, matches `.dc-list-view > child`
@@ -134,21 +212,29 @@ impl PanelView {
             .vexpand(true)
             .vscrollbar_policy(gtk::PolicyType::Never)
             .build();
-        // Sort headers of the list view: a details table without rows, so
-        // they look and work exactly as the details header.
-        let list_header = gtk::ColumnView::builder()
-            .model(&gtk::NoSelection::new(Some(gio::ListStore::new::<FileRow>())))
-            .reorderable(false)
-            .focusable(false)
-            .build();
-        list_header.add_css_class("data-table");
+        let list_header = sort_header();
         let list_box = gtk::Box::new(gtk::Orientation::Vertical, 0);
         list_box.append(&list_header);
         list_box.append(&list);
 
+        // The icons view: icons or previews with the name below, in rows,
+        // scrolled vertically.
+        let icon_view = gtk::GridView::builder().model(&selection).max_columns(64).build();
+        icon_view.add_css_class("dc-icon-view");
+        let icons = gtk::ScrolledWindow::builder()
+            .child(&icon_view)
+            .vexpand(true)
+            .hscrollbar_policy(gtk::PolicyType::Never)
+            .build();
+        let icons_header = sort_header();
+        let icons_box = gtk::Box::new(gtk::Orientation::Vertical, 0);
+        icons_box.append(&icons_header);
+        icons_box.append(&icons);
+
         let views = gtk::Stack::builder().vexpand(true).build();
         views.add_named(&details, Some(ViewMode::Details.name()));
         views.add_named(&list_box, Some(ViewMode::List.name()));
+        views.add_named(&icons_box, Some(ViewMode::Icons.name()));
 
         let root = gtk::Box::new(gtk::Orientation::Vertical, 0);
         root.add_css_class("dc-panel");
@@ -164,7 +250,9 @@ impl PanelView {
             selection,
             column_view,
             grid_view,
-            list_header,
+            icon_view,
+            sort_headers: [list_header, icons_header],
+            thumbnails: RefCell::default(),
             views,
             mode: Cell::new(ViewMode::Details),
             details_row_height: Cell::new(0),
@@ -180,6 +268,7 @@ impl PanelView {
         });
         view.setup_columns();
         view.setup_list_view(&list);
+        view.setup_icon_view();
         view.connect_signals();
 
         let loaded = view.panel.borrow_mut().load(&view.source, path, None);
@@ -214,7 +303,7 @@ impl PanelView {
 
     pub fn connect_focus_enter(&self, callback: impl Fn() + 'static) {
         let callback = Rc::new(callback);
-        for widget in [self.column_view.upcast_ref::<gtk::Widget>(), self.grid_view.upcast_ref()] {
+        for widget in [self.column_view.upcast_ref::<gtk::Widget>(), self.grid_view.upcast_ref(), self.icon_view.upcast_ref()] {
             let focus = gtk::EventControllerFocus::new();
             let callback = Rc::clone(&callback);
             focus.connect_enter(move |_| callback());
@@ -429,6 +518,7 @@ impl PanelView {
         match self.mode.get() {
             ViewMode::Details => self.column_view.vadjustment(),
             ViewMode::List => self.grid_view.hadjustment(),
+            ViewMode::Icons => self.icon_view.vadjustment(),
         }
     }
 
@@ -443,10 +533,12 @@ impl PanelView {
     /// way again, with the cursor on the directory we came from at the
     /// same place on screen. Only within one view mode.
     fn arrived(&self, (left, mode, scrolled): (PathBuf, ViewMode, f64)) {
-        self.refresh();
         let now = self.path();
-        // Sizes being calculated are of the directory left.
+        // Sizes and previews being made are of the directory left. Before
+        // the new rows are shown: showing them asks for their previews.
         Self::cancel_size_jobs(&mut self.size_jobs.borrow_mut(), now.clone());
+        Self::forget_thumbnails(&mut self.thumbnails.borrow_mut(), now.clone());
+        self.refresh();
         if now.parent() == Some(left.as_path()) {
             self.scroll_memory.borrow_mut().insert(left, (mode, scrolled));
         } else if left.parent() == Some(now.as_path())
@@ -483,6 +575,11 @@ impl PanelView {
                 let rows = u32::try_from(self.list_rows()).unwrap_or(1);
                 let column_width = adjustment.upper() / f64::from(items.div_ceil(rows));
                 (f64::from(cursor / rows) * column_width, column_width)
+            }
+            ViewMode::Icons => {
+                let columns = u32::try_from(self.icon_columns()).unwrap_or(1);
+                let row_height = adjustment.upper() / f64::from(items.div_ceil(columns));
+                (f64::from(cursor / columns) * row_height, row_height)
             }
         };
         let value = value.clamp(0.0, (adjustment.upper() - adjustment.page_size()).max(0.0));
@@ -572,15 +669,17 @@ impl PanelView {
                 .build();
             self.column_view.append_column(&column);
 
-            // The same column in the header of the list view, without cells.
-            let header_column = gtk::ColumnViewColumn::builder()
-                .id(id)
-                .title(gettext(title))
-                .factory(&gtk::SignalListItemFactory::new())
-                .sorter(&gtk::CustomSorter::new(|_, _| gtk::Ordering::Equal))
-                .expand(matches!(sort_column, SortColumn::Name))
-                .build();
-            self.list_header.append_column(&header_column);
+            // The same column in the headers of the list and icons views, without cells.
+            for header in &self.sort_headers {
+                let header_column = gtk::ColumnViewColumn::builder()
+                    .id(id)
+                    .title(gettext(title))
+                    .factory(&gtk::SignalListItemFactory::new())
+                    .sorter(&gtk::CustomSorter::new(|_, _| gtk::Ordering::Equal))
+                    .expand(matches!(sort_column, SortColumn::Name))
+                    .build();
+                header.append_column(&header_column);
+            }
         }
 
         let first = self.column_view.columns().item(0).and_downcast::<gtk::ColumnViewColumn>();
@@ -650,6 +749,154 @@ impl PanelView {
         });
     }
 
+    /// The icons view: a type icon or a preview, the name below in up to
+    /// two lines; previews are asked for as items come into view.
+    fn setup_icon_view(&self) {
+        let factory = gtk::SignalListItemFactory::new();
+        let this = self.this.clone();
+        factory.connect_setup(move |_, object| {
+            let list_item = list_item(object);
+            let icon = gtk::Image::builder().pixel_size(ICON_SIZE).build();
+            let preview = gtk::Picture::builder()
+                .content_fit(gtk::ContentFit::Contain)
+                .width_request(ICON_SIZE)
+                .height_request(ICON_SIZE)
+                .build();
+            let label = gtk::Label::builder()
+                .wrap(true)
+                .wrap_mode(gtk::pango::WrapMode::WordChar)
+                .lines(2)
+                .ellipsize(gtk::pango::EllipsizeMode::End)
+                .justify(gtk::Justification::Center)
+                .max_width_chars(1)
+                .width_request(ICON_SIZE)
+                .build();
+            let cell = gtk::Box::builder().orientation(gtk::Orientation::Vertical).spacing(4).build();
+            cell.append(&icon);
+            cell.append(&preview);
+            cell.append(&label);
+
+            // The preview, once made, replaces the type icon.
+            let thumbnail = list_item.property_expression("item").chain_property::<FileRow>("thumbnail");
+            thumbnail.bind(&preview, "paintable", Some(list_item));
+            thumbnail
+                .chain_closure::<bool>(glib::closure!(|_: Option<glib::Object>, t: Option<gdk::Texture>| t.is_some()))
+                .bind(&preview, "visible", Some(list_item));
+            list_item
+                .property_expression("item")
+                .chain_property::<FileRow>("thumbnail")
+                .chain_closure::<bool>(glib::closure!(|_: Option<glib::Object>, t: Option<gdk::Texture>| t.is_none()))
+                .bind(&icon, "visible", Some(list_item));
+            setup_cell_with(&this, list_item, &label, cell.upcast_ref());
+        });
+        let this = self.this.clone();
+        factory.connect_bind(move |_, object| {
+            let list_item = list_item(object);
+            let row = list_item.item().and_downcast::<FileRow>().expect("rows are FileRow");
+            let cell = list_item.child().expect("child is set up");
+            let texts = row.texts();
+            let (icon, image) = type_icon(&texts.file_name, texts.directory);
+            if let Some(image_widget) = cell.first_child().and_downcast::<gtk::Image>() {
+                image_widget.set_from_gicon(&icon);
+            }
+            if let Some(label) = cell.last_child().and_downcast::<gtk::Label>() {
+                label.set_text(&texts.full_name);
+                label.set_attributes(texts.directory.then(bold_attributes).as_ref());
+            }
+            if image
+                && row.thumbnail().is_none()
+                && let Some(view) = this.upgrade()
+            {
+                view.request_thumbnail(texts.file_name.clone());
+            }
+        });
+        self.icon_view.set_factory(Some(&factory));
+
+        let weak = self.this.clone();
+        self.icon_view.connect_activate(move |_, _| {
+            if let Some(view) = weak.upgrade() {
+                view.open_current();
+            }
+        });
+    }
+
+    /// Icons per row of the icons view, as laid out.
+    fn icon_columns(&self) -> usize {
+        let cell = self.icon_view.first_child().map_or(0, |cell| cell.width());
+        if cell <= 0 {
+            return 1;
+        }
+        usize::try_from(self.icon_view.width() / cell).unwrap_or(1).max(1)
+    }
+
+    /// Queues a preview of the image `name` of the current directory.
+    fn request_thumbnail(&self, name: OsString) {
+        let dir = self.path();
+        let mut thumbnails = self.thumbnails.borrow_mut();
+        if thumbnails.dir != dir {
+            Self::forget_thumbnails(&mut thumbnails, dir);
+        }
+        if !thumbnails.requested.insert(name.clone()) {
+            return;
+        }
+        thumbnails.queue.push_back(name);
+        if thumbnails.running {
+            return;
+        }
+        thumbnails.running = true;
+        drop(thumbnails);
+
+        let weak = self.this.clone();
+        glib::spawn_future_local(async move {
+            loop {
+                let Some(view) = weak.upgrade() else { return };
+                let job = {
+                    let mut thumbnails = view.thumbnails.borrow_mut();
+                    let next = thumbnails.queue.pop_front();
+                    if next.is_none() {
+                        thumbnails.running = false;
+                    }
+                    next.map(|name| (thumbnails.dir.clone(), name, Arc::clone(&thumbnails.cancel)))
+                };
+                drop(view);
+                let Some((dir, name, cancel)) = job else { return };
+
+                let path = dir.join(&name);
+                let stop = Arc::clone(&cancel);
+                let pixels = gio::spawn_blocking(move || {
+                    if stop.load(Ordering::Relaxed) { None } else { load_preview(&path, ICON_SIZE * THUMBNAIL_SCALE) }
+                })
+                .await
+                .ok()
+                .flatten();
+
+                let Some(view) = weak.upgrade() else { return };
+                if let Some(pixels) = pixels
+                    && !cancel.load(Ordering::Relaxed)
+                    && view.path() == dir
+                {
+                    let texture = pixels.texture();
+                    let index = view.panel.borrow().position_of(&name);
+                    if let Some(row) = index.and_then(|index| view.store.item(position(index))).and_downcast::<FileRow>() {
+                        row.set_thumbnail(Some(&texture));
+                    }
+                    view.thumbnails.borrow_mut().ready.insert(name, texture);
+                }
+            }
+        });
+    }
+
+    /// Previews are of the directory shown: a new one starts empty, what
+    /// is being made for the old one stops.
+    fn forget_thumbnails(thumbnails: &mut Thumbnails, dir: PathBuf) {
+        thumbnails.cancel.store(true, Ordering::Relaxed);
+        thumbnails.cancel = Arc::new(AtomicBool::new(false));
+        thumbnails.queue.clear();
+        thumbnails.requested.clear();
+        thumbnails.ready.clear();
+        thumbnails.dir = dir;
+    }
+
     /// Width of a name in the list view: `LIST_COLUMN_REM` times the font
     /// size (as CSS `rem`), less the horizontal padding of the cell.
     fn list_column_width(&self) -> i32 {
@@ -711,6 +958,7 @@ impl PanelView {
         match self.mode.get() {
             ViewMode::Details => self.column_view.clone().upcast(),
             ViewMode::List => self.grid_view.clone().upcast(),
+            ViewMode::Icons => self.icon_view.clone().upcast(),
         }
     }
 
@@ -723,6 +971,7 @@ impl PanelView {
         match self.mode.get() {
             ViewMode::Details => self.column_view.scroll_to(index, None, flags, None),
             ViewMode::List => self.grid_view.scroll_to(index, flags, None),
+            ViewMode::Icons => self.icon_view.scroll_to(index, flags, None),
         }
     }
 
@@ -746,11 +995,13 @@ impl PanelView {
         header.sort_by_column(column.as_ref(), order);
     }
 
-    /// Both headers show the panel's sorting.
+    /// All headers show the panel's sorting.
     fn update_list_headers(&self) {
         let sorting = self.panel.borrow().sorting();
         Self::show_sorting_in(&self.column_view, sorting);
-        Self::show_sorting_in(&self.list_header, sorting);
+        for header in &self.sort_headers {
+            Self::show_sorting_in(header, sorting);
+        }
     }
 
     fn connect_signals(self: &Rc<Self>) {
@@ -771,9 +1022,9 @@ impl PanelView {
             }
         });
 
-        // A click on either header sorts the panel; the other header then
-        // shows it too (`update_list_headers`), without sorting again.
-        for header in [&self.column_view, &self.list_header] {
+        // A click on any header sorts the panel; the others then show it
+        // too (`update_list_headers`), without sorting again.
+        for header in std::iter::once(&self.column_view).chain(&self.sort_headers) {
             let Some(sorter) = header.sorter().and_downcast::<gtk::ColumnViewSorter>() else { continue };
             let weak = Rc::downgrade(self);
             sorter.connect_changed(move |sorter, _| {
@@ -791,7 +1042,21 @@ impl PanelView {
     /// Rebuilds all rows from the panel state.
     fn refresh(&self) {
         let panel = self.panel.borrow();
-        let rows: Vec<FileRow> = panel.items().iter().map(|item| FileRow::new(item, &self.tz)).collect();
+        // Previews made already stay with their rows (sorting, marks).
+        let thumbnails = self.thumbnails.borrow();
+        let same_dir = thumbnails.dir == panel.path();
+        let rows: Vec<FileRow> = panel
+            .items()
+            .iter()
+            .map(|item| {
+                let row = FileRow::new(item, &self.tz);
+                if same_dir && let Some(texture) = thumbnails.ready.get(&item.entry().name) {
+                    row.set_thumbnail(Some(texture));
+                }
+                row
+            })
+            .collect();
+        drop(thumbnails);
 
         self.syncing.set(true);
         self.store.splice(0, self.store.n_items(), &rows);
@@ -833,6 +1098,12 @@ impl PanelView {
         // The list view moves by a column less one, as the original.
         if self.mode.get() == ViewMode::List {
             return self.list_rows().saturating_sub(1).max(1);
+        }
+        // The icons view by the rows fully visible.
+        if self.mode.get() == ViewMode::Icons {
+            let cell = self.icon_view.first_child().map_or(0, |cell| cell.height());
+            let visible = if cell > 0 { self.icon_view.height() / cell } else { 1 };
+            return self.icon_columns() * usize::try_from(visible).unwrap_or(1).max(1);
         }
         let rows = self.store.n_items();
         let Some(adjustment) = self.column_view.vadjustment() else { return 1 };
@@ -937,6 +1208,11 @@ impl PanelView {
 /// `marked` of whatever row it currently shows, so a changed mark restyles
 /// it without rebinding.
 fn setup_cell(view: &Weak<PanelView>, list_item: &gtk::ListItem, label: &gtk::Label) {
+    setup_cell_with(view, list_item, label, label.upcast_ref());
+}
+
+/// As [`setup_cell`] for a cell whose `child` holds the `label` and more.
+fn setup_cell_with(view: &Weak<PanelView>, list_item: &gtk::ListItem, label: &gtk::Label, child: &gtk::Widget) {
     let click = gtk::GestureClick::new();
     let (view, item) = (view.clone(), list_item.downgrade());
     click.connect_pressed(move |gesture, _, _, _| {
@@ -951,7 +1227,7 @@ fn setup_cell(view: &Weak<PanelView>, list_item: &gtk::ListItem, label: &gtk::La
             view.clicked_with_modifiers(index, modifiers);
         }
     });
-    label.add_controller(click);
+    child.add_controller(click);
 
     list_item
         .property_expression("item")
@@ -961,7 +1237,19 @@ fn setup_cell(view: &Weak<PanelView>, list_item: &gtk::ListItem, label: &gtk::La
         }))
         .bind(label, "css-classes", Some(list_item));
 
-    list_item.set_child(Some(label));
+    list_item.set_child(Some(child));
+}
+
+/// Sort headers for the list and icons views: a details table without
+/// rows; its columns are added with those of the details view.
+fn sort_header() -> gtk::ColumnView {
+    let header = gtk::ColumnView::builder()
+        .model(&gtk::NoSelection::new(Some(gio::ListStore::new::<FileRow>())))
+        .reorderable(false)
+        .focusable(false)
+        .build();
+    header.add_css_class("data-table");
+    header
 }
 
 fn bold_attributes() -> gtk::pango::AttrList {

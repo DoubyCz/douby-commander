@@ -4,6 +4,7 @@
 //! are `GObject` properties, so cells bound to them update themselves.
 
 use std::cell::{Cell, OnceCell, RefCell};
+use std::ffi::OsString;
 
 use dc_core::{FileItem, format};
 use gtk::glib;
@@ -17,6 +18,8 @@ pub struct RowTexts {
     pub name: String,
     /// With the extension, directories in brackets (list view).
     pub full_name: String,
+    /// The name as on disk, for the file type and the preview.
+    pub file_name: OsString,
     pub extension: String,
     pub size: String,
     pub modified: String,
@@ -39,6 +42,9 @@ mod imp {
         /// The Size column; changes when a directory's size is calculated.
         #[property(get, set)]
         size_text: RefCell<String>,
+        /// Preview of an image in the icons view, once made.
+        #[property(get, set, nullable)]
+        thumbnail: RefCell<Option<gtk::gdk::Texture>>,
     }
 
     #[glib::object_subclass]
@@ -65,6 +71,7 @@ impl FileRow {
             } else {
                 entry.name.to_string_lossy().into_owned()
             },
+            file_name: entry.name.clone(),
             extension: item.extension().to_owned(),
             size: format::size_column(item),
             modified: format::modified(entry.modified, tz),
