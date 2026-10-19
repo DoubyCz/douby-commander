@@ -5,6 +5,7 @@
 //! show the sort indicator and report clicks.
 
 use std::cell::{Cell, Ref, RefCell};
+use std::collections::HashMap;
 use std::ffi::OsStr;
 use std::path::{Path, PathBuf};
 use std::rc::{Rc, Weak};
@@ -46,6 +47,9 @@ pub struct PanelView {
     syncing: Cell<bool>,
     type_ahead: RefCell<TypeAhead>,
     path_listeners: RefCell<Vec<PathListener>>,
+    /// Scroll position of directories left for a subdirectory, restored
+    /// when coming back up, so the list looks as it did before.
+    scroll_memory: RefCell<HashMap<PathBuf, f64>>,
     this: Weak<Self>,
 }
 
@@ -83,6 +87,7 @@ impl PanelView {
             syncing: Cell::new(false),
             type_ahead: RefCell::new(TypeAhead::default()),
             path_listeners: RefCell::default(),
+            scroll_memory: RefCell::default(),
             this: this.clone(),
         });
         view.setup_columns();
@@ -226,9 +231,10 @@ impl PanelView {
     }
 
     pub fn go_up(&self) {
+        let left = self.leaving();
         let result = self.panel.borrow_mut().go_up(&self.source);
         match result {
-            Ok(true) => self.refresh(),
+            Ok(true) => self.arrived(left),
             Ok(false) => {}
             Err(err) => self.show_error(&err),
         }
@@ -236,10 +242,56 @@ impl PanelView {
 
     /// Shows `path`, e.g. from a drive button or the `/` and `~` buttons.
     pub fn change_dir(&self, path: PathBuf) {
+        let left = self.leaving();
         let result = self.panel.borrow_mut().load(&self.source, path, None);
         match result {
-            Ok(()) => self.refresh(),
+            Ok(()) => self.arrived(left),
             Err(err) => self.show_error(&err),
+        }
+    }
+
+    /// The directory being left and how far its list is scrolled.
+    fn leaving(&self) -> (PathBuf, f64) {
+        let scrolled = self.column_view.vadjustment().map_or(0.0, |adjustment| adjustment.value());
+        (self.path(), scrolled)
+    }
+
+    /// After moving to another directory: going down remembers how the
+    /// directory left was scrolled, going up shows it scrolled the same
+    /// way again, with the cursor on the directory we came from at the
+    /// same place on screen.
+    fn arrived(&self, (left, scrolled): (PathBuf, f64)) {
+        self.refresh();
+        let now = self.path();
+        if now.parent() == Some(left.as_path()) {
+            self.scroll_memory.borrow_mut().insert(left, scrolled);
+        } else if left.parent() == Some(now.as_path())
+            && let Some(&remembered) = self.scroll_memory.borrow().get(&now)
+        {
+            // After the list is laid out with the new rows.
+            let this = self.this.clone();
+            glib::idle_add_local_once(move || {
+                if let Some(this) = this.upgrade() {
+                    this.restore_scroll(remembered);
+                }
+            });
+        }
+    }
+
+    /// Scrolls to `value` unless the cursor would not be fully visible
+    /// there (the directory changed meanwhile); then it stays as it is.
+    fn restore_scroll(&self, value: f64) {
+        let rows = self.store.n_items();
+        let Some(adjustment) = self.column_view.vadjustment() else { return };
+        if rows == 0 || adjustment.upper() <= 0.0 {
+            return;
+        }
+        // The header scrolls with the rows, it counts as one more row.
+        let row_height = adjustment.upper() / f64::from(rows + 1);
+        let cursor_top = f64::from(position(self.panel.borrow().cursor()) + 1) * row_height;
+        let value = value.clamp(0.0, (adjustment.upper() - adjustment.page_size()).max(0.0));
+        if cursor_top >= value + row_height && cursor_top + row_height <= value + adjustment.page_size() {
+            adjustment.set_value(value);
         }
     }
 
@@ -260,9 +312,10 @@ impl PanelView {
 
     /// Enter or double click: opens the directory or file under the cursor.
     pub fn open_current(&self) {
+        let left = self.leaving();
         let result = self.panel.borrow_mut().activate(&self.source);
         match result {
-            Ok(Some(dc_core::Activation::Navigated)) => self.refresh(),
+            Ok(Some(dc_core::Activation::Navigated)) => self.arrived(left),
             Ok(Some(dc_core::Activation::OpenFile(path))) => self.open_file(&path),
             Ok(None) => {}
             Err(err) => self.show_error(&err),
