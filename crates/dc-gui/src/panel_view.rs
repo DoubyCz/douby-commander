@@ -1274,7 +1274,17 @@ impl PanelView {
 
     /// Whether the panel shows the inside of an archive.
     pub fn in_archive(&self) -> bool {
-        self.source.archive_of(&self.path()).is_some()
+        self.archive_file().is_some()
+    }
+
+    /// The archive file the panel shows the inside of.
+    pub fn archive_file(&self) -> Option<PathBuf> {
+        self.source.archive_of(&self.path())
+    }
+
+    /// Bytes of the files at or under `path` inside the archive.
+    pub fn archive_bytes(&self, path: &Path) -> u64 {
+        self.source.archive_bytes(path)
     }
 
     /// After a change on disk: lists the directory again, or leaves it for

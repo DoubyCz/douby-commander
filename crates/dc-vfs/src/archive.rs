@@ -169,6 +169,113 @@ fn missing(path: &Path) -> Error {
     Error::ReadEntry { path: path.to_owned(), source: std::io::ErrorKind::NotFound.into() }
 }
 
+impl ArchiveSource {
+    /// Bytes of all files at or under `path` (a virtual path), for the
+    /// progress of extracting them.
+    #[must_use]
+    pub fn bytes_under(&self, path: &Path) -> u64 {
+        let Some(inner) = self.inner(path) else { return 0 };
+        self.entries
+            .iter()
+            .filter(|(entry_path, entry)| entry.kind == EntryKind::File && entry_path.starts_with(inner))
+            .map(|(_, entry)| entry.size)
+            .sum()
+    }
+}
+
+/// Progress of [`extract`].
+#[derive(Debug)]
+pub enum ExtractEvent<'a> {
+    /// A file starts, this is where it goes.
+    File(&'a Path),
+    /// So many more bytes are written.
+    Bytes(u64),
+}
+
+/// Extracts the items `selected` (virtual paths: the archive file's path
+/// followed by the path within it) of `archive` into `target_dir`, with
+/// their paths below `base` (the directory of the archive they are listed
+/// in), as copying them out would. `progress` is told about every file and
+/// block; returning `false` stops (the result is then `Ok(false)`).
+/// Links inside archives are left out.
+///
+/// # Errors
+/// [`Error::Archive`] when the archive cannot be read or a file not written.
+pub fn extract(
+    archive: &Path,
+    base: &Path,
+    selected: &[PathBuf],
+    target_dir: &Path,
+    mut progress: impl FnMut(ExtractEvent<'_>) -> bool,
+) -> Result<bool> {
+    let error = |path: &Path, message: String| Error::Archive { path: path.to_owned(), message };
+    let inner = |path: &Path| path.strip_prefix(archive).map(Path::to_path_buf).ok();
+    let base = inner(base).ok_or_else(|| error(archive, String::new()))?;
+    let wanted: Vec<PathBuf> = selected.iter().filter_map(|path| inner(path)).collect();
+
+    let source = File::open(archive).map_err(|err| error(archive, err.to_string()))?;
+    let filter_wanted = wanted.clone();
+    let iterator = ArchiveIteratorBuilder::new(source)
+        .filter(move |name, _| clean(name).is_some_and(|path| filter_wanted.iter().any(|wanted| path.starts_with(wanted))))
+        .build()
+        .map_err(|err| error(archive, err.to_string()))?;
+
+    // The file being written, its target, mode and time.
+    let mut current: Option<(File, PathBuf, u32, Option<SystemTime>)> = None;
+    for content in iterator {
+        match content {
+            ArchiveContents::StartOfEntry(name, stat) => {
+                let Some(relative) = clean(&name).and_then(|path| path.strip_prefix(&base).ok().map(Path::to_path_buf)) else {
+                    continue;
+                };
+                let target = target_dir.join(relative);
+                let mode = stat.st_mode;
+                if name.ends_with('/') || mode & 0o170_000 == 0o040_000 {
+                    std::fs::create_dir_all(&target).map_err(|err| error(&target, err.to_string()))?;
+                } else if mode & 0o170_000 == 0o100_000 || mode & 0o170_000 == 0 {
+                    if let Some(parent) = target.parent() {
+                        std::fs::create_dir_all(parent).map_err(|err| error(parent, err.to_string()))?;
+                    }
+                    let file = File::create(&target).map_err(|err| error(&target, err.to_string()))?;
+                    let modified = u64::try_from(stat.st_mtime).ok().map(|seconds| UNIX_EPOCH + Duration::from_secs(seconds));
+                    if !progress(ExtractEvent::File(&target)) {
+                        return Ok(false);
+                    }
+                    current = Some((file, target, mode, modified));
+                }
+            }
+            ArchiveContents::DataChunk(bytes) => {
+                if let Some((file, target, ..)) = &mut current {
+                    std::io::Write::write_all(file, &bytes).map_err(|err| error(target, err.to_string()))?;
+                }
+                if !progress(ExtractEvent::Bytes(bytes.len() as u64)) {
+                    return Ok(false);
+                }
+            }
+            ArchiveContents::EndOfEntry => {
+                if let Some((file, target, mode, modified)) = current.take() {
+                    finish_file(&file, mode, modified).map_err(|err| error(&target, err.to_string()))?;
+                }
+            }
+            ArchiveContents::Err(err) => return Err(error(archive, err.to_string())),
+        }
+    }
+    Ok(true)
+}
+
+/// Mode bits (writable for the owner, files from archives often are not)
+/// and the time from the archive.
+fn finish_file(file: &File, mode: u32, modified: Option<SystemTime>) -> std::io::Result<()> {
+    use std::os::unix::fs::PermissionsExt;
+    if mode & 0o777 != 0 {
+        file.set_permissions(std::fs::Permissions::from_mode((mode & 0o7777) | 0o200))?;
+    }
+    if let Some(modified) = modified {
+        file.set_modified(modified)?;
+    }
+    Ok(())
+}
+
 /// A path within an archive made safe: relative, without `.`, `..` and
 /// a leading `/`. `None` when nothing is left.
 fn clean(name: &str) -> Option<PathBuf> {
@@ -309,6 +416,35 @@ mod tests {
         root.sort_by(|a, b| a.0.cmp(&b.0));
         assert_eq!(root, [("docs".into(), EntryKind::Directory), ("readme.txt".into(), EntryKind::File)]);
         assert_eq!(archive.entry(&cab.join("docs/index.md")).unwrap().size, 7);
+    }
+
+    #[test]
+    fn extracts_the_selected_items_below_their_directory() {
+        let tmp = tempfile::tempdir().unwrap();
+        let Some(zip) = sample_zip(tmp.path()) else { return };
+        let out = tmp.path().join("out");
+        std::fs::create_dir(&out).unwrap();
+
+        // From the directory "src" of the archive, its "deep" goes out.
+        let mut files = 0;
+        let mut bytes = 0;
+        let done = extract(&zip, &zip.join("src"), &[zip.join("src/deep")], &out, |event| {
+            match event {
+                ExtractEvent::File(_) => files += 1,
+                ExtractEvent::Bytes(count) => bytes += count,
+            }
+            true
+        })
+        .unwrap();
+        assert!(done);
+        assert_eq!(std::fs::read(out.join("deep/a.rs")).unwrap(), b"fn main() {}");
+        assert!(!out.join("readme.txt").exists(), "only the selection");
+        assert_eq!((files, bytes), (1, 12));
+        assert_eq!(ArchiveSource::open(&zip).unwrap().bytes_under(&zip.join("src")), 12);
+
+        // Stopped right away: nothing more happens.
+        let stopped = extract(&zip, &zip, &[zip.join("readme.txt")], &out, |_| false).unwrap();
+        assert!(!stopped);
     }
 
     #[test]

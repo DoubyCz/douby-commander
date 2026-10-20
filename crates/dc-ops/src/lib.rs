@@ -12,12 +12,14 @@
 //! answers them with [`OperationsManager::answer`].
 
 mod delete;
+mod extract;
 mod manager;
 mod operation;
 mod target;
 mod transfer;
 
 pub use delete::{DeleteMode, DeleteOperation};
+pub use extract::ExtractOperation;
 pub use target::{Destination, apply_mask};
 pub use transfer::{DirectoryExists, FileExists, FollowLinks, PropertyError, TransferMode, TransferOperation, TransferOptions};
 pub use manager::{Finished, OperationId, OperationInfo, OperationState, OperationsManager, Outcome, QueueId};

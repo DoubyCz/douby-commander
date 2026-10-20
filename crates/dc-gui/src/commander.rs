@@ -9,7 +9,7 @@ use std::rc::Rc;
 use dc_core::command::{Command, TrashChoice};
 use dc_core::keymap::{Key, Keymap, Shortcut};
 use dc_i18n::{fill, gettext, ngettext, plural_count};
-use dc_ops::{DeleteMode, DeleteOperation, Destination, TransferMode, TransferOperation};
+use dc_ops::{DeleteMode, DeleteOperation, Destination, ExtractOperation, TransferMode, TransferOperation};
 use dc_vfs::{FileSource, LocalFs};
 use gtk::prelude::*;
 use gtk::{gdk, glib};
@@ -199,12 +199,17 @@ impl Commander {
     fn refused_in_archive(&self, command: Command) -> bool {
         let other = &self.panels[1 - self.active.get()];
         let refused = match command {
-            Command::View | Command::Edit | Command::CopySamePanel | Command::MakeDir | Command::RunTerm | Command::Delete { .. } => {
-                self.active().in_archive()
-            }
-            Command::Copy | Command::Rename => self.active().in_archive() || other.in_archive(),
+            Command::View
+            | Command::Edit
+            | Command::CopySamePanel
+            | Command::MakeDir
+            | Command::RunTerm
+            | Command::Delete { .. }
+            | Command::Rename => self.active().in_archive(),
+            // Out of an archive it extracts; into one not yet.
+            Command::Copy => other.in_archive(),
             _ => false,
-        };
+        } || (command == Command::Rename && other.in_archive());
         if refused {
             dialogs::show_error(self.active().window().as_ref(), &not_in_archives(), "");
         }
@@ -297,12 +302,27 @@ impl Commander {
             last_queue: operations.last_queue(QueueMemory::Transfer),
             new_queue: operations.new_queue(),
         };
+        // Out of an archive: extracting, a relative target is relative to
+        // the archive's directory (as in the original).
+        let archive = panel.archive_file();
+        let paths: Vec<PathBuf> = names.iter().map(|name| dir.join(name)).collect();
+        let extract_bytes: u64 = if archive.is_some() { paths.iter().map(|path| panel.archive_bytes(path)).sum() } else { 0 };
         let source_panel = Rc::clone(&panel);
         copy_dialog::show(panel.window().as_ref(), &request, move |confirmed| {
-            let Some(destination) = Destination::parse(&confirmed.target, &dir, names.len()) else { return };
-            let paths: Vec<PathBuf> = names.iter().map(|name| dir.join(name)).collect();
-            let operation = TransferOperation::new(mode, paths, destination, confirmed.options);
-            operations.start(Box::new(operation), confirmed.queue, QueueMemory::Transfer);
+            let base = archive.as_ref().and_then(|file| file.parent()).unwrap_or(&dir);
+            let Some(destination) = Destination::parse(&confirmed.target, base, names.len()) else { return };
+            let operation: Box<dyn dc_ops::Operation> = match &archive {
+                Some(file) => Box::new(ExtractOperation::new(
+                    file.clone(),
+                    dir.clone(),
+                    paths.clone(),
+                    destination,
+                    confirmed.options,
+                    extract_bytes,
+                )),
+                None => Box::new(TransferOperation::new(mode, paths.clone(), destination, confirmed.options)),
+            };
+            operations.start(operation, confirmed.queue, QueueMemory::Transfer);
             // As the original: marks go once the operation is on its way.
             source_panel.mark_all(false);
             source_panel.focus();

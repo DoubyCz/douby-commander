@@ -43,6 +43,15 @@ impl Vfs {
         }
     }
 
+    /// Bytes of the files at or under `path` inside an archive, 0 outside.
+    #[must_use]
+    pub fn archive_bytes(&self, path: &Path) -> u64 {
+        match place(path) {
+            Place::Archive(file) => self.archive(&file).map_or(0, |archive| archive.bytes_under(path)),
+            Place::Local => 0,
+        }
+    }
+
     fn archive(&self, file: &Path) -> Result<Arc<ArchiveSource>> {
         self.archives.get(file)
     }

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: doubycmd\n"
 "Report-Msgid-Bugs-To: douby@douby.cz\n"
-"POT-Creation-Date: 2026-10-20 15:31+0200\n"
+"POT-Creation-Date: 2026-10-20 15:42+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -70,7 +70,7 @@ msgstr ""
 msgid "Invalid shortcut {shortcut}"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:117 crates/dc-gui/src/commander.rs:219
+#: crates/dc-gui/src/commander.rs:117 crates/dc-gui/src/commander.rs:224
 msgid ""
 "No terminal found. Install xdg-terminal-exec or set the TERMINAL variable."
 msgstr ""
@@ -79,61 +79,61 @@ msgstr ""
 msgid "Cannot run the terminal"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:218
+#: crates/dc-gui/src/commander.rs:223
 msgid "No text editor found. Set one in the VISUAL or EDITOR variable."
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:220
+#: crates/dc-gui/src/commander.rs:225
 msgid "No application is set for text files (text/plain)."
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:224
+#: crates/dc-gui/src/commander.rs:229
 #, rust-format
 msgid "Cannot open {path} in an editor"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:328
+#: crates/dc-gui/src/commander.rs:348
 #, rust-format
 msgid "Delete selected \"{name}\" into trash can?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:330
+#: crates/dc-gui/src/commander.rs:350
 #, rust-format
 msgid "Delete selected \"{name}\"?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:338
+#: crates/dc-gui/src/commander.rs:358
 #, rust-format
 msgid "Delete {count} selected file/directory into trash can?"
 msgid_plural "Delete {count} selected files/directories into trash can?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: crates/dc-gui/src/commander.rs:343
+#: crates/dc-gui/src/commander.rs:363
 #, rust-format
 msgid "Delete {count} selected file/directory?"
 msgid_plural "Delete {count} selected files/directories?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: crates/dc-gui/src/commander.rs:385
+#: crates/dc-gui/src/commander.rs:405
 #, rust-format
 msgid "Copy selected \"{name}\"?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:385
+#: crates/dc-gui/src/commander.rs:405
 #, rust-format
 msgid "Rename/move selected \"{name}\"?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:391
+#: crates/dc-gui/src/commander.rs:411
 #, rust-format
 msgid "Copy {count} selected file/directory?"
 msgid_plural "Copy {count} selected files/directories?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: crates/dc-gui/src/commander.rs:394
+#: crates/dc-gui/src/commander.rs:414
 #, rust-format
 msgid "Rename/move {count} selected file/directory?"
 msgid_plural "Rename/move {count} selected files/directories?"
@@ -987,7 +987,7 @@ msgstr ""
 msgid "Cannot open {path}"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:1341
+#: crates/dc-gui/src/panel_view.rs:1351
 msgid "Archives can only be browsed so far."
 msgstr ""
 
@@ -1193,6 +1193,16 @@ msgstr ""
 msgid "Deleting"
 msgstr ""
 
+#: crates/dc-ops/src/extract.rs:58
+msgid "Extracting"
+msgstr ""
+
+#: crates/dc-ops/src/extract.rs:66 crates/dc-ops/src/transfer.rs:726
+#: crates/dc-vfs/src/lib.rs:102
+#, rust-format
+msgid "Can not create directory {path}!"
+msgstr ""
+
 #: crates/dc-ops/src/manager.rs:25
 msgid "Out of queue"
 msgstr ""
@@ -1333,11 +1343,6 @@ msgstr ""
 #: crates/dc-ops/src/transfer.rs:712
 #, rust-format
 msgid "Error creating symlink {path}"
-msgstr ""
-
-#: crates/dc-ops/src/transfer.rs:726 crates/dc-vfs/src/lib.rs:102
-#, rust-format
-msgid "Can not create directory {path}!"
 msgstr ""
 
 #: crates/dc-ops/src/transfer.rs:747

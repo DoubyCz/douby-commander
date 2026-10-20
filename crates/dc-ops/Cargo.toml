@@ -12,8 +12,7 @@ dc-i18n.workspace = true
 dc-vfs.workspace = true
 jiff.workspace = true
 rustix.workspace = true
-
-[dev-dependencies]
+# The hidden directory archives are extracted into first.
 tempfile.workspace = true
 
 [lints]
