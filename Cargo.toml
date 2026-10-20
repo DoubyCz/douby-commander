@@ -3,7 +3,7 @@ resolver = "3"
 members = ["crates/*"]
 
 [workspace.package]
-version = "0.0.6"
+version = "0.0.7"
 edition = "2024"
 rust-version = "1.92"
 license = "GPL-2.0-or-later"
@@ -23,6 +23,8 @@ glib-build-tools = "0.22.8"
 adw = { package = "libadwaita", version = "0.9.2", features = ["v1_6"] }
 gtk = { package = "gtk4", version = "0.11.5", features = ["v4_16"] }
 jiff = "0.2.38"
+# The terminal shown in a panel (F9): the GTK 4 widget of GNOME's terminals.
+vte4 = "0.10.0"
 # Safe wrappers of system calls (statvfs) without unsafe code of our own.
 rustix = { version = "1.1.5", features = ["fs"] }
 # Reading archives (zip, 7z, rar, tar.*, iso, cab, ...) through the system's

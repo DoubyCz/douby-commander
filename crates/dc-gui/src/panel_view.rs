@@ -24,6 +24,7 @@ use jiff::tz::TimeZone;
 
 use crate::dialogs;
 use crate::file_row::FileRow;
+use crate::panel_terminal::PanelTerminal;
 use crate::rename_edit::RenameEdit;
 
 /// Sort key, column id, title (translated when the columns are built).
@@ -72,6 +73,13 @@ pub struct PanelView {
     /// when coming back up, so the list looks as it did before.
     scroll_memory: RefCell<HashMap<PathBuf, (ViewMode, f64)>>,
     size_jobs: RefCell<SizeJobs>,
+    /// The panel's terminal (F9), made when first shown, then kept in the
+    /// panel's directory until its shell exits.
+    terminal: RefCell<Option<Rc<PanelTerminal>>>,
+    /// The terminal is shown instead of the files.
+    terminal_shown: Cell<bool>,
+    /// Told when the keyboard focus comes into the panel, the terminal too.
+    focus_enter: RefCell<Option<Rc<dyn Fn()>>>,
     this: Weak<Self>,
 }
 
@@ -272,6 +280,9 @@ impl PanelView {
             path_listeners: RefCell::default(),
             scroll_memory: RefCell::default(),
             size_jobs: RefCell::default(),
+            terminal: RefCell::default(),
+            terminal_shown: Cell::new(false),
+            focus_enter: RefCell::default(),
             this: this.clone(),
         });
         view.setup_columns();
@@ -301,8 +312,15 @@ impl PanelView {
         }
     }
 
-    /// Moves keyboard focus to the row under the cursor.
+    /// Moves keyboard focus to the row under the cursor, or to the terminal
+    /// when it is shown.
     pub fn focus(&self) {
+        if self.terminal_shown.get()
+            && let Some(terminal) = self.terminal.borrow().as_ref()
+        {
+            terminal.grab_focus();
+            return;
+        }
         let cursor = position(self.panel.borrow().cursor());
         // The highlight follows the panel's cursor; after new rows it would
         // stay on the first one while the cursor is elsewhere.
@@ -316,12 +334,98 @@ impl PanelView {
     }
 
     pub fn connect_focus_enter(&self, callback: impl Fn() + 'static) {
-        let callback = Rc::new(callback);
+        let callback: Rc<dyn Fn()> = Rc::new(callback);
         for widget in [self.column_view.upcast_ref::<gtk::Widget>(), self.grid_view.upcast_ref(), self.icon_view.upcast_ref()] {
-            let focus = gtk::EventControllerFocus::new();
-            let callback = Rc::clone(&callback);
-            focus.connect_enter(move |_| callback());
-            widget.add_controller(focus);
+            notify_focus_enter(widget, &callback);
+        }
+        *self.focus_enter.borrow_mut() = Some(callback);
+    }
+
+    /// Whether the panel shows its terminal instead of the files.
+    pub fn is_terminal_shown(&self) -> bool {
+        self.terminal_shown.get()
+    }
+
+    /// F9 (`cm_TerminalView`): the terminal in the panel's place, started
+    /// in the panel's directory the first time.
+    pub fn show_terminal(&self) {
+        if self.terminal_shown.get() {
+            return;
+        }
+        self.cancel_rename();
+        let terminal = Rc::clone(self.terminal.borrow_mut().get_or_insert_with(|| self.start_terminal()));
+        self.terminal_shown.set(true);
+        self.views.set_visible_child(terminal.widget());
+        terminal.grab_focus();
+        terminal.shown();
+    }
+
+    fn start_terminal(&self) -> Rc<PanelTerminal> {
+        let weak = self.this.clone();
+        let terminal = PanelTerminal::new(&self.local_dir(), move |dir| {
+            if let Some(view) = weak.upgrade() {
+                view.terminal_exited(dir);
+            }
+        });
+        self.views.add_child(terminal.widget());
+        if let Some(callback) = self.focus_enter.borrow().as_ref() {
+            notify_focus_enter(terminal.widget().upcast_ref(), callback);
+        }
+        terminal
+    }
+
+    /// `exit` in the terminal: it is gone, the panel shows the files of
+    /// the directory the shell was in last.
+    fn terminal_exited(&self, dir: PathBuf) {
+        let Some(terminal) = self.terminal.take() else { return };
+        let shown = self.terminal_shown.replace(false);
+        if shown {
+            self.views.set_visible_child_name(self.mode.get().name());
+        }
+        self.views.remove(terminal.widget());
+        if shown {
+            if dir != self.local_dir() {
+                self.change_dir(dir);
+            }
+            self.focus();
+        }
+    }
+
+    /// Back from the terminal to the files, of the directory the shell is
+    /// in now.
+    fn leave_terminal(&self) {
+        if !self.terminal_shown.replace(false) {
+            return;
+        }
+        self.views.set_visible_child_name(self.mode.get().name());
+        let dir = self.terminal.borrow().as_ref().map(|terminal| {
+            terminal.hidden();
+            terminal.current_dir()
+        });
+        if let Some(dir) = dir
+            && dir != self.local_dir()
+        {
+            self.change_dir(dir);
+        }
+        self.focus();
+    }
+
+    /// Where a terminal of its own window starts (Shift+F9): where the
+    /// panel's terminal is, when it is shown, else the panel's directory.
+    pub fn terminal_dir(&self) -> PathBuf {
+        match self.terminal.borrow().as_ref() {
+            Some(terminal) if self.terminal_shown.get() => terminal.current_dir(),
+            _ => self.path(),
+        }
+    }
+
+    /// The directory on disk the panel is in: inside an archive, that of
+    /// the archive.
+    fn local_dir(&self) -> PathBuf {
+        let path = self.path();
+        match self.source.archive_of(&path) {
+            Some(archive) => archive.parent().map_or(path, Path::to_owned),
+            None => path,
         }
     }
 
@@ -1172,8 +1276,13 @@ impl PanelView {
     }
 
     /// `cm_BriefView` / `cm_ColumnsView`: the same items, cursor, marks and
-    /// sorting in another view.
+    /// sorting in another view. From the terminal, back to the files.
     pub fn set_view_mode(&self, mode: ViewMode) {
+        if self.terminal_shown.get() {
+            self.mode.set(mode);
+            self.leave_terminal();
+            return;
+        }
         if mode == self.mode.get() {
             return;
         }
@@ -1196,8 +1305,12 @@ impl PanelView {
         }
     }
 
-    /// Whether the keyboard focus is in this panel's list.
+    /// Whether the keyboard focus is in this panel's list, or its terminal
+    /// when shown.
     pub fn has_focus(&self) -> bool {
+        if self.terminal_shown.get() {
+            return self.terminal.borrow().as_ref().is_some_and(|terminal| terminal.has_focus());
+        }
         let widget = self.list_widget();
         widget.has_focus() || widget.focus_child().is_some()
     }
@@ -1339,6 +1452,11 @@ impl PanelView {
         }
         for callback in self.path_listeners.borrow().iter() {
             callback(&path);
+        }
+        // The terminal behind the files goes along.
+        let terminal = self.terminal.borrow().clone();
+        if let Some(terminal) = terminal {
+            terminal.follow(&self.local_dir());
         }
     }
 
@@ -1518,6 +1636,14 @@ fn setup_cell_with(view: &Weak<PanelView>, list_item: &gtk::ListItem, label: &gt
         .bind(label, "css-classes", Some(list_item));
 
     list_item.set_child(Some(child));
+}
+
+/// Runs `callback` when the keyboard focus comes into `widget`.
+fn notify_focus_enter(widget: &gtk::Widget, callback: &Rc<dyn Fn()>) {
+    let focus = gtk::EventControllerFocus::new();
+    let callback = Rc::clone(callback);
+    focus.connect_enter(move |_| callback());
+    widget.add_controller(focus);
 }
 
 /// Told when something is asked of a file inside an archive that only

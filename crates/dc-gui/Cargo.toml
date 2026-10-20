@@ -18,6 +18,7 @@ dc-vfs.workspace = true
 adw.workspace = true
 gtk.workspace = true
 jiff.workspace = true
+vte4.workspace = true
 
 [features]
 # Builds against the GTK and libadwaita API of the system (4.22, 1.9), so
@@ -56,6 +57,7 @@ assets = [
 gtk4 = ">= 4.16"
 libadwaita = ">= 1.6"
 libarchive = ">= 3.6"
+vte291-gtk4 = ">= 0.70"
 glibc = ">= 2.41"
 
 [build-dependencies]

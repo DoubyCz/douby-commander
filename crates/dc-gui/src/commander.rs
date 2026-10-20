@@ -112,7 +112,7 @@ impl Commander {
             Command::RenameOnly => panel.start_rename(),
             Command::MakeDir => self.make_dir(),
             Command::RunTerm => {
-                if let Err(err) = launch::open_terminal(&panel.path()) {
+                if let Err(err) = launch::open_terminal(&panel.terminal_dir()) {
                     let detail = match err {
                         LaunchError::Spawn(err) => err.to_string(),
                         _ => gettext("No terminal found. Install xdg-terminal-exec or set the TERMINAL variable."),
@@ -135,6 +135,7 @@ impl Commander {
             Command::BriefView => panel.set_view_mode(ViewMode::List),
             Command::ColumnsView => panel.set_view_mode(ViewMode::Details),
             Command::ThumbnailsView => panel.set_view_mode(ViewMode::Icons),
+            Command::TerminalView => panel.show_terminal(),
             Command::SortBy(column) => panel.sort_by(column),
             Command::ReverseOrder => panel.reverse_order(),
             Command::LeftEqualRight => self.panels[0].change_dir(self.panels[1].path()),
@@ -169,6 +170,20 @@ impl Commander {
         // Renaming in place: the keys belong to its entry.
         if panel.is_renaming() {
             return glib::Propagation::Proceed;
+        }
+        // In the terminal every key is the shell's (Tab, F9 for programs,
+        // ...), except those that show the files again and Shift+F9.
+        if panel.is_terminal_shown() && panel.has_focus() {
+            let command = keys::shortcut(key, state).and_then(|shortcut| self.keymap.command(&shortcut));
+            return match command {
+                Some(
+                    command @ (Command::BriefView | Command::ColumnsView | Command::ThumbnailsView | Command::RunTerm),
+                ) => {
+                    self.execute(command);
+                    glib::Propagation::Stop
+                }
+                _ => glib::Propagation::Proceed,
+            };
         }
         let typed = keys::typed_char(key, state);
 

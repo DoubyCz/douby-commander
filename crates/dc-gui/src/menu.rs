@@ -169,6 +169,7 @@ const MENU: &[(Caption, &[Entry])] = &[
             Item(NC_("main menu", "_List"), "cm_BriefView"),
             Item(NC_("main menu", "_Details"), "cm_ColumnsView"),
             Item(NC_("main menu", "_Icons"), "cm_ThumbnailsView"),
+            Item(NC_("main menu", "Ter_minal"), "cm_TerminalView"),
             Separator,
             Item(NC_("main menu", "_Quick View Panel"), "cm_QuickView"),
             Item(NC_("main menu", "_Tree View Panel"), "cm_TreeView"),

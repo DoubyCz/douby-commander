@@ -13,7 +13,7 @@ the name and the abbreviation DC.
 It follows the theme of [Omarchy](https://omarchy.org/) live: switch the theme and the
 colors change at once, with no setup.
 
-> **Alpha (0.0.6).** Many features are not done yet. Most menu items and toolbar buttons
+> **Alpha (0.0.7).** Many features are not done yet. Most menu items and toolbar buttons
 > are not connected, and there is no settings dialog. Expect rough edges.
 
 ## What works
@@ -29,8 +29,9 @@ colors change at once, with no setup.
 - F5 copy and F6 move, with the questions and options of the original, a progress
   window, pause, and queues
 - Shift+F6 or F2 renames the file under the cursor right in the list
-- F7 new directory, F8 delete (to the trash, or permanently with Shift), F9 terminal
-  in the current directory
+- F7 new directory, F8 delete (to the trash, or permanently with Shift)
+- F9 turns the panel into a terminal that follows the panel's directory; the view
+  shortcuts bring the files back, `exit` closes it. Shift+F9 opens your own terminal
 - Sorting by clicking the column headers, from the Show menu or with Ctrl+F3 to Ctrl+F6
 - Adjustable panel divider, drive list with free space
 - English and Czech
@@ -59,20 +60,20 @@ install them for your distribution.
 Arch Linux (Omarchy):
 
 ```sh
-sudo pacman -S --needed base-devel rust gtk4 libadwaita libarchive gettext
+sudo pacman -S --needed base-devel rust gtk4 libadwaita libarchive vte4 gettext
 ```
 
 Debian 13, Ubuntu 25.04 and newer:
 
 ```sh
-sudo apt install build-essential pkg-config libgtk-4-dev libadwaita-1-dev libarchive-dev gettext
+sudo apt install build-essential pkg-config libgtk-4-dev libadwaita-1-dev libarchive-dev libvte-2.91-gtk4-dev gettext
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 
 Fedora, RHEL 10 and derivatives:
 
 ```sh
-sudo dnf install gcc pkgconf-pkg-config gtk4-devel libadwaita-devel libarchive-devel gettext
+sudo dnf install gcc pkgconf-pkg-config gtk4-devel libadwaita-devel libarchive-devel vte291-gtk4-devel gettext
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 

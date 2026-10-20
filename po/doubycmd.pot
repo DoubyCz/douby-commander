@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: doubycmd\n"
 "Report-Msgid-Bugs-To: douby@douby.cz\n"
-"POT-Creation-Date: 2026-10-20 15:55+0200\n"
+"POT-Creation-Date: 2026-10-20 16:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,12 +18,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: crates/dc-core/src/command.rs:266
+#: crates/dc-core/src/command.rs:273
 #, rust-format
 msgid "Unknown command {command}"
 msgstr ""
 
-#: crates/dc-core/src/command.rs:268
+#: crates/dc-core/src/command.rs:275
 #, rust-format
 msgid "Command {command} does not accept parameter {param}"
 msgstr ""
@@ -70,7 +70,7 @@ msgstr ""
 msgid "Invalid shortcut {shortcut}"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:118 crates/dc-gui/src/commander.rs:230
+#: crates/dc-gui/src/commander.rs:118 crates/dc-gui/src/commander.rs:245
 msgid ""
 "No terminal found. Install xdg-terminal-exec or set the TERMINAL variable."
 msgstr ""
@@ -79,61 +79,61 @@ msgstr ""
 msgid "Cannot run the terminal"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:229
+#: crates/dc-gui/src/commander.rs:244
 msgid "No text editor found. Set one in the VISUAL or EDITOR variable."
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:231
+#: crates/dc-gui/src/commander.rs:246
 msgid "No application is set for text files (text/plain)."
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:235
+#: crates/dc-gui/src/commander.rs:250
 #, rust-format
 msgid "Cannot open {path} in an editor"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:354
+#: crates/dc-gui/src/commander.rs:369
 #, rust-format
 msgid "Delete selected \"{name}\" into trash can?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:356
+#: crates/dc-gui/src/commander.rs:371
 #, rust-format
 msgid "Delete selected \"{name}\"?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:364
+#: crates/dc-gui/src/commander.rs:379
 #, rust-format
 msgid "Delete {count} selected file/directory into trash can?"
 msgid_plural "Delete {count} selected files/directories into trash can?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: crates/dc-gui/src/commander.rs:369
+#: crates/dc-gui/src/commander.rs:384
 #, rust-format
 msgid "Delete {count} selected file/directory?"
 msgid_plural "Delete {count} selected files/directories?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: crates/dc-gui/src/commander.rs:411
+#: crates/dc-gui/src/commander.rs:426
 #, rust-format
 msgid "Copy selected \"{name}\"?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:411
+#: crates/dc-gui/src/commander.rs:426
 #, rust-format
 msgid "Rename/move selected \"{name}\"?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:417
+#: crates/dc-gui/src/commander.rs:432
 #, rust-format
 msgid "Copy {count} selected file/directory?"
 msgid_plural "Copy {count} selected files/directories?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: crates/dc-gui/src/commander.rs:420
+#: crates/dc-gui/src/commander.rs:435
 #, rust-format
 msgid "Rename/move {count} selected file/directory?"
 msgid_plural "Rename/move {count} selected files/directories?"
@@ -719,13 +719,13 @@ msgctxt "main menu"
 msgid "Load tabs from Favorite Tabs"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:151 crates/dc-gui/src/menu.rs:200
+#: crates/dc-gui/src/menu.rs:151 crates/dc-gui/src/menu.rs:201
 msgctxt "main menu"
 msgid "Configuration of folder tabs"
 msgstr ""
 
 #: crates/dc-gui/src/menu.rs:152 crates/dc-gui/src/menu.rs:161
-#: crates/dc-gui/src/menu.rs:198
+#: crates/dc-gui/src/menu.rs:199
 msgctxt "main menu"
 msgid "Configuration of Favorite Tabs"
 msgstr ""
@@ -765,122 +765,127 @@ msgctxt "main menu"
 msgid "_Icons"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:173
+#: crates/dc-gui/src/menu.rs:172
 msgctxt "main menu"
-msgid "_Quick View Panel"
+msgid "Ter_minal"
 msgstr ""
 
 #: crates/dc-gui/src/menu.rs:174
 msgctxt "main menu"
-msgid "_Tree View Panel"
+msgid "_Quick View Panel"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:176
+#: crates/dc-gui/src/menu.rs:175
 msgctxt "main menu"
-msgid "Sort by _Name"
+msgid "_Tree View Panel"
 msgstr ""
 
 #: crates/dc-gui/src/menu.rs:177
 msgctxt "main menu"
-msgid "Sort by _Extension"
+msgid "Sort by _Name"
 msgstr ""
 
 #: crates/dc-gui/src/menu.rs:178
 msgctxt "main menu"
-msgid "Sort by _Size"
+msgid "Sort by _Extension"
 msgstr ""
 
 #: crates/dc-gui/src/menu.rs:179
 msgctxt "main menu"
-msgid "Sort by _Date"
+msgid "Sort by _Size"
 msgstr ""
 
 #: crates/dc-gui/src/menu.rs:180
 msgctxt "main menu"
-msgid "Sort by _Attributes"
+msgid "Sort by _Date"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:182
+#: crates/dc-gui/src/menu.rs:181
 msgctxt "main menu"
-msgid "Re_verse Order"
+msgid "Sort by _Attributes"
 msgstr ""
 
 #: crates/dc-gui/src/menu.rs:183
 msgctxt "main menu"
+msgid "Re_verse Order"
+msgstr ""
+
+#: crates/dc-gui/src/menu.rs:184
+msgctxt "main menu"
 msgid "_Refresh"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:185
+#: crates/dc-gui/src/menu.rs:186
 msgctxt "main menu"
 msgid "Show _Hidden/System Files"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:187
+#: crates/dc-gui/src/menu.rs:188
 msgctxt "main menu"
 msgid "_Horizontal Panels Mode"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:189
+#: crates/dc-gui/src/menu.rs:190
 msgctxt "main menu"
 msgid "Operations _Viewer"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:193
+#: crates/dc-gui/src/menu.rs:194
 msgctxt "main menu"
 msgid "C_onfiguration"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:195
+#: crates/dc-gui/src/menu.rs:196
 msgctxt "main menu"
 msgid "_Options..."
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:197
+#: crates/dc-gui/src/menu.rs:198
 msgctxt "main menu"
 msgid "Configuration of Directory Hotlist"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:199
+#: crates/dc-gui/src/menu.rs:200
 msgctxt "main menu"
 msgid "Configuration of File _Associations"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:201
+#: crates/dc-gui/src/menu.rs:202
 msgctxt "main menu"
 msgid "Configuration of Archivers"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:203
+#: crates/dc-gui/src/menu.rs:204
 msgctxt "main menu"
 msgid "Save Position"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:204
+#: crates/dc-gui/src/menu.rs:205
 msgctxt "main menu"
 msgid "Save Settings"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:208
+#: crates/dc-gui/src/menu.rs:209
 msgctxt "main menu"
 msgid "_Help"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:210
+#: crates/dc-gui/src/menu.rs:211
 msgctxt "main menu"
 msgid "_Contents"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:211
+#: crates/dc-gui/src/menu.rs:212
 msgctxt "main menu"
 msgid "_Keyboard"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:212
+#: crates/dc-gui/src/menu.rs:213
 msgctxt "main menu"
 msgid "_Visit Douby Commander Website"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:214
+#: crates/dc-gui/src/menu.rs:215
 msgctxt "main menu"
 msgid "_About"
 msgstr ""
@@ -943,66 +948,66 @@ msgstr ""
 msgid "Go to home directory"
 msgstr ""
 
-#: crates/dc-gui/src/panel_column.rs:184 crates/dc-gui/src/toolbar.rs:73
+#: crates/dc-gui/src/panel_column.rs:184 crates/dc-gui/src/toolbar.rs:79
 #, rust-format
 msgctxt "tooltip of a disabled button"
 msgid "{hint} - {reason}"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:31
+#: crates/dc-gui/src/panel_view.rs:32
 msgid "Name"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:32
+#: crates/dc-gui/src/panel_view.rs:33
 msgid "Ext"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:33
+#: crates/dc-gui/src/panel_view.rs:34
 msgid "Size"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:34
+#: crates/dc-gui/src/panel_view.rs:35
 msgid "Date"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:35
+#: crates/dc-gui/src/panel_view.rs:36
 msgid "Attr"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:410
+#: crates/dc-gui/src/panel_view.rs:514
 #, rust-format
 msgid "Invalid file name: {name}"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:423
+#: crates/dc-gui/src/panel_view.rs:527
 #, rust-format
 msgid "{name} already exists."
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:429 crates/dc-ops/src/transfer.rs:850
+#: crates/dc-gui/src/panel_view.rs:533 crates/dc-ops/src/transfer.rs:850
 #, rust-format
 msgid "Cannot rename file {from} to {to}"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:820
+#: crates/dc-gui/src/panel_view.rs:924
 msgid "To browse an archive inside an archive, copy it out first."
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:824
+#: crates/dc-gui/src/panel_view.rs:928
 msgid "Reading the archive…"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:1398
+#: crates/dc-gui/src/panel_view.rs:1516
 #, rust-format
 msgid "(SEARCH: {text})"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:1428
+#: crates/dc-gui/src/panel_view.rs:1546
 #, rust-format
 msgid "Cannot open {path}"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:1526
+#: crates/dc-gui/src/panel_view.rs:1652
 msgid "Archives can only be browsed so far."
 msgstr ""
 
@@ -1089,95 +1094,95 @@ msgstr ""
 
 #: crates/dc-gui/src/toolbar.rs:25
 msgctxt "toolbar"
-msgid "Run Terminal"
-msgstr ""
-
-#: crates/dc-gui/src/toolbar.rs:26
-msgctxt "toolbar"
 msgid "Options..."
-msgstr ""
-
-#: crates/dc-gui/src/toolbar.rs:28
-msgctxt "toolbar"
-msgid "List"
 msgstr ""
 
 #: crates/dc-gui/src/toolbar.rs:29
 msgctxt "toolbar"
-msgid "Details"
+msgid "List"
 msgstr ""
 
 #: crates/dc-gui/src/toolbar.rs:30
+msgctxt "toolbar"
+msgid "Details"
+msgstr ""
+
+#: crates/dc-gui/src/toolbar.rs:31
 msgctxt "toolbar"
 msgid "Icons"
 msgstr ""
 
 #: crates/dc-gui/src/toolbar.rs:32
 msgctxt "toolbar"
-msgid "Flat view"
+msgid "Terminal"
 msgstr ""
 
 #: crates/dc-gui/src/toolbar.rs:34
 msgctxt "toolbar"
-msgid "Go to previous entry in history"
+msgid "Flat view"
 msgstr ""
 
-#: crates/dc-gui/src/toolbar.rs:35
+#: crates/dc-gui/src/toolbar.rs:36
 msgctxt "toolbar"
-msgid "Go to next entry in history"
+msgid "Go to previous entry in history"
 msgstr ""
 
 #: crates/dc-gui/src/toolbar.rs:37
 msgctxt "toolbar"
-msgid "Select a Group..."
-msgstr ""
-
-#: crates/dc-gui/src/toolbar.rs:38
-msgctxt "toolbar"
-msgid "Unselect a Group..."
+msgid "Go to next entry in history"
 msgstr ""
 
 #: crates/dc-gui/src/toolbar.rs:39
 msgctxt "toolbar"
-msgid "Invert Selection"
+msgid "Select a Group..."
+msgstr ""
+
+#: crates/dc-gui/src/toolbar.rs:40
+msgctxt "toolbar"
+msgid "Unselect a Group..."
 msgstr ""
 
 #: crates/dc-gui/src/toolbar.rs:41
 msgctxt "toolbar"
-msgid "Pack Files..."
+msgid "Invert Selection"
 msgstr ""
 
-#: crates/dc-gui/src/toolbar.rs:42
+#: crates/dc-gui/src/toolbar.rs:43
 msgctxt "toolbar"
-msgid "Extract Files..."
+msgid "Pack Files..."
 msgstr ""
 
 #: crates/dc-gui/src/toolbar.rs:44
 msgctxt "toolbar"
-msgid "Network Connect..."
-msgstr ""
-
-#: crates/dc-gui/src/toolbar.rs:45
-msgctxt "toolbar"
-msgid "Search..."
+msgid "Extract Files..."
 msgstr ""
 
 #: crates/dc-gui/src/toolbar.rs:46
 msgctxt "toolbar"
-msgid "Multi-Rename Tool"
+msgid "Network Connect..."
 msgstr ""
 
 #: crates/dc-gui/src/toolbar.rs:47
 msgctxt "toolbar"
-msgid "Synchronize dirs..."
+msgid "Search..."
 msgstr ""
 
 #: crates/dc-gui/src/toolbar.rs:48
 msgctxt "toolbar"
+msgid "Multi-Rename Tool"
+msgstr ""
+
+#: crates/dc-gui/src/toolbar.rs:49
+msgctxt "toolbar"
+msgid "Synchronize dirs..."
+msgstr ""
+
+#: crates/dc-gui/src/toolbar.rs:50
+msgctxt "toolbar"
 msgid "Copy Filename(s) with Full Path"
 msgstr ""
 
-#: crates/dc-gui/src/toolbar.rs:84
+#: crates/dc-gui/src/toolbar.rs:90
 #, rust-format
 msgctxt "tooltip with shortcut"
 msgid "{hint} ({shortcut})"

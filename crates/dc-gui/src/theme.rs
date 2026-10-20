@@ -156,10 +156,70 @@ struct Palette {
     theme_dir: PathBuf,
     _monitor: Option<gio::FileMonitor>,
     reload_pending: bool,
+    /// Terminal colors of the theme, read when first asked for.
+    terminal: Option<TerminalColors>,
+    terminal_read: bool,
 }
+
+/// Told about a new theme; returns `false` when no longer interested.
+type ThemeListener = Box<dyn Fn() -> bool>;
 
 thread_local! {
     static PALETTE: RefCell<Option<Palette>> = const { RefCell::new(None) };
+    static LISTENERS: RefCell<Vec<ThemeListener>> = const { RefCell::new(Vec::new()) };
+}
+
+/// Colors of a terminal, as the theme gives them to the desktop's terminals
+/// (`color0` to `color15`, foreground, background, cursor, selection).
+#[derive(Debug, Clone)]
+pub struct TerminalColors {
+    pub foreground: gdk::RGBA,
+    pub background: gdk::RGBA,
+    pub palette: Vec<gdk::RGBA>,
+    pub cursor: Option<gdk::RGBA>,
+    pub selection_background: Option<gdk::RGBA>,
+    pub selection_foreground: Option<gdk::RGBA>,
+}
+
+impl TerminalColors {
+    fn from_theme(colors: &HashMap<String, String>) -> Option<Self> {
+        let color = |key: &str| colors.get(key).and_then(|value| gdk::RGBA::parse(value.as_str()).ok());
+        let palette: Vec<gdk::RGBA> = (0..16).map(|index| color(&format!("color{index}"))).collect::<Option<_>>()?;
+        Some(Self {
+            foreground: color("foreground")?,
+            background: color("background")?,
+            palette,
+            cursor: color("cursor"),
+            selection_background: color("selection_background"),
+            selection_foreground: color("selection_foreground"),
+        })
+    }
+}
+
+/// Terminal colors of the Omarchy theme; `None` without Omarchy.
+pub fn terminal_colors() -> Option<TerminalColors> {
+    PALETTE.with_borrow_mut(|slot| {
+        let palette = slot.as_mut()?;
+        if !palette.terminal_read {
+            palette.terminal_read = true;
+            palette.terminal =
+                theme_colors(&palette.theme_dir.join("colors.toml")).and_then(|colors| TerminalColors::from_theme(&colors));
+        }
+        palette.terminal.clone()
+    })
+}
+
+/// `callback` runs after every theme change, until it returns `false`.
+pub fn connect_changed(callback: impl Fn() -> bool + 'static) {
+    LISTENERS.with_borrow_mut(|listeners| listeners.push(Box::new(callback)));
+}
+
+fn notify_listeners() {
+    // Taken out while they run: a listener may ask for the colors or connect anew.
+    let mut listeners = LISTENERS.take();
+    listeners.retain(|listener| listener());
+    LISTENERS.with_borrow_mut(|added| listeners.append(added));
+    LISTENERS.set(listeners);
 }
 
 /// Installs the base style and the followed palette for `display`.
@@ -181,7 +241,7 @@ pub fn install(display: &gdk::Display) {
         monitor.connect_changed(|_, _, _, _| schedule_reload());
     }
 
-    let palette = Palette { provider, theme_dir, _monitor: monitor, reload_pending: false };
+    let palette = Palette { provider, theme_dir, _monitor: monitor, reload_pending: false, terminal: None, terminal_read: false };
     load(&palette);
     PALETTE.with_borrow_mut(|slot| *slot = Some(palette));
 }
@@ -198,9 +258,11 @@ fn schedule_reload() {
         PALETTE.with_borrow_mut(|slot| {
             if let Some(palette) = slot {
                 palette.reload_pending = false;
+                palette.terminal_read = false;
                 load(palette);
             }
         });
+        notify_listeners();
     });
 }
 

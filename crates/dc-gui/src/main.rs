@@ -8,6 +8,7 @@ mod launch;
 mod menu;
 mod operations;
 mod panel_column;
+mod panel_terminal;
 mod panel_view;
 mod progress_window;
 mod rename_edit;

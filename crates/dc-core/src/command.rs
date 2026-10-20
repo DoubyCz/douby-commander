@@ -67,8 +67,13 @@ pub enum Command {
     RenameOnly,
     /// F7: create a directory in the active panel.
     MakeDir,
-    /// F9: the terminal in the directory of the active panel.
+    /// Shift+F9: the desktop's terminal, in its own window, in the
+    /// directory of the active panel.
     RunTerm,
+    /// F9: the active panel shows a terminal instead of its files, in the
+    /// panel's directory. Our own command (the original has none); the
+    /// view commands show the files again.
+    TerminalView,
     /// F8, Del: delete marked items, or the one under the cursor.
     Delete { trash: TrashChoice },
     /// Alt+X: close the application.
@@ -122,7 +127,7 @@ impl TrashChoice {
 
 impl Command {
     /// All commands with default parameters, for listings and for parsing.
-    pub const ALL: [Self; 42] = [
+    pub const ALL: [Self; 43] = [
         Self::Open,
         Self::ChangeDirToParent,
         Self::EnterDir,
@@ -156,6 +161,7 @@ impl Command {
         Self::BriefView,
         Self::ColumnsView,
         Self::ThumbnailsView,
+        Self::TerminalView,
         Self::SortBy(SortColumn::Name),
         Self::SortBy(SortColumn::Extension),
         Self::SortBy(SortColumn::Size),
@@ -204,6 +210,7 @@ impl Command {
             Self::BriefView => "cm_BriefView",
             Self::ColumnsView => "cm_ColumnsView",
             Self::ThumbnailsView => "cm_ThumbnailsView",
+            Self::TerminalView => "cm_TerminalView",
             Self::SortBy(SortColumn::Name) => "cm_SortByName",
             Self::SortBy(SortColumn::Extension) => "cm_SortByExt",
             Self::SortBy(SortColumn::Size) => "cm_SortBySize",

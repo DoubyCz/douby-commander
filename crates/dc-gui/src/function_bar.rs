@@ -22,7 +22,7 @@ const BUTTONS: [((&str, &str), Command); 8] = [
     (NC_("function key", "Move"), Command::Rename),
     (NC_("function key", "Directory"), Command::MakeDir),
     (NC_("function key", "Delete"), Command::Delete { trash: TrashChoice::Setting }),
-    (NC_("function key", "Terminal"), Command::RunTerm),
+    (NC_("function key", "Terminal"), Command::TerminalView),
     (NC_("function key", "Exit"), Command::Exit),
 ];
 

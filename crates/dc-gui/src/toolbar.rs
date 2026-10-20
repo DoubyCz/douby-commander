@@ -22,12 +22,14 @@ use Button::Separator;
 
 const BUTTONS: &[Button] = &[
     Button::Command(NC_("toolbar", "Refresh"), "cm_Refresh"),
-    Button::Command(NC_("toolbar", "Run Terminal"), "cm_RunTerm"),
     Button::Command(NC_("toolbar", "Options..."), "cm_Options"),
     Separator,
+    // The ways a panel shows its directory; the terminal is one of them
+    // here (the original has "Run Terminal" in the first group).
     Button::Command(NC_("toolbar", "List"), "cm_BriefView"),
     Button::Command(NC_("toolbar", "Details"), "cm_ColumnsView"),
     Button::Command(NC_("toolbar", "Icons"), "cm_ThumbnailsView"),
+    Button::Command(NC_("toolbar", "Terminal"), "cm_TerminalView"),
     Separator,
     Button::Command(NC_("toolbar", "Flat view"), "cm_FlatView"),
     Separator,
@@ -63,8 +65,12 @@ pub fn build(commander: &Rc<Commander>) -> gtk::Box {
 }
 
 fn command_button(commander: &Rc<Commander>, hint: &str, command_text: &str) -> gtk::Button {
-    // Icon names of the original are the command names in lower case.
-    let icon = command_text.to_lowercase();
+    // Icon names of the original are the command names in lower case; our
+    // own commands borrow one.
+    let icon = match command_text {
+        "cm_TerminalView" => "cm_runterm".to_owned(),
+        _ => command_text.to_lowercase(),
+    };
     let button = gtk::Button::builder().icon_name(icon).focusable(false).focus_on_click(false).build();
     button.add_css_class("flat");
 
