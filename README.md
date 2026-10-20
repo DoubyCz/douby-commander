@@ -23,7 +23,7 @@ colors change at once, with no setup.
 - Three views: details, list (names in columns) and icons with image previews
 - Space on a directory calculates its size in the background
 - Archives with a directory of their contents (zip, 7z, rar, iso, cab, tar) are shown
-  with their name in bold and browsed like directories; F5 extracts from them
+  like directories, `[name].zip` in bold, and browsed like them; F5 extracts from them
 - F3 opens a file in your terminal editor (`$VISUAL` or `$EDITOR`), F4 in your desktop
   text editor, Enter in the default application
 - F5 copy and F6 move, with the questions and options of the original, a progress
