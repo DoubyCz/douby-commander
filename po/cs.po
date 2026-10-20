@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: doubycmd\n"
 "Report-Msgid-Bugs-To: douby@douby.cz\n"
-"POT-Creation-Date: 2026-10-20 18:06+0200\n"
+"POT-Creation-Date: 2026-10-20 18:17+0200\n"
 "PO-Revision-Date: 2026-10-19 18:45+0200\n"
 "Last-Translator: Jiří Doubravský <douby@douby.cz>\n"
 "Language-Team: Czech\n"
@@ -286,7 +286,7 @@ msgctxt "weekday short"
 msgid "Sat"
 msgstr "so"
 
-#: crates/dc-gui/src/about.rs:34
+#: crates/dc-gui/src/about.rs:38
 msgid ""
 "A two-panel file manager for Linux. A tribute to Double Commander by "
 "Alexander Koblov: a fork of it, completely rewritten from Free Pascal into "
@@ -301,33 +301,29 @@ msgstr ""
 "Děkuji Alexandru Koblovovi a všem vývojářům Double Commanderu za dlouholetou "
 "skvělou práci na fantastickém dvoupanelovém správci souborů."
 
-#: crates/dc-gui/src/about.rs:41
-msgid "Source code"
-msgstr "Zdrojový kód"
-
-#: crates/dc-gui/src/about.rs:42
+#: crates/dc-gui/src/about.rs:45
 msgid "Double Commander"
 msgstr "Double Commander"
 
-#: crates/dc-gui/src/about.rs:43
+#: crates/dc-gui/src/about.rs:46
 msgid "Double Commander, the original"
 msgstr "Double Commander, originál"
 
-#: crates/dc-gui/src/about.rs:44
+#: crates/dc-gui/src/about.rs:47
 msgid "Former developers of Double Commander"
 msgstr "Dřívější vývojáři Double Commanderu"
 
-#: crates/dc-gui/src/about.rs:49
+#: crates/dc-gui/src/about.rs:52
 msgid ""
 "The design, the keyboard shortcuts and the icons come from Double Commander."
 msgstr "Vzhled, klávesové zkratky a ikony pocházejí z Double Commanderu."
 
-#: crates/dc-gui/src/about.rs:67
+#: crates/dc-gui/src/about.rs:70
 #, rust-format
 msgid "Platform: {platform}"
 msgstr "Platforma: {platform}"
 
-#: crates/dc-gui/src/about.rs:68
+#: crates/dc-gui/src/about.rs:71
 #, rust-format
 msgid "System: {system}"
 msgstr "Systém: {system}"

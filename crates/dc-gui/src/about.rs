@@ -7,9 +7,11 @@ use dc_i18n::{fill, gettext};
 
 use crate::texts;
 
-/// Where Douby Commander is at home.
-const WEBSITE: &str = "https://douby.cz";
-const REPOSITORY: &str = "https://github.com/DoubyCz/douby-commander";
+/// The author of the fork and his personal website.
+const DEVELOPER: &str = "Jiří Doubravský";
+const DEVELOPER_PERSONAL_WEBSITE: &str = "https://douby.cz";
+/// Where Douby Commander is at home, its source code.
+const WEBSITE: &str = "https://github.com/DoubyCz/douby-commander";
 const ISSUES: &str = "https://github.com/DoubyCz/douby-commander/issues";
 const ORIGINAL: &str = "https://github.com/doublecmd/doublecmd";
 
@@ -24,11 +26,13 @@ pub fn show(parent: Option<&gtk::Window>) {
         .application_name(texts::APP_NAME)
         .application_icon("cz.douby.DoubyCommander")
         .version(version)
-        .developer_name("Jiří Doubravský")
-        .developers(["Jiří Doubravský https://douby.cz"])
+        // Under the name only text fits: the website in brackets. As a
+        // link it is with the developer in the credits.
+        .developer_name(format!("{DEVELOPER} ({})", DEVELOPER_PERSONAL_WEBSITE.trim_start_matches("https://")))
+        .developers([format!("{DEVELOPER} {DEVELOPER_PERSONAL_WEBSITE}")])
         .website(WEBSITE)
         .issue_url(ISSUES)
-        .copyright("© 2026 Jiří Doubravský")
+        .copyright(format!("© 2026 {DEVELOPER}"))
         .license_type(gtk::License::Gpl20)
         .comments(gettext(
             "A two-panel file manager for Linux. A tribute to Double Commander by Alexander Koblov: \
@@ -38,7 +42,6 @@ pub fn show(parent: Option<&gtk::Window>) {
         ))
         .debug_info(debug_info(version))
         .build();
-    about.add_link(&gettext("Source code"), REPOSITORY);
     about.add_link(&gettext("Double Commander"), ORIGINAL);
     about.add_credit_section(Some(&gettext("Double Commander, the original")), &ORIGINAL_DEVELOPERS);
     about.add_credit_section(Some(&gettext("Former developers of Double Commander")), &ORIGINAL_FORMER_DEVELOPERS);
