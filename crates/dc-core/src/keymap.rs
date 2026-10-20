@@ -339,6 +339,7 @@ mod tests {
             // Menu only, as in the original.
             Command::SortBy(SortColumn::Attributes),
             Command::ReverseOrder,
+            Command::About,
         ];
         for command in Command::ALL.into_iter().filter(|command| !without_shortcut.contains(command)) {
             assert!(!keymap.shortcuts(command).is_empty(), "{command} has no default shortcut");

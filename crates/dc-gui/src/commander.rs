@@ -21,7 +21,7 @@ use crate::operations::{OperationsUi, QueueMemory};
 use crate::panel_view::{PanelView, ViewMode, not_in_archives};
 use crate::splitter::Splitter;
 use crate::settings::Settings;
-use crate::{dialogs, keys, multi_rename};
+use crate::{about, dialogs, keys, multi_rename};
 
 pub struct Commander {
     panels: [Rc<PanelView>; 2],
@@ -128,6 +128,7 @@ impl Commander {
                     window.close();
                 }
             }
+            Command::About => about::show(panel.window().as_ref()),
             Command::Refresh => panel.reload_or_leave(),
             Command::MarkMarkAll => panel.mark_all(true),
             Command::MarkUnmarkAll => panel.mark_all(false),

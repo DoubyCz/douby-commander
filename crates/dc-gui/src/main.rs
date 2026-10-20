@@ -1,3 +1,4 @@
+mod about;
 mod commander;
 mod copy_dialog;
 mod dialogs;

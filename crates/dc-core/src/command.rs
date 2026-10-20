@@ -80,6 +80,8 @@ pub enum Command {
     Delete { trash: TrashChoice },
     /// Alt+X: close the application.
     Exit,
+    /// Help > About: who made it, versions, licenses.
+    About,
     /// Ctrl+R: list the active panel again.
     Refresh,
     /// Ctrl+A: mark everything except `..`, directories too.
@@ -129,7 +131,7 @@ impl TrashChoice {
 
 impl Command {
     /// All commands with default parameters, for listings and for parsing.
-    pub const ALL: [Self; 44] = [
+    pub const ALL: [Self; 45] = [
         Self::Open,
         Self::ChangeDirToParent,
         Self::EnterDir,
@@ -155,6 +157,7 @@ impl Command {
         Self::RunTerm,
         Self::Delete { trash: TrashChoice::Setting },
         Self::Exit,
+        Self::About,
         Self::Refresh,
         Self::MarkMarkAll,
         Self::MarkUnmarkAll,
@@ -205,6 +208,7 @@ impl Command {
             Self::RunTerm => "cm_RunTerm",
             Self::Delete { .. } => "cm_Delete",
             Self::Exit => "cm_Exit",
+            Self::About => "cm_About",
             Self::Refresh => "cm_Refresh",
             Self::MarkMarkAll => "cm_MarkMarkAll",
             Self::MarkUnmarkAll => "cm_MarkUnmarkAll",

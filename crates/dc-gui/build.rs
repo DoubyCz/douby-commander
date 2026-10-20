@@ -12,6 +12,23 @@ const DOMAIN: &str = "doubycmd";
 fn main() {
     glib_build_tools::compile_resources(&["resources"], "resources/resources.gresource.xml", "dc-gui.gresource");
     compile_translations();
+    commit();
+}
+
+/// The commit built, for the About window (`DC_COMMIT`); empty outside git.
+fn commit() {
+    let git_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../.git");
+    println!("cargo::rerun-if-changed={}", git_dir.join("HEAD").display());
+    println!("cargo::rerun-if-changed={}", git_dir.join("refs/heads").display());
+    let commit = Command::new("git")
+        .args(["rev-parse", "--short", "HEAD"])
+        .current_dir(env!("CARGO_MANIFEST_DIR"))
+        .output()
+        .ok()
+        .filter(|output| output.status.success())
+        .map(|output| String::from_utf8_lossy(&output.stdout).trim().to_owned())
+        .unwrap_or_default();
+    println!("cargo::rustc-env=DC_COMMIT={commit}");
 }
 
 fn compile_translations() {

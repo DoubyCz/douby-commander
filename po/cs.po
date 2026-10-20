@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: doubycmd\n"
 "Report-Msgid-Bugs-To: douby@douby.cz\n"
-"POT-Creation-Date: 2026-10-20 17:52+0200\n"
+"POT-Creation-Date: 2026-10-20 18:06+0200\n"
 "PO-Revision-Date: 2026-10-19 18:45+0200\n"
 "Last-Translator: Jiří Doubravský <douby@douby.cz>\n"
 "Language-Team: Czech\n"
@@ -17,12 +17,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: crates/dc-core/src/command.rs:277
+#: crates/dc-core/src/command.rs:281
 #, rust-format
 msgid "Unknown command {command}"
 msgstr "Neznámý příkaz {command}"
 
-#: crates/dc-core/src/command.rs:279
+#: crates/dc-core/src/command.rs:283
 #, rust-format
 msgid "Command {command} does not accept parameter {param}"
 msgstr "Příkaz {command} nepřijímá parametr {param}"
@@ -286,7 +286,53 @@ msgctxt "weekday short"
 msgid "Sat"
 msgstr "so"
 
-#: crates/dc-gui/src/commander.rs:120 crates/dc-gui/src/commander.rs:248
+#: crates/dc-gui/src/about.rs:34
+msgid ""
+"A two-panel file manager for Linux. A tribute to Double Commander by "
+"Alexander Koblov: a fork of it, completely rewritten from Free Pascal into "
+"Rust.\n"
+"\n"
+"Thank you, Alexander Koblov and all developers of Double Commander, for many "
+"years of great work on a fantastic two-panel file manager."
+msgstr ""
+"Dvoupanelový správce souborů pro Linux. Pocta Double Commanderu Alexandra "
+"Koblova: jeho fork, kompletně přepsaný z Free Pascalu do Rustu.\n"
+"\n"
+"Děkuji Alexandru Koblovovi a všem vývojářům Double Commanderu za dlouholetou "
+"skvělou práci na fantastickém dvoupanelovém správci souborů."
+
+#: crates/dc-gui/src/about.rs:41
+msgid "Source code"
+msgstr "Zdrojový kód"
+
+#: crates/dc-gui/src/about.rs:42
+msgid "Double Commander"
+msgstr "Double Commander"
+
+#: crates/dc-gui/src/about.rs:43
+msgid "Double Commander, the original"
+msgstr "Double Commander, originál"
+
+#: crates/dc-gui/src/about.rs:44
+msgid "Former developers of Double Commander"
+msgstr "Dřívější vývojáři Double Commanderu"
+
+#: crates/dc-gui/src/about.rs:49
+msgid ""
+"The design, the keyboard shortcuts and the icons come from Double Commander."
+msgstr "Vzhled, klávesové zkratky a ikony pocházejí z Double Commanderu."
+
+#: crates/dc-gui/src/about.rs:67
+#, rust-format
+msgid "Platform: {platform}"
+msgstr "Platforma: {platform}"
+
+#: crates/dc-gui/src/about.rs:68
+#, rust-format
+msgid "System: {system}"
+msgstr "Systém: {system}"
+
+#: crates/dc-gui/src/commander.rs:120 crates/dc-gui/src/commander.rs:249
 msgid ""
 "No terminal found. Install xdg-terminal-exec or set the TERMINAL variable."
 msgstr ""
@@ -297,37 +343,37 @@ msgstr ""
 msgid "Cannot run the terminal"
 msgstr "Nelze spustit terminál"
 
-#: crates/dc-gui/src/commander.rs:247
+#: crates/dc-gui/src/commander.rs:248
 msgid "No text editor found. Set one in the VISUAL or EDITOR variable."
 msgstr ""
 "Nenalezen žádný textový editor. Nastavte ho v proměnné VISUAL nebo EDITOR."
 
-#: crates/dc-gui/src/commander.rs:249
+#: crates/dc-gui/src/commander.rs:250
 msgid "No application is set for text files (text/plain)."
 msgstr "Pro textové soubory (text/plain) není nastavená žádná aplikace."
 
-#: crates/dc-gui/src/commander.rs:253
+#: crates/dc-gui/src/commander.rs:254
 #, rust-format
 msgid "Cannot open {path} in an editor"
 msgstr "Nelze otevřít {path} v editoru"
 
-#: crates/dc-gui/src/commander.rs:267 crates/dc-gui/src/multi_rename.rs:550
+#: crates/dc-gui/src/commander.rs:268 crates/dc-gui/src/multi_rename.rs:555
 #: crates/dc-gui/src/panel_view.rs:514
 #, rust-format
 msgid "Invalid file name: {name}"
 msgstr "Neplatný název souboru: {name}"
 
-#: crates/dc-gui/src/commander.rs:403
+#: crates/dc-gui/src/commander.rs:404
 #, rust-format
 msgid "Delete selected \"{name}\" into trash can?"
 msgstr "Opravdu přesunout \"{name}\" do koše?"
 
-#: crates/dc-gui/src/commander.rs:405
+#: crates/dc-gui/src/commander.rs:406
 #, rust-format
 msgid "Delete selected \"{name}\"?"
 msgstr "Opravdu smazat \"{name}\"?"
 
-#: crates/dc-gui/src/commander.rs:413
+#: crates/dc-gui/src/commander.rs:414
 #, rust-format
 msgid "Delete {count} selected file/directory into trash can?"
 msgid_plural "Delete {count} selected files/directories into trash can?"
@@ -335,7 +381,7 @@ msgstr[0] "Opravdu přesunout {count} vybranou položku do koše?"
 msgstr[1] "Opravdu přesunout {count} vybrané položky do koše?"
 msgstr[2] "Opravdu přesunout {count} vybraných položek do koše?"
 
-#: crates/dc-gui/src/commander.rs:418
+#: crates/dc-gui/src/commander.rs:419
 #, rust-format
 msgid "Delete {count} selected file/directory?"
 msgid_plural "Delete {count} selected files/directories?"
@@ -343,17 +389,17 @@ msgstr[0] "Opravdu smazat {count} vybranou položku?"
 msgstr[1] "Opravdu smazat {count} vybrané položky?"
 msgstr[2] "Opravdu smazat {count} vybraných položek?"
 
-#: crates/dc-gui/src/commander.rs:460
+#: crates/dc-gui/src/commander.rs:461
 #, rust-format
 msgid "Copy selected \"{name}\"?"
 msgstr "Kopírovat \"{name}\"?"
 
-#: crates/dc-gui/src/commander.rs:460
+#: crates/dc-gui/src/commander.rs:461
 #, rust-format
 msgid "Rename/move selected \"{name}\"?"
 msgstr "Přejmenovat nebo přesunout \"{name}\"?"
 
-#: crates/dc-gui/src/commander.rs:466
+#: crates/dc-gui/src/commander.rs:467
 #, rust-format
 msgid "Copy {count} selected file/directory?"
 msgid_plural "Copy {count} selected files/directories?"
@@ -361,7 +407,7 @@ msgstr[0] "Kopírovat {count} vybranou položku?"
 msgstr[1] "Kopírovat {count} vybrané položky?"
 msgstr[2] "Kopírovat {count} vybraných položek?"
 
-#: crates/dc-gui/src/commander.rs:469
+#: crates/dc-gui/src/commander.rs:470
 #, rust-format
 msgid "Rename/move {count} selected file/directory?"
 msgid_plural "Rename/move {count} selected files/directories?"
@@ -1148,202 +1194,202 @@ msgctxt "button"
 msgid "_Rename"
 msgstr "Přej_menovat"
 
-#: crates/dc-gui/src/multi_rename.rs:179
+#: crates/dc-gui/src/multi_rename.rs:185
 msgid "Old File Name"
 msgstr "Původní jméno"
 
-#: crates/dc-gui/src/multi_rename.rs:180
+#: crates/dc-gui/src/multi_rename.rs:186
 msgid "New File Name"
 msgstr "Nové jméno"
 
-#: crates/dc-gui/src/multi_rename.rs:181
+#: crates/dc-gui/src/multi_rename.rs:187
 msgid "File Path"
 msgstr "Cesta"
 
-#: crates/dc-gui/src/multi_rename.rs:200
+#: crates/dc-gui/src/multi_rename.rs:206
 msgid "File _Name"
 msgstr "_Název souboru"
 
-#: crates/dc-gui/src/multi_rename.rs:201
+#: crates/dc-gui/src/multi_rename.rs:207
 msgid "_Extension"
 msgstr "_Přípona"
 
-#: crates/dc-gui/src/multi_rename.rs:213
+#: crates/dc-gui/src/multi_rename.rs:219
 msgid "Mask"
 msgstr "Maska"
 
-#: crates/dc-gui/src/multi_rename.rs:221
+#: crates/dc-gui/src/multi_rename.rs:227
 msgid "_Find..."
 msgstr "Na_jít..."
 
-#: crates/dc-gui/src/multi_rename.rs:221
+#: crates/dc-gui/src/multi_rename.rs:227
 msgid "Re_place..."
 msgstr "Na_hradit..."
 
-#: crates/dc-gui/src/multi_rename.rs:232
+#: crates/dc-gui/src/multi_rename.rs:238
 msgid "Find & Replace"
 msgstr "Najít a nahradit"
 
-#: crates/dc-gui/src/multi_rename.rs:238
+#: crates/dc-gui/src/multi_rename.rs:244
 msgid "S_tart Number"
 msgstr "Počáteční čís_lo"
 
-#: crates/dc-gui/src/multi_rename.rs:239
+#: crates/dc-gui/src/multi_rename.rs:245
 msgid "_Interval"
 msgstr "_Krok"
 
-#: crates/dc-gui/src/multi_rename.rs:240
+#: crates/dc-gui/src/multi_rename.rs:246
 msgid "_Width"
 msgstr "Ší_řka"
 
-#: crates/dc-gui/src/multi_rename.rs:250 crates/dc-gui/src/multi_rename.rs:312
-#: crates/dc-gui/src/multi_rename.rs:314
+#: crates/dc-gui/src/multi_rename.rs:256 crates/dc-gui/src/multi_rename.rs:318
+#: crates/dc-gui/src/multi_rename.rs:320
 msgid "Counter"
 msgstr "Počítadlo"
 
-#: crates/dc-gui/src/multi_rename.rs:255
+#: crates/dc-gui/src/multi_rename.rs:261
 msgid "Reset _All"
 msgstr "_Vrátit vše"
 
-#: crates/dc-gui/src/multi_rename.rs:265
+#: crates/dc-gui/src/multi_rename.rs:271
 msgctxt "button"
 msgid "_Close"
 msgstr "_Zavřít"
 
-#: crates/dc-gui/src/multi_rename.rs:292 crates/dc-gui/src/multi_rename.rs:303
+#: crates/dc-gui/src/multi_rename.rs:298 crates/dc-gui/src/multi_rename.rs:309
 #: crates/dc-gui/src/panel_view.rs:32
 msgid "Name"
 msgstr "Název"
 
-#: crates/dc-gui/src/multi_rename.rs:293 crates/dc-gui/src/multi_rename.rs:307
+#: crates/dc-gui/src/multi_rename.rs:299 crates/dc-gui/src/multi_rename.rs:313
 msgid "Character at position x"
 msgstr "Znak na pozici x"
 
-#: crates/dc-gui/src/multi_rename.rs:294 crates/dc-gui/src/multi_rename.rs:308
+#: crates/dc-gui/src/multi_rename.rs:300 crates/dc-gui/src/multi_rename.rs:314
 msgid "Characters from position x to y"
 msgstr "Znaky od pozice x do y"
 
-#: crates/dc-gui/src/multi_rename.rs:295
+#: crates/dc-gui/src/multi_rename.rs:301
 msgid "Complete filename with path and extension"
 msgstr "Celé jméno s cestou a příponou"
 
-#: crates/dc-gui/src/multi_rename.rs:296
+#: crates/dc-gui/src/multi_rename.rs:302
 msgid "Complete filename, char from pos x to y"
 msgstr "Celé jméno, znaky od pozice x do y"
 
-#: crates/dc-gui/src/multi_rename.rs:302
+#: crates/dc-gui/src/multi_rename.rs:308
 msgid "Parent folder(s)"
 msgstr "Nadřazené složky"
 
-#: crates/dc-gui/src/multi_rename.rs:306 crates/dc-gui/src/multi_rename.rs:309
+#: crates/dc-gui/src/multi_rename.rs:312 crates/dc-gui/src/multi_rename.rs:315
 msgid "Extension"
 msgstr "Přípona"
 
-#: crates/dc-gui/src/multi_rename.rs:313
+#: crates/dc-gui/src/multi_rename.rs:319
 msgid "GUID"
 msgstr "GUID"
 
-#: crates/dc-gui/src/multi_rename.rs:318
+#: crates/dc-gui/src/multi_rename.rs:324
 msgid "Year (2 digits)"
 msgstr "Rok (2 číslice)"
 
-#: crates/dc-gui/src/multi_rename.rs:319
+#: crates/dc-gui/src/multi_rename.rs:325
 msgid "Year (4 digits)"
 msgstr "Rok (4 číslice)"
 
-#: crates/dc-gui/src/multi_rename.rs:320
+#: crates/dc-gui/src/multi_rename.rs:326
 msgid "Month"
 msgstr "Měsíc"
 
-#: crates/dc-gui/src/multi_rename.rs:321
+#: crates/dc-gui/src/multi_rename.rs:327
 msgid "Month (2 digits)"
 msgstr "Měsíc (2 číslice)"
 
-#: crates/dc-gui/src/multi_rename.rs:322
+#: crates/dc-gui/src/multi_rename.rs:328
 msgid "Month name (short, e.g., \"jan\")"
 msgstr "Název měsíce (krátký, např. \"led\")"
 
-#: crates/dc-gui/src/multi_rename.rs:323
+#: crates/dc-gui/src/multi_rename.rs:329
 msgid "Month name (long, e.g., \"january\")"
 msgstr "Název měsíce (dlouhý, např. \"leden\")"
 
-#: crates/dc-gui/src/multi_rename.rs:324
+#: crates/dc-gui/src/multi_rename.rs:330
 msgid "Day"
 msgstr "Den"
 
-#: crates/dc-gui/src/multi_rename.rs:325
+#: crates/dc-gui/src/multi_rename.rs:331
 msgid "Day (2 digits)"
 msgstr "Den (2 číslice)"
 
-#: crates/dc-gui/src/multi_rename.rs:326
+#: crates/dc-gui/src/multi_rename.rs:332
 msgid "Day of the week (short, e.g., \"mon\")"
 msgstr "Den v týdnu (krátký, např. \"po\")"
 
-#: crates/dc-gui/src/multi_rename.rs:327
+#: crates/dc-gui/src/multi_rename.rs:333
 msgid "Day of the week (long, e.g., \"monday\")"
 msgstr "Den v týdnu (dlouhý, např. \"pondělí\")"
 
-#: crates/dc-gui/src/multi_rename.rs:328
+#: crates/dc-gui/src/multi_rename.rs:334
 msgid "Complete date"
 msgstr "Celé datum"
 
-#: crates/dc-gui/src/multi_rename.rs:332 crates/dc-gui/src/panel_view.rs:35
+#: crates/dc-gui/src/multi_rename.rs:338 crates/dc-gui/src/panel_view.rs:35
 msgid "Date"
 msgstr "Datum"
 
-#: crates/dc-gui/src/multi_rename.rs:336
+#: crates/dc-gui/src/multi_rename.rs:342
 msgid "Hour"
 msgstr "Hodina"
 
-#: crates/dc-gui/src/multi_rename.rs:337
+#: crates/dc-gui/src/multi_rename.rs:343
 msgid "Hour (2 digits)"
 msgstr "Hodina (2 číslice)"
 
-#: crates/dc-gui/src/multi_rename.rs:338
+#: crates/dc-gui/src/multi_rename.rs:344
 msgid "Minute"
 msgstr "Minuta"
 
-#: crates/dc-gui/src/multi_rename.rs:339
+#: crates/dc-gui/src/multi_rename.rs:345
 msgid "Minute (2 digits)"
 msgstr "Minuta (2 číslice)"
 
-#: crates/dc-gui/src/multi_rename.rs:340
+#: crates/dc-gui/src/multi_rename.rs:346
 msgid "Second"
 msgstr "Sekunda"
 
-#: crates/dc-gui/src/multi_rename.rs:341
+#: crates/dc-gui/src/multi_rename.rs:347
 msgid "Second (2 digits)"
 msgstr "Sekunda (2 číslice)"
 
-#: crates/dc-gui/src/multi_rename.rs:342
+#: crates/dc-gui/src/multi_rename.rs:348
 msgid "Complete time"
 msgstr "Celý čas"
 
-#: crates/dc-gui/src/multi_rename.rs:346
+#: crates/dc-gui/src/multi_rename.rs:352
 msgid "Time"
 msgstr "Čas"
 
-#: crates/dc-gui/src/multi_rename.rs:349
+#: crates/dc-gui/src/multi_rename.rs:355
 msgid "Clear"
 msgstr "Vymazat"
 
-#: crates/dc-gui/src/multi_rename.rs:352
+#: crates/dc-gui/src/multi_rename.rs:358
 msgid "Insert a placeholder"
 msgstr "Vložit zástupnou sekvenci"
 
-#: crates/dc-gui/src/multi_rename.rs:506
+#: crates/dc-gui/src/multi_rename.rs:511
 msgid "Error in the regular expression"
 msgstr "Chyba v regulárním výrazu"
 
-#: crates/dc-gui/src/multi_rename.rs:561
+#: crates/dc-gui/src/multi_rename.rs:566
 msgid "Warning, duplicate names!"
 msgstr "Pozor, duplicitní jména!"
 
-#: crates/dc-gui/src/multi_rename.rs:563
+#: crates/dc-gui/src/multi_rename.rs:568
 msgid "Do auto-rename to \"name (1).ext\", \"name (2).ext\" etc.?"
 msgstr "Automaticky přejmenovat na \"jméno (1).ext\", \"jméno (2).ext\" atd.?"
 
-#: crates/dc-gui/src/multi_rename.rs:612
+#: crates/dc-gui/src/multi_rename.rs:617
 msgid "Some files could not be renamed."
 msgstr "Některé soubory se nepodařilo přejmenovat."
 
