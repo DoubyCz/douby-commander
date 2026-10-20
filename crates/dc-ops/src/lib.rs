@@ -15,6 +15,7 @@ mod delete;
 mod extract;
 mod manager;
 mod operation;
+mod rename_many;
 mod target;
 mod transfer;
 
@@ -24,3 +25,4 @@ pub use target::{Destination, apply_mask};
 pub use transfer::{DirectoryExists, FileExists, FollowLinks, PropertyError, TransferMode, TransferOperation, TransferOptions};
 pub use manager::{Finished, OperationId, OperationInfo, OperationState, OperationsManager, Outcome, QueueId};
 pub use operation::{Aborted, Answer, Operation, OperationContext, Progress, Question};
+pub use rename_many::{RenameFailure, rename_many};

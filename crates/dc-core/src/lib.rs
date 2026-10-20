@@ -7,6 +7,7 @@ pub mod command;
 pub mod format;
 mod item;
 pub mod keymap;
+pub mod multi_rename;
 mod panel;
 pub mod quick_search;
 mod sort;

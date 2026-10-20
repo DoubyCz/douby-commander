@@ -65,6 +65,8 @@ pub enum Command {
     Rename,
     /// Shift+F6, F2: rename the item under the cursor in place.
     RenameOnly,
+    /// Ctrl+M: the multi-rename tool for marked items, or the one under the cursor.
+    MultiRename,
     /// F7: create a directory in the active panel.
     MakeDir,
     /// Shift+F9: the desktop's terminal, in its own window, in the
@@ -127,7 +129,7 @@ impl TrashChoice {
 
 impl Command {
     /// All commands with default parameters, for listings and for parsing.
-    pub const ALL: [Self; 43] = [
+    pub const ALL: [Self; 44] = [
         Self::Open,
         Self::ChangeDirToParent,
         Self::EnterDir,
@@ -148,6 +150,7 @@ impl Command {
         Self::CopySamePanel,
         Self::Rename,
         Self::RenameOnly,
+        Self::MultiRename,
         Self::MakeDir,
         Self::RunTerm,
         Self::Delete { trash: TrashChoice::Setting },
@@ -197,6 +200,7 @@ impl Command {
             Self::CopySamePanel => "cm_CopySamePanel",
             Self::Rename => "cm_Rename",
             Self::RenameOnly => "cm_RenameOnly",
+            Self::MultiRename => "cm_MultiRename",
             Self::MakeDir => "cm_MakeDir",
             Self::RunTerm => "cm_RunTerm",
             Self::Delete { .. } => "cm_Delete",

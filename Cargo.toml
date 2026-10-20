@@ -3,7 +3,7 @@ resolver = "3"
 members = ["crates/*"]
 
 [workspace.package]
-version = "0.0.7"
+version = "0.0.8"
 edition = "2024"
 rust-version = "1.92"
 license = "GPL-2.0-or-later"
@@ -30,6 +30,8 @@ rustix = { version = "1.1.5", features = ["fs"] }
 # Reading archives (zip, 7z, rar, tar.*, iso, cab, ...) through the system's
 # libarchive, a safe wrapper: our code stays without `unsafe`.
 compress-tools = { version = "0.16.1", default-features = false }
+# Find and replace with regular expressions in the multi-rename tool.
+regex = "1.13.1"
 tempfile = "3.27.0"
 thiserror = "2.0.21"
 # Only moving to trash is used, listing and restoring (which need chrono) are not.

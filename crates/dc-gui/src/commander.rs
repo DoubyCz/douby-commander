@@ -7,6 +7,7 @@ use std::path::{Component, Path, PathBuf};
 use std::rc::Rc;
 
 use dc_core::command::{Command, TrashChoice};
+use dc_core::multi_rename::RenameFile;
 use dc_core::keymap::{Key, Keymap, Shortcut};
 use dc_i18n::{fill, gettext, ngettext, plural_count};
 use dc_ops::{DeleteMode, DeleteOperation, Destination, ExtractOperation, TransferMode, TransferOperation};
@@ -20,7 +21,7 @@ use crate::operations::{OperationsUi, QueueMemory};
 use crate::panel_view::{PanelView, ViewMode, not_in_archives};
 use crate::splitter::Splitter;
 use crate::settings::Settings;
-use crate::{dialogs, keys};
+use crate::{dialogs, keys, multi_rename};
 
 pub struct Commander {
     panels: [Rc<PanelView>; 2],
@@ -110,6 +111,7 @@ impl Commander {
             Command::CopySamePanel => self.transfer(TransferMode::Copy, true),
             Command::Rename => self.transfer(TransferMode::Move, false),
             Command::RenameOnly => panel.start_rename(),
+            Command::MultiRename => self.multi_rename(),
             Command::MakeDir => self.make_dir(),
             Command::RunTerm => {
                 if let Err(err) = launch::open_terminal(&panel.terminal_dir()) {
@@ -226,7 +228,8 @@ impl Commander {
             | Command::RunTerm
             | Command::Delete { .. }
             | Command::Rename
-            | Command::RenameOnly => self.active().in_archive(),
+            | Command::RenameOnly
+            | Command::MultiRename => self.active().in_archive(),
             // Out of an archive it extracts; into one not yet.
             Command::Copy => other.in_archive(),
             _ => false,
@@ -249,6 +252,37 @@ impl Commander {
         };
         let message = fill(&gettext("Cannot open {path} in an editor"), &[("path", &path.display())]);
         dialogs::show_error(self.active().window().as_ref(), &message, &detail);
+    }
+
+    /// Ctrl+M, `cm_MultiRename`: marked items or the one under the cursor.
+    fn multi_rename(self: &Rc<Self>) {
+        let panel = self.active();
+        let files: Vec<RenameFile> = {
+            let state = panel.panel();
+            let mut files = Vec::new();
+            for item in state.targets() {
+                let entry = item.entry();
+                // Masks work on text; a name that is not UTF-8 would not survive them.
+                let Some(name) = entry.name.to_str() else {
+                    let message = fill(&gettext("Invalid file name: {name}"), &[("name", &entry.name.to_string_lossy())]);
+                    dialogs::show_error(panel.window().as_ref(), &message, "");
+                    return;
+                };
+                files.push(RenameFile {
+                    dir: state.path().to_owned(),
+                    name: name.to_owned(),
+                    is_dir: item.is_directory_like(),
+                    modified: entry.modified.and_then(|time| jiff::Timestamp::try_from(time).ok()),
+                });
+            }
+            files
+        };
+        let this = Rc::downgrade(self);
+        multi_rename::show(panel.window().as_ref(), files, move || {
+            if let Some(this) = this.upgrade() {
+                this.refresh_panels();
+            }
+        });
     }
 
     /// F7, `cm_MakeDir`.

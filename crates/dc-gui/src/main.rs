@@ -6,6 +6,7 @@ mod function_bar;
 mod keys;
 mod launch;
 mod menu;
+mod multi_rename;
 mod operations;
 mod panel_column;
 mod panel_terminal;

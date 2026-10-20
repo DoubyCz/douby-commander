@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: doubycmd\n"
 "Report-Msgid-Bugs-To: douby@douby.cz\n"
-"POT-Creation-Date: 2026-10-20 16:43+0200\n"
+"POT-Creation-Date: 2026-10-20 17:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,12 +18,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: crates/dc-core/src/command.rs:273
+#: crates/dc-core/src/command.rs:277
 #, rust-format
 msgid "Unknown command {command}"
 msgstr ""
 
-#: crates/dc-core/src/command.rs:275
+#: crates/dc-core/src/command.rs:279
 #, rust-format
 msgid "Command {command} does not accept parameter {param}"
 msgstr ""
@@ -70,70 +70,291 @@ msgstr ""
 msgid "Invalid shortcut {shortcut}"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:118 crates/dc-gui/src/commander.rs:245
+#: crates/dc-core/src/multi_rename.rs:64
+msgctxt "letter case"
+msgid "No change"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:65
+msgctxt "letter case"
+msgid "UPPERCASE"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:66
+msgctxt "letter case"
+msgid "lowercase"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:67
+msgctxt "letter case"
+msgid "First char uppercase"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:68
+msgctxt "letter case"
+msgid "First Char Of Every Word Uppercase"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:421
+msgctxt "month"
+msgid "January"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:422
+msgctxt "month"
+msgid "February"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:423
+msgctxt "month"
+msgid "March"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:424
+msgctxt "month"
+msgid "April"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:425
+msgctxt "month"
+msgid "May"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:426
+msgctxt "month"
+msgid "June"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:427
+msgctxt "month"
+msgid "July"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:428
+msgctxt "month"
+msgid "August"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:429
+msgctxt "month"
+msgid "September"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:430
+msgctxt "month"
+msgid "October"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:431
+msgctxt "month"
+msgid "November"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:432
+msgctxt "month"
+msgid "December"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:436
+msgctxt "month short"
+msgid "Jan"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:437
+msgctxt "month short"
+msgid "Feb"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:438
+msgctxt "month short"
+msgid "Mar"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:439
+msgctxt "month short"
+msgid "Apr"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:440
+msgctxt "month short"
+msgid "May"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:441
+msgctxt "month short"
+msgid "Jun"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:442
+msgctxt "month short"
+msgid "Jul"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:443
+msgctxt "month short"
+msgid "Aug"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:444
+msgctxt "month short"
+msgid "Sep"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:445
+msgctxt "month short"
+msgid "Oct"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:446
+msgctxt "month short"
+msgid "Nov"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:447
+msgctxt "month short"
+msgid "Dec"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:452
+msgctxt "weekday"
+msgid "Sunday"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:453
+msgctxt "weekday"
+msgid "Monday"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:454
+msgctxt "weekday"
+msgid "Tuesday"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:455
+msgctxt "weekday"
+msgid "Wednesday"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:456
+msgctxt "weekday"
+msgid "Thursday"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:457
+msgctxt "weekday"
+msgid "Friday"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:458
+msgctxt "weekday"
+msgid "Saturday"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:462
+msgctxt "weekday short"
+msgid "Sun"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:463
+msgctxt "weekday short"
+msgid "Mon"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:464
+msgctxt "weekday short"
+msgid "Tue"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:465
+msgctxt "weekday short"
+msgid "Wed"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:466
+msgctxt "weekday short"
+msgid "Thu"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:467
+msgctxt "weekday short"
+msgid "Fri"
+msgstr ""
+
+#: crates/dc-core/src/multi_rename.rs:468
+msgctxt "weekday short"
+msgid "Sat"
+msgstr ""
+
+#: crates/dc-gui/src/commander.rs:120 crates/dc-gui/src/commander.rs:248
 msgid ""
 "No terminal found. Install xdg-terminal-exec or set the TERMINAL variable."
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:120
+#: crates/dc-gui/src/commander.rs:122
 msgid "Cannot run the terminal"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:244
+#: crates/dc-gui/src/commander.rs:247
 msgid "No text editor found. Set one in the VISUAL or EDITOR variable."
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:246
+#: crates/dc-gui/src/commander.rs:249
 msgid "No application is set for text files (text/plain)."
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:250
+#: crates/dc-gui/src/commander.rs:253
 #, rust-format
 msgid "Cannot open {path} in an editor"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:369
+#: crates/dc-gui/src/commander.rs:267 crates/dc-gui/src/multi_rename.rs:550
+#: crates/dc-gui/src/panel_view.rs:514
+#, rust-format
+msgid "Invalid file name: {name}"
+msgstr ""
+
+#: crates/dc-gui/src/commander.rs:403
 #, rust-format
 msgid "Delete selected \"{name}\" into trash can?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:371
+#: crates/dc-gui/src/commander.rs:405
 #, rust-format
 msgid "Delete selected \"{name}\"?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:379
+#: crates/dc-gui/src/commander.rs:413
 #, rust-format
 msgid "Delete {count} selected file/directory into trash can?"
 msgid_plural "Delete {count} selected files/directories into trash can?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: crates/dc-gui/src/commander.rs:384
+#: crates/dc-gui/src/commander.rs:418
 #, rust-format
 msgid "Delete {count} selected file/directory?"
 msgid_plural "Delete {count} selected files/directories?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: crates/dc-gui/src/commander.rs:426
+#: crates/dc-gui/src/commander.rs:460
 #, rust-format
 msgid "Copy selected \"{name}\"?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:426
+#: crates/dc-gui/src/commander.rs:460
 #, rust-format
 msgid "Rename/move selected \"{name}\"?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:432
+#: crates/dc-gui/src/commander.rs:466
 #, rust-format
 msgid "Copy {count} selected file/directory?"
 msgid_plural "Copy {count} selected files/directories?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: crates/dc-gui/src/commander.rs:435
+#: crates/dc-gui/src/commander.rs:469
 #, rust-format
 msgid "Rename/move {count} selected file/directory?"
 msgid_plural "Rename/move {count} selected files/directories?"
@@ -890,6 +1111,234 @@ msgctxt "main menu"
 msgid "_About"
 msgstr ""
 
+#: crates/dc-gui/src/multi_rename.rs:102
+msgid "Multi-Rename Tool"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:128
+msgid "Regular e_xpressions"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:129
+msgid "Case sensitive"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:130
+msgid "Replace also in file extensions"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:131
+msgid "_Use substitution"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:132
+msgid "Replace only once per file"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:136
+msgctxt "button"
+msgid "_Rename"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:179
+msgid "Old File Name"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:180
+msgid "New File Name"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:181
+msgid "File Path"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:200
+msgid "File _Name"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:201
+msgid "_Extension"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:213
+msgid "Mask"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:221
+msgid "_Find..."
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:221
+msgid "Re_place..."
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:232
+msgid "Find & Replace"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:238
+msgid "S_tart Number"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:239
+msgid "_Interval"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:240
+msgid "_Width"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:250 crates/dc-gui/src/multi_rename.rs:312
+#: crates/dc-gui/src/multi_rename.rs:314
+msgid "Counter"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:255
+msgid "Reset _All"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:265
+msgctxt "button"
+msgid "_Close"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:292 crates/dc-gui/src/multi_rename.rs:303
+#: crates/dc-gui/src/panel_view.rs:32
+msgid "Name"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:293 crates/dc-gui/src/multi_rename.rs:307
+msgid "Character at position x"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:294 crates/dc-gui/src/multi_rename.rs:308
+msgid "Characters from position x to y"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:295
+msgid "Complete filename with path and extension"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:296
+msgid "Complete filename, char from pos x to y"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:302
+msgid "Parent folder(s)"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:306 crates/dc-gui/src/multi_rename.rs:309
+msgid "Extension"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:313
+msgid "GUID"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:318
+msgid "Year (2 digits)"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:319
+msgid "Year (4 digits)"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:320
+msgid "Month"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:321
+msgid "Month (2 digits)"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:322
+msgid "Month name (short, e.g., \"jan\")"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:323
+msgid "Month name (long, e.g., \"january\")"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:324
+msgid "Day"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:325
+msgid "Day (2 digits)"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:326
+msgid "Day of the week (short, e.g., \"mon\")"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:327
+msgid "Day of the week (long, e.g., \"monday\")"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:328
+msgid "Complete date"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:332 crates/dc-gui/src/panel_view.rs:35
+msgid "Date"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:336
+msgid "Hour"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:337
+msgid "Hour (2 digits)"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:338
+msgid "Minute"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:339
+msgid "Minute (2 digits)"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:340
+msgid "Second"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:341
+msgid "Second (2 digits)"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:342
+msgid "Complete time"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:346
+msgid "Time"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:349
+msgid "Clear"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:352
+msgid "Insert a placeholder"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:506
+msgid "Error in the regular expression"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:561
+msgid "Warning, duplicate names!"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:563
+msgid "Do auto-rename to \"name (1).ext\", \"name (2).ext\" etc.?"
+msgstr ""
+
+#: crates/dc-gui/src/multi_rename.rs:612
+msgid "Some files could not be renamed."
+msgstr ""
+
 #: crates/dc-gui/src/operations.rs:226
 #, rust-format
 msgctxt "operations row"
@@ -954,10 +1403,6 @@ msgctxt "tooltip of a disabled button"
 msgid "{hint} - {reason}"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:32
-msgid "Name"
-msgstr ""
-
 #: crates/dc-gui/src/panel_view.rs:33
 msgid "Ext"
 msgstr ""
@@ -966,17 +1411,8 @@ msgstr ""
 msgid "Size"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:35
-msgid "Date"
-msgstr ""
-
 #: crates/dc-gui/src/panel_view.rs:36
 msgid "Attr"
-msgstr ""
-
-#: crates/dc-gui/src/panel_view.rs:514
-#, rust-format
-msgid "Invalid file name: {name}"
 msgstr ""
 
 #: crates/dc-gui/src/panel_view.rs:527

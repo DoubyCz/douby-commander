@@ -267,6 +267,7 @@ impl Keymap {
             (shift(Key::Delete), Command::Delete { trash: TrashChoice::ReverseSetting }),
             (Shortcut::new(Modifiers { alt: true, ..Modifiers::NONE }, Key::Char('X')), Command::Exit),
             (ctrl(Key::Char('R')), Command::Refresh),
+            (ctrl(Key::Char('M')), Command::MultiRename),
             (ctrl(Key::F(1)), Command::BriefView),
             (ctrl(Key::F(2)), Command::ColumnsView),
             (ctrl(Key::F(3)), Command::SortBy(SortColumn::Name)),
