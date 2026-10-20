@@ -24,8 +24,10 @@ pub struct RowTexts {
     pub size: String,
     pub modified: String,
     pub attributes: String,
-    /// Directory, link to one, or `..`: the name is shown in bold.
+    /// Directory, link to one, or `..`.
     pub directory: bool,
+    /// The name is shown in bold: directories and archives the panel enters.
+    pub bold: bool,
 }
 
 mod imp {
@@ -73,6 +75,7 @@ impl FileRow {
             modified: format::modified(entry.modified, tz),
             attributes: if item.is_parent() { String::new() } else { format::attributes(entry.mode, entry.kind) },
             directory: item.is_directory_like(),
+            bold: entry.is_container(),
         };
         let row: Self = glib::Object::builder()
             .property("marked", item.is_selected())

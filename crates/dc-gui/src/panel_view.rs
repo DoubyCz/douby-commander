@@ -712,7 +712,7 @@ impl PanelView {
                 }
                 // Directory names in bold. Pango attributes, not a CSS class:
                 // the classes of the label follow the mark (see setup).
-                let bold = sort_column == SortColumn::Name && texts.directory;
+                let bold = sort_column == SortColumn::Name && texts.bold;
                 label.set_attributes(bold.then(bold_attributes).as_ref());
             });
 
@@ -768,7 +768,7 @@ impl PanelView {
             let label = list_item.child().and_downcast::<gtk::Label>().expect("child is set up as Label");
             let texts = row.texts();
             label.set_text(&texts.full_name);
-            label.set_attributes(texts.directory.then(bold_attributes).as_ref());
+            label.set_attributes(texts.bold.then(bold_attributes).as_ref());
         });
         self.grid_view.set_factory(Some(&factory));
 
@@ -860,7 +860,7 @@ impl PanelView {
             }
             if let Some(label) = cell.last_child().and_downcast::<gtk::Label>() {
                 label.set_text(&texts.full_name);
-                label.set_attributes(texts.directory.then(bold_attributes).as_ref());
+                label.set_attributes(texts.bold.then(bold_attributes).as_ref());
             }
             if image
                 && row.thumbnail().is_none()

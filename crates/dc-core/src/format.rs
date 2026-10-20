@@ -48,30 +48,18 @@ pub fn size_column(item: &FileItem) -> String {
     }
 }
 
-/// The Name column: directories in square brackets, archives the panel
-/// can enter in curly ones around the name only, the extension has its
-/// own column (Jirka's choice).
+/// The Name column: directories in square brackets. Archives the panel
+/// can enter look like files, only their name is bold (as directories);
+/// that is up to the view.
 #[must_use]
 pub fn name_column(item: &FileItem) -> String {
-    if item.is_directory_like() {
-        format!("[{}]", item.name_no_ext())
-    } else if item.entry().kind == EntryKind::Archive {
-        format!("{{{}}}", item.name_no_ext())
-    } else {
-        item.name_no_ext().to_owned()
-    }
+    if item.is_directory_like() { format!("[{}]", item.name_no_ext()) } else { item.name_no_ext().to_owned() }
 }
 
-/// The whole name in one (list and icons views): `[dir]`, `{archive}.zip`.
+/// The whole name in one (list and icons views): `[dir]`, `file.txt`.
 #[must_use]
 pub fn full_name(item: &FileItem) -> String {
-    if item.is_directory_like() {
-        format!("[{}]", item.display_name())
-    } else if item.entry().kind == EntryKind::Archive {
-        format!("{{{}}}.{}", item.name_no_ext(), item.extension())
-    } else {
-        item.display_name().to_owned()
-    }
+    if item.is_directory_like() { format!("[{}]", item.display_name()) } else { item.display_name().to_owned() }
 }
 
 /// Modification time in the local time zone.
@@ -177,11 +165,11 @@ mod tests {
     }
 
     #[test]
-    fn archive_names_in_curly_brackets_without_the_extension() {
+    fn archive_names_as_files_directories_in_brackets() {
         let entry = |name: &str, kind| dc_vfs::Entry { name: name.into(), kind, size: 0, modified: None, mode: 0 };
         let archive = FileItem::new(entry("humanz.zip", EntryKind::Archive));
-        assert_eq!((name_column(&archive).as_str(), archive.extension()), ("{humanz}", "zip"));
-        assert_eq!(full_name(&archive), "{humanz}.zip");
+        assert_eq!((name_column(&archive).as_str(), archive.extension()), ("humanz", "zip"));
+        assert_eq!(full_name(&archive), "humanz.zip");
         let dir = FileItem::new(entry("src", EntryKind::Directory));
         assert_eq!((name_column(&dir), full_name(&dir)), ("[src]".to_owned(), "[src]".to_owned()));
         let file = FileItem::new(entry("a.txt", EntryKind::File));
