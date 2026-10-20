@@ -256,6 +256,8 @@ impl Keymap {
             (Shortcut::plain(Key::F(5)), Command::Copy),
             (shift(Key::F(5)), Command::CopySamePanel),
             (Shortcut::plain(Key::F(6)), Command::Rename),
+            (shift(Key::F(6)), Command::RenameOnly),
+            (Shortcut::plain(Key::F(2)), Command::RenameOnly),
             (Shortcut::plain(Key::F(7)), Command::MakeDir),
             (Shortcut::plain(Key::F(9)), Command::RunTerm),
             (Shortcut::plain(Key::F(8)), Command::Delete { trash: TrashChoice::Setting }),

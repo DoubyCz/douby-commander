@@ -24,6 +24,7 @@ use jiff::tz::TimeZone;
 
 use crate::dialogs;
 use crate::file_row::FileRow;
+use crate::rename_edit::RenameEdit;
 
 /// Sort key, column id, title (translated when the columns are built).
 const COLUMNS: [(SortColumn, &str, &str); 5] = [
@@ -54,6 +55,8 @@ pub struct PanelView {
     thumbnails: RefCell<Thumbnails>,
     /// Shows one of the two views; both are views of the same rows.
     views: gtk::Stack,
+    /// Renaming in place, laid over the views.
+    rename: RenameEdit,
     mode: Cell<ViewMode>,
     /// Last seen height of a details row, the list view uses the same.
     details_row_height: Cell<i32>,
@@ -242,7 +245,8 @@ impl PanelView {
         let root = gtk::Box::new(gtk::Orientation::Vertical, 0);
         root.add_css_class("dc-panel");
         root.append(&path_label);
-        root.append(&views);
+        let rename = RenameEdit::new(&views);
+        root.append(rename.widget());
         root.append(&status_label);
 
         let view = Rc::new_cyclic(|this| Self {
@@ -257,6 +261,7 @@ impl PanelView {
             sort_headers: [list_header, icons_header],
             thumbnails: RefCell::default(),
             views,
+            rename,
             mode: Cell::new(ViewMode::Details),
             details_row_height: Cell::new(0),
             path_label,
@@ -273,6 +278,7 @@ impl PanelView {
         view.setup_list_view(&list);
         view.setup_icon_view();
         view.connect_signals();
+        view.connect_rename();
 
         let loaded = view.panel.borrow_mut().load(&*view.source, path, None);
         if let Err(err) = loaded {
@@ -323,6 +329,175 @@ impl PanelView {
     pub fn toggle_selection_and_move(&self, forward: bool) {
         self.panel.borrow_mut().toggle_selection_and_move(forward);
         self.after_marking();
+    }
+
+    /// Whether the name under the cursor is being renamed in place; the
+    /// window then leaves the keys to the entry.
+    pub fn is_renaming(&self) -> bool {
+        self.rename.is_active()
+    }
+
+    /// Shift+F6, F2 (`cm_RenameOnly`): the name under the cursor becomes an
+    /// entry right where it is shown. Again while editing: the next part
+    /// of the name is selected.
+    pub fn start_rename(&self) {
+        if self.rename.is_active() {
+            let has_extension = self.panel.borrow().current_item().is_some_and(|item| !item.extension().is_empty());
+            self.rename.select_next_part(has_extension);
+            return;
+        }
+        let name = {
+            let panel = self.panel.borrow();
+            let Some(item) = panel.current_item().filter(|item| !item.is_parent()) else { return };
+            item.display_name().to_owned()
+        };
+        self.focus();
+        // The row is laid out at the cursor only after the scroll.
+        let this = self.this.clone();
+        glib::idle_add_local_once(move || {
+            if let Some(view) = this.upgrade()
+                && let Some(area) = view.rename_area()
+            {
+                view.rename.show(&area, &name);
+            }
+        });
+    }
+
+    /// Where the name of the item under the cursor is drawn, in the
+    /// coordinates of the overlay: name and extension columns of its
+    /// details row, its cell in the list view, its label in the icons view.
+    fn rename_area(&self) -> Option<gtk::graphene::Rect> {
+        let selected = |parent: &gtk::Widget| {
+            let mut child = parent.first_child();
+            while let Some(widget) = child {
+                if widget.state_flags().contains(gtk::StateFlags::SELECTED) {
+                    return Some(widget);
+                }
+                child = widget.next_sibling();
+            }
+            None
+        };
+        let overlay = self.rename.widget();
+        match self.mode.get() {
+            ViewMode::Details => {
+                // Children of a column view: its header, then the rows.
+                let list = self.column_view.last_child()?;
+                let row = selected(&list)?;
+                let bounds = row.compute_bounds(overlay)?;
+                let header = self.column_view.first_child()?;
+                let name = header.first_child()?;
+                let width = name.width() + name.next_sibling().map_or(0, |ext| ext.width());
+                #[expect(clippy::cast_precision_loss, reason = "a width on screen")]
+                let width = width as f32;
+                Some(gtk::graphene::Rect::new(bounds.x(), bounds.y(), width, bounds.height()))
+            }
+            ViewMode::List => selected(self.grid_view.upcast_ref())?.compute_bounds(overlay),
+            // The grid's child holds our cell box: icon, preview, label.
+            ViewMode::Icons => selected(self.icon_view.upcast_ref())?.first_child()?.last_child()?.compute_bounds(overlay),
+        }
+    }
+
+    /// Enter: renames to the text of the entry. `true` when the editing is
+    /// over (renamed, or nothing changed); on an error it stays open.
+    fn commit_rename(&self) -> bool {
+        let (old, new) = (self.rename.original(), self.rename.text());
+        if new == old {
+            self.cancel_rename();
+            return true;
+        }
+        let parent = self.window();
+        if new.is_empty() || new.contains('/') || new == "." || new == ".." {
+            let message = fill(&gettext("Invalid file name: {name}"), &[("name", &new)]);
+            dialogs::show_error(parent.as_ref(), &message, "");
+            return false;
+        }
+        let dir = self.path();
+        let (from, to) = (dir.join(&old), dir.join(&new));
+        // A different case only is the same file on some file systems.
+        let same_file = std::fs::metadata(&from).ok().zip(std::fs::metadata(&to).ok()).is_some_and(|(a, b)| {
+            use std::os::unix::fs::MetadataExt;
+            (a.dev(), a.ino()) == (b.dev(), b.ino())
+        });
+        if std::fs::symlink_metadata(&to).is_ok() && !same_file {
+            // rsMsgErrDirExists / a file is not overwritten from here.
+            let message = fill(&gettext("{name} already exists."), &[("name", &new)]);
+            dialogs::show_error(parent.as_ref(), &message, "");
+            return false;
+        }
+        if let Err(err) = std::fs::rename(&from, &to) {
+            let message =
+                fill(&gettext("Cannot rename file {from} to {to}"), &[("from", &from.display()), ("to", &to.display())]);
+            dialogs::show_error(parent.as_ref(), &message, &err.to_string());
+            return false;
+        }
+        self.rename.hide();
+        self.reload_focusing(OsStr::new(&new));
+        self.focus();
+        true
+    }
+
+    fn cancel_rename(&self) {
+        if self.rename.is_active() {
+            self.rename.hide();
+            self.focus();
+        }
+    }
+
+    /// Up/Down while renaming: renames, then edits the previous or next item.
+    fn commit_rename_and_move(&self, forward: bool) {
+        if !self.commit_rename() {
+            return;
+        }
+        let cursor = self.panel.borrow().cursor();
+        let target = if forward { cursor + 1 } else { cursor.saturating_sub(1) };
+        self.panel.borrow_mut().set_cursor(target);
+        self.show_cursor();
+        self.start_rename();
+    }
+
+    fn connect_rename(self: &Rc<Self>) {
+        let entry = self.rename.entry();
+        let weak = Rc::downgrade(self);
+        entry.connect_activate(move |_| {
+            if let Some(view) = weak.upgrade() {
+                view.commit_rename();
+            }
+        });
+        let keys = gtk::EventControllerKey::new();
+        let weak = Rc::downgrade(self);
+        keys.connect_key_pressed(move |_, key, _, state| {
+            let Some(view) = weak.upgrade() else { return glib::Propagation::Proceed };
+            let shift = state.contains(gdk::ModifierType::SHIFT_MASK);
+            match key {
+                gdk::Key::Escape => view.cancel_rename(),
+                gdk::Key::Up => view.commit_rename_and_move(false),
+                gdk::Key::Down => view.commit_rename_and_move(true),
+                gdk::Key::F2 => view.start_rename(),
+                gdk::Key::F6 if shift => view.start_rename(),
+                _ => return glib::Propagation::Proceed,
+            }
+            glib::Propagation::Stop
+        });
+        entry.add_controller(keys);
+        // Clicking elsewhere ends it without renaming (as the original by default).
+        let focus = gtk::EventControllerFocus::new();
+        let weak = Rc::downgrade(self);
+        focus.connect_leave(move |_| {
+            if let Some(view) = weak.upgrade() {
+                // After the click that moved the focus, not during it.
+                glib::idle_add_local_once(move || {
+                    // The window's own focus, not whether the window is
+                    // active: switching to another application keeps it.
+                    let entry = view.rename.entry();
+                    let focus = entry.root().and_then(|root| gtk::prelude::RootExt::focus(&root));
+                    let inside = focus.is_some_and(|widget| widget.is_ancestor(entry) || &widget == entry.upcast_ref::<gtk::Widget>());
+                    if view.rename.is_active() && !inside {
+                        view.rename.hide();
+                    }
+                });
+            }
+        });
+        entry.add_controller(focus);
     }
 
     pub fn end_held_mark(&self) {

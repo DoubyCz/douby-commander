@@ -10,6 +10,7 @@ mod operations;
 mod panel_column;
 mod panel_view;
 mod progress_window;
+mod rename_edit;
 mod settings;
 mod splitter;
 mod texts;

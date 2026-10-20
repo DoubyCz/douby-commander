@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: doubycmd\n"
 "Report-Msgid-Bugs-To: douby@douby.cz\n"
-"POT-Creation-Date: 2026-10-20 15:42+0200\n"
+"POT-Creation-Date: 2026-10-20 15:55+0200\n"
 "PO-Revision-Date: 2026-10-19 18:45+0200\n"
 "Last-Translator: Jiří Doubravský <douby@douby.cz>\n"
 "Language-Team: Czech\n"
@@ -17,12 +17,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: crates/dc-core/src/command.rs:262
+#: crates/dc-core/src/command.rs:266
 #, rust-format
 msgid "Unknown command {command}"
 msgstr "Neznámý příkaz {command}"
 
-#: crates/dc-core/src/command.rs:264
+#: crates/dc-core/src/command.rs:268
 #, rust-format
 msgid "Command {command} does not accept parameter {param}"
 msgstr "Příkaz {command} nepřijímá parametr {param}"
@@ -57,7 +57,7 @@ msgctxt "size column"
 msgid "<LNK>"
 msgstr "<LNK>"
 
-#: crates/dc-core/src/format.rs:115
+#: crates/dc-core/src/format.rs:123
 #, rust-format
 msgid ""
 "Selected: {selected_size} of {total_size}, files: {selected_files} of "
@@ -71,42 +71,42 @@ msgstr ""
 msgid "Invalid shortcut {shortcut}"
 msgstr "Neplatná klávesová zkratka {shortcut}"
 
-#: crates/dc-gui/src/commander.rs:117 crates/dc-gui/src/commander.rs:224
+#: crates/dc-gui/src/commander.rs:118 crates/dc-gui/src/commander.rs:230
 msgid ""
 "No terminal found. Install xdg-terminal-exec or set the TERMINAL variable."
 msgstr ""
 "Nenalezen žádný terminál. Nainstalujte xdg-terminal-exec nebo nastavte "
 "proměnnou TERMINAL."
 
-#: crates/dc-gui/src/commander.rs:119
+#: crates/dc-gui/src/commander.rs:120
 msgid "Cannot run the terminal"
 msgstr "Nelze spustit terminál"
 
-#: crates/dc-gui/src/commander.rs:223
+#: crates/dc-gui/src/commander.rs:229
 msgid "No text editor found. Set one in the VISUAL or EDITOR variable."
 msgstr ""
 "Nenalezen žádný textový editor. Nastavte ho v proměnné VISUAL nebo EDITOR."
 
-#: crates/dc-gui/src/commander.rs:225
+#: crates/dc-gui/src/commander.rs:231
 msgid "No application is set for text files (text/plain)."
 msgstr "Pro textové soubory (text/plain) není nastavená žádná aplikace."
 
-#: crates/dc-gui/src/commander.rs:229
+#: crates/dc-gui/src/commander.rs:235
 #, rust-format
 msgid "Cannot open {path} in an editor"
 msgstr "Nelze otevřít {path} v editoru"
 
-#: crates/dc-gui/src/commander.rs:348
+#: crates/dc-gui/src/commander.rs:354
 #, rust-format
 msgid "Delete selected \"{name}\" into trash can?"
 msgstr "Opravdu přesunout \"{name}\" do koše?"
 
-#: crates/dc-gui/src/commander.rs:350
+#: crates/dc-gui/src/commander.rs:356
 #, rust-format
 msgid "Delete selected \"{name}\"?"
 msgstr "Opravdu smazat \"{name}\"?"
 
-#: crates/dc-gui/src/commander.rs:358
+#: crates/dc-gui/src/commander.rs:364
 #, rust-format
 msgid "Delete {count} selected file/directory into trash can?"
 msgid_plural "Delete {count} selected files/directories into trash can?"
@@ -114,7 +114,7 @@ msgstr[0] "Opravdu přesunout {count} vybranou položku do koše?"
 msgstr[1] "Opravdu přesunout {count} vybrané položky do koše?"
 msgstr[2] "Opravdu přesunout {count} vybraných položek do koše?"
 
-#: crates/dc-gui/src/commander.rs:363
+#: crates/dc-gui/src/commander.rs:369
 #, rust-format
 msgid "Delete {count} selected file/directory?"
 msgid_plural "Delete {count} selected files/directories?"
@@ -122,17 +122,17 @@ msgstr[0] "Opravdu smazat {count} vybranou položku?"
 msgstr[1] "Opravdu smazat {count} vybrané položky?"
 msgstr[2] "Opravdu smazat {count} vybraných položek?"
 
-#: crates/dc-gui/src/commander.rs:405
+#: crates/dc-gui/src/commander.rs:411
 #, rust-format
 msgid "Copy selected \"{name}\"?"
 msgstr "Kopírovat \"{name}\"?"
 
-#: crates/dc-gui/src/commander.rs:405
+#: crates/dc-gui/src/commander.rs:411
 #, rust-format
 msgid "Rename/move selected \"{name}\"?"
 msgstr "Přejmenovat nebo přesunout \"{name}\"?"
 
-#: crates/dc-gui/src/commander.rs:411
+#: crates/dc-gui/src/commander.rs:417
 #, rust-format
 msgid "Copy {count} selected file/directory?"
 msgid_plural "Copy {count} selected files/directories?"
@@ -140,7 +140,7 @@ msgstr[0] "Kopírovat {count} vybranou položku?"
 msgstr[1] "Kopírovat {count} vybrané položky?"
 msgstr[2] "Kopírovat {count} vybraných položek?"
 
-#: crates/dc-gui/src/commander.rs:414
+#: crates/dc-gui/src/commander.rs:420
 #, rust-format
 msgid "Rename/move {count} selected file/directory?"
 msgid_plural "Rename/move {count} selected files/directories?"
@@ -959,45 +959,60 @@ msgctxt "tooltip of a disabled button"
 msgid "{hint} - {reason}"
 msgstr "{hint} - {reason}"
 
-#: crates/dc-gui/src/panel_view.rs:30
+#: crates/dc-gui/src/panel_view.rs:31
 msgid "Name"
 msgstr "Název"
 
-#: crates/dc-gui/src/panel_view.rs:31
+#: crates/dc-gui/src/panel_view.rs:32
 msgid "Ext"
 msgstr "Přípona"
 
-#: crates/dc-gui/src/panel_view.rs:32
+#: crates/dc-gui/src/panel_view.rs:33
 msgid "Size"
 msgstr "Velikost"
 
-#: crates/dc-gui/src/panel_view.rs:33
+#: crates/dc-gui/src/panel_view.rs:34
 msgid "Date"
 msgstr "Datum"
 
-#: crates/dc-gui/src/panel_view.rs:34
+#: crates/dc-gui/src/panel_view.rs:35
 msgid "Attr"
 msgstr "Atr."
 
-#: crates/dc-gui/src/panel_view.rs:645
+#: crates/dc-gui/src/panel_view.rs:410
+#, rust-format
+msgid "Invalid file name: {name}"
+msgstr "Neplatný název souboru: {name}"
+
+#: crates/dc-gui/src/panel_view.rs:423
+#, rust-format
+msgid "{name} already exists."
+msgstr "{name} už existuje."
+
+#: crates/dc-gui/src/panel_view.rs:429 crates/dc-ops/src/transfer.rs:850
+#, rust-format
+msgid "Cannot rename file {from} to {to}"
+msgstr "Nelze přejmenovat soubor {from} na {to}"
+
+#: crates/dc-gui/src/panel_view.rs:820
 msgid "To browse an archive inside an archive, copy it out first."
 msgstr "Archiv uvnitř archivu lze procházet až po zkopírování ven."
 
-#: crates/dc-gui/src/panel_view.rs:649
+#: crates/dc-gui/src/panel_view.rs:824
 msgid "Reading the archive…"
 msgstr "Načítám archiv…"
 
-#: crates/dc-gui/src/panel_view.rs:1223
+#: crates/dc-gui/src/panel_view.rs:1398
 #, rust-format
 msgid "(SEARCH: {text})"
 msgstr "(HLEDÁNÍ: {text})"
 
-#: crates/dc-gui/src/panel_view.rs:1253
+#: crates/dc-gui/src/panel_view.rs:1428
 #, rust-format
 msgid "Cannot open {path}"
 msgstr "Nelze otevřít {path}"
 
-#: crates/dc-gui/src/panel_view.rs:1351
+#: crates/dc-gui/src/panel_view.rs:1526
 msgid "Archives can only be browsed so far."
 msgstr "Archivy zatím jde jen procházet."
 
@@ -1377,11 +1392,6 @@ msgstr "Souborem:"
 #: crates/dc-ops/src/transfer.rs:834
 msgid "Filename:"
 msgstr "Název souboru:"
-
-#: crates/dc-ops/src/transfer.rs:850
-#, rust-format
-msgid "Cannot rename file {from} to {to}"
-msgstr "Nelze přejmenovat soubor {from} na {to}"
 
 #: crates/dc-ops/src/transfer.rs:867
 #, rust-format

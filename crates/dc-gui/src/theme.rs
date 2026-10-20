@@ -104,6 +104,16 @@ const BASE_CSS: &str = "
     color: inherit;
     box-shadow: inset 0 0 0 1px var(--dc-inactive-cursor-color);
 }
+/* Renaming in place: an entry the size of the name it covers, opaque:
+   in details it covers the extension column too, which must not show
+   through (the name with its extension is in the entry). */
+entry.dc-rename {
+    min-height: 0;
+    padding: 0 4px;
+    border-radius: 0;
+    background-color: var(--view-bg-color);
+    background-image: none;
+}
 /* The arrow of the sort column, in both headers, in the accent. */
 .dc-panel columnview > header > button sort-indicator { color: var(--accent-bg-color); }
 .dc-marked { color: var(--dc-marked-color); }

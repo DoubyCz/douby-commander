@@ -109,6 +109,7 @@ impl Commander {
             Command::Copy => self.transfer(TransferMode::Copy, false),
             Command::CopySamePanel => self.transfer(TransferMode::Copy, true),
             Command::Rename => self.transfer(TransferMode::Move, false),
+            Command::RenameOnly => panel.start_rename(),
             Command::MakeDir => self.make_dir(),
             Command::RunTerm => {
                 if let Err(err) = launch::open_terminal(&panel.path()) {
@@ -165,6 +166,10 @@ impl Commander {
         // A new press of Shift too, in case its release went to another window.
         self.handle_key_released(key);
         let panel = self.active();
+        // Renaming in place: the keys belong to its entry.
+        if panel.is_renaming() {
+            return glib::Propagation::Proceed;
+        }
         let typed = keys::typed_char(key, state);
 
         if panel.is_quick_searching() {
@@ -205,7 +210,8 @@ impl Commander {
             | Command::MakeDir
             | Command::RunTerm
             | Command::Delete { .. }
-            | Command::Rename => self.active().in_archive(),
+            | Command::Rename
+            | Command::RenameOnly => self.active().in_archive(),
             // Out of an archive it extracts; into one not yet.
             Command::Copy => other.in_archive(),
             _ => false,

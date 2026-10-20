@@ -63,6 +63,8 @@ pub enum Command {
     CopySamePanel,
     /// F6: move or rename (`cm_Rename` in the original).
     Rename,
+    /// Shift+F6, F2: rename the item under the cursor in place.
+    RenameOnly,
     /// F7: create a directory in the active panel.
     MakeDir,
     /// F9: the terminal in the directory of the active panel.
@@ -120,7 +122,7 @@ impl TrashChoice {
 
 impl Command {
     /// All commands with default parameters, for listings and for parsing.
-    pub const ALL: [Self; 41] = [
+    pub const ALL: [Self; 42] = [
         Self::Open,
         Self::ChangeDirToParent,
         Self::EnterDir,
@@ -140,6 +142,7 @@ impl Command {
         Self::Copy,
         Self::CopySamePanel,
         Self::Rename,
+        Self::RenameOnly,
         Self::MakeDir,
         Self::RunTerm,
         Self::Delete { trash: TrashChoice::Setting },
@@ -187,6 +190,7 @@ impl Command {
             Self::Copy => "cm_Copy",
             Self::CopySamePanel => "cm_CopySamePanel",
             Self::Rename => "cm_Rename",
+            Self::RenameOnly => "cm_RenameOnly",
             Self::MakeDir => "cm_MakeDir",
             Self::RunTerm => "cm_RunTerm",
             Self::Delete { .. } => "cm_Delete",
