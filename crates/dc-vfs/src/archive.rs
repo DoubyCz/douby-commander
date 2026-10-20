@@ -257,6 +257,60 @@ mod tests {
         assert!(archive.is_current());
     }
 
+    /// A minimal stored (uncompressed) Microsoft Cabinet with two files,
+    /// one of them in a directory (cab paths use backslashes).
+    fn sample_cab(dir: &Path) -> PathBuf {
+        let files: [(&str, &[u8]); 2] = [("readme.txt", b"ahoj z cabu\n"), ("docs\\index.md", b"# docs\n")];
+        // DOS date and time: 20.10.2026 15:30.
+        let (year, month, day, hour, minute) = (2026_u16 - 1980, 10_u16, 20_u16, 15_u16, 30_u16);
+        let (date, time) = ((year << 9) | (month << 5) | day, (hour << 11) | (minute << 5));
+        let mut entries = Vec::new();
+        let mut payload: Vec<u8> = Vec::new();
+        for (name, content) in files {
+            let offset = u32::try_from(payload.len()).unwrap();
+            entries.extend(u32::try_from(content.len()).unwrap().to_le_bytes());
+            entries.extend(offset.to_le_bytes());
+            for value in [0_u16, date, time, 0x20] {
+                entries.extend(value.to_le_bytes());
+            }
+            entries.extend(name.as_bytes());
+            entries.push(0);
+            payload.extend(content);
+        }
+        let data_start = 36 + 8 + entries.len();
+        let total = data_start + 8 + payload.len();
+        let mut cab = b"MSCF".to_vec();
+        for value in [0, u32::try_from(total).unwrap(), 0, 36 + 8, 0] {
+            cab.extend(value.to_le_bytes());
+        }
+        cab.extend([3, 1]); // version 1.3
+        for value in [1_u16, 2, 0, 0, 0] {
+            cab.extend(value.to_le_bytes()); // folders, files, flags, set, index
+        }
+        cab.extend(u32::try_from(data_start).unwrap().to_le_bytes());
+        cab.extend([1_u16, 0].iter().flat_map(|value| value.to_le_bytes())); // one data block, stored
+        cab.extend(entries);
+        cab.extend(0_u32.to_le_bytes()); // no checksum
+        let size = u16::try_from(payload.len()).unwrap().to_le_bytes();
+        cab.extend(size);
+        cab.extend(size);
+        cab.extend(payload);
+        let path = dir.join("sample.cab");
+        std::fs::write(&path, cab).unwrap();
+        path
+    }
+
+    #[test]
+    fn lists_a_cab_with_its_directories() {
+        let tmp = tempfile::tempdir().unwrap();
+        let cab = sample_cab(tmp.path());
+        let archive = ArchiveSource::open(&cab).unwrap();
+        let mut root: Vec<_> = archive.list(&cab).unwrap().into_iter().map(|e| (e.name, e.kind)).collect();
+        root.sort_by(|a, b| a.0.cmp(&b.0));
+        assert_eq!(root, [("docs".into(), EntryKind::Directory), ("readme.txt".into(), EntryKind::File)]);
+        assert_eq!(archive.entry(&cab.join("docs/index.md")).unwrap().size, 7);
+    }
+
     #[test]
     fn browsable_by_extension_but_not_compressed_tars() {
         for name in ["a.zip", "B.7Z", "x.rar", "disk.iso", "plain.tar"] {
