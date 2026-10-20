@@ -10,14 +10,14 @@ use dc_core::command::{Command, TrashChoice};
 use dc_core::keymap::{Key, Keymap, Shortcut};
 use dc_i18n::{fill, gettext, ngettext, plural_count};
 use dc_ops::{DeleteMode, DeleteOperation, Destination, TransferMode, TransferOperation};
-use dc_vfs::FileSource;
+use dc_vfs::{FileSource, LocalFs};
 use gtk::prelude::*;
 use gtk::{gdk, glib};
 
 use crate::copy_dialog;
 use crate::launch::{self, LaunchError};
 use crate::operations::{OperationsUi, QueueMemory};
-use crate::panel_view::{PanelView, ViewMode};
+use crate::panel_view::{PanelView, ViewMode, not_in_archives};
 use crate::splitter::Splitter;
 use crate::settings::Settings;
 use crate::{dialogs, keys};
@@ -75,6 +75,9 @@ impl Commander {
 
     pub fn execute(self: &Rc<Self>, command: Command) {
         let panel = self.active();
+        if self.refused_in_archive(command) {
+            return;
+        }
         match command {
             Command::Open => panel.open_current(),
             Command::ChangeDirToParent => panel.go_up(),
@@ -190,6 +193,24 @@ impl Commander {
         glib::Propagation::Proceed
     }
 
+    /// Commands that work on files on disk only: inside an archive (the
+    /// active panel's, or the other one's as a target) they are refused
+    /// with a message, archives can only be browsed so far.
+    fn refused_in_archive(&self, command: Command) -> bool {
+        let other = &self.panels[1 - self.active.get()];
+        let refused = match command {
+            Command::View | Command::Edit | Command::CopySamePanel | Command::MakeDir | Command::RunTerm | Command::Delete { .. } => {
+                self.active().in_archive()
+            }
+            Command::Copy | Command::Rename => self.active().in_archive() || other.in_archive(),
+            _ => false,
+        };
+        if refused {
+            dialogs::show_error(self.active().window().as_ref(), &not_in_archives(), "");
+        }
+        refused
+    }
+
     /// F3 and F4: reports a failed start of an editor.
     fn edit(&self, path: &Path, result: Result<(), LaunchError>) {
         let Err(err) = result else { return };
@@ -217,7 +238,7 @@ impl Commander {
             let name = name.trim();
             if !name.is_empty() {
                 // A relative name may be a path (`a/b/c`), an absolute one replaces `dir`.
-                match panel.source().create_directory(&dir.join(name)) {
+                match LocalFs.create_directory(&dir.join(name)) {
                     Ok(()) => {
                         this.refresh_panels();
                         if let Some(first) = first_component(Path::new(name)) {
@@ -248,7 +269,7 @@ impl Commander {
         let (last_queue, new_queue) = (operations.last_queue(QueueMemory::Delete), operations.new_queue());
         dialogs::confirm_operation(panel.window().as_ref(), &question, last_queue, new_queue, move |queue| {
             let paths: Vec<PathBuf> = names.iter().map(|name| dir.join(name)).collect();
-            operations.start(Box::new(DeleteOperation::new(panel.source(), paths, mode)), queue, QueueMemory::Delete);
+            operations.start(Box::new(DeleteOperation::new(LocalFs, paths, mode)), queue, QueueMemory::Delete);
         });
     }
 

@@ -22,6 +22,8 @@ colors change at once, with no setup.
   and Shift; Alt+Left and Alt+Right go up and into directories
 - Three views: details, list (names in columns) and icons with image previews
 - Space on a directory calculates its size in the background
+- Archives with a directory of their contents (zip, 7z, rar, iso, cab, tar) are shown
+  as `{name}` and browsed like directories; read-only so far
 - F3 opens a file in your terminal editor (`$VISUAL` or `$EDITOR`), F4 in your desktop
   text editor, Enter in the default application
 - F5 copy and F6 move, with the questions and options of the original, a progress
@@ -56,20 +58,20 @@ install them for your distribution.
 Arch Linux (Omarchy):
 
 ```sh
-sudo pacman -S --needed base-devel rust gtk4 libadwaita gettext
+sudo pacman -S --needed base-devel rust gtk4 libadwaita libarchive gettext
 ```
 
 Debian 13, Ubuntu 25.04 and newer:
 
 ```sh
-sudo apt install build-essential pkg-config libgtk-4-dev libadwaita-1-dev gettext
+sudo apt install build-essential pkg-config libgtk-4-dev libadwaita-1-dev libarchive-dev gettext
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 
 Fedora, RHEL 10 and derivatives:
 
 ```sh
-sudo dnf install gcc pkgconf-pkg-config gtk4-devel libadwaita-devel gettext
+sudo dnf install gcc pkgconf-pkg-config gtk4-devel libadwaita-devel libarchive-devel gettext
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 

@@ -4,8 +4,10 @@
 //! subclasses (local, archive, WFX plugin, GIO, ...). Here it is a trait, and
 //! for now only the local file system implements it.
 
+pub mod archive;
 mod local;
 pub mod mounts;
+mod vfs;
 
 use std::ffi::OsString;
 use std::path::{Path, PathBuf};
@@ -15,6 +17,7 @@ use std::{fmt, io};
 use dc_i18n::{fill, gettext};
 
 pub use local::LocalFs;
+pub use vfs::Vfs;
 
 /// What kind of object a directory entry is.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -26,6 +29,9 @@ pub enum EntryKind {
     Symlink { to_directory: bool },
     /// Device, FIFO, socket and other special files.
     Other,
+    /// A file that is an archive the panel can enter (`archive.rs`). Sorted
+    /// and shown among files, but opened as a directory.
+    Archive,
 }
 
 /// One item of a directory listing.
@@ -45,6 +51,12 @@ impl Entry {
     pub fn is_directory_like(&self) -> bool {
         matches!(self.kind, EntryKind::Directory | EntryKind::Symlink { to_directory: true })
     }
+
+    /// Opens on Enter as a directory: directories and archives.
+    #[must_use]
+    pub fn is_container(&self) -> bool {
+        self.is_directory_like() || self.kind == EntryKind::Archive
+    }
 }
 
 /// Failure of a file source. `Display` says what failed (translated, with
@@ -57,6 +69,10 @@ pub enum Error {
     CreateDir { path: PathBuf, source: io::Error },
     Remove { path: PathBuf, source: io::Error },
     Trash { path: PathBuf, message: String },
+    /// The archive cannot be read (damaged, unsupported, a password).
+    Archive { path: PathBuf, message: String },
+    /// Changing things inside an archive, not possible (yet).
+    ReadOnly { path: PathBuf },
 }
 
 impl Error {
@@ -70,8 +86,8 @@ impl Error {
             | Self::ReadEntry { source, .. }
             | Self::CreateDir { source, .. }
             | Self::Remove { source, .. } => source.to_string(),
-            Self::DirectoryExists { .. } => String::new(),
-            Self::Trash { message, .. } => message.clone(),
+            Self::DirectoryExists { .. } | Self::ReadOnly { .. } => String::new(),
+            Self::Trash { message, .. } | Self::Archive { message, .. } => message.clone(),
         }
     }
 }
@@ -86,6 +102,8 @@ impl fmt::Display for Error {
             Self::CreateDir { path, .. } => (gettext("Can not create directory {path}!"), path),
             Self::Remove { path, .. } => (gettext("Can not delete file {path}"), path),
             Self::Trash { path, .. } => (gettext("Can not delete \"{path}\" to trash!"), path),
+            Self::Archive { path, .. } => (gettext("Cannot read archive {path}"), path),
+            Self::ReadOnly { path } => (gettext("Cannot change {path}, archives are read-only for now"), path),
         };
         f.write_str(&fill(&template, &[("path", &path.display())]))
     }
@@ -98,7 +116,7 @@ impl std::error::Error for Error {
             | Self::ReadEntry { source, .. }
             | Self::CreateDir { source, .. }
             | Self::Remove { source, .. } => Some(source),
-            Self::DirectoryExists { .. } | Self::Trash { .. } => None,
+            Self::DirectoryExists { .. } | Self::Trash { .. } | Self::Archive { .. } | Self::ReadOnly { .. } => None,
         }
     }
 }

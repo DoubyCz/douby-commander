@@ -55,6 +55,7 @@ assets = [
 [package.metadata.generate-rpm.requires]
 gtk4 = ">= 4.16"
 libadwaita = ">= 1.6"
+libarchive = ">= 3.6"
 glibc = ">= 2.41"
 
 [build-dependencies]

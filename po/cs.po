@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: doubycmd\n"
 "Report-Msgid-Bugs-To: douby@douby.cz\n"
-"POT-Creation-Date: 2026-10-19 22:35+0200\n"
+"POT-Creation-Date: 2026-10-20 15:31+0200\n"
 "PO-Revision-Date: 2026-10-19 18:45+0200\n"
 "Last-Translator: Jiří Doubravský <douby@douby.cz>\n"
 "Language-Team: Czech\n"
@@ -57,7 +57,7 @@ msgctxt "size column"
 msgid "<LNK>"
 msgstr "<LNK>"
 
-#: crates/dc-core/src/format.rs:108
+#: crates/dc-core/src/format.rs:115
 #, rust-format
 msgid ""
 "Selected: {selected_size} of {total_size}, files: {selected_files} of "
@@ -71,42 +71,42 @@ msgstr ""
 msgid "Invalid shortcut {shortcut}"
 msgstr "Neplatná klávesová zkratka {shortcut}"
 
-#: crates/dc-gui/src/commander.rs:114 crates/dc-gui/src/commander.rs:198
+#: crates/dc-gui/src/commander.rs:117 crates/dc-gui/src/commander.rs:219
 msgid ""
 "No terminal found. Install xdg-terminal-exec or set the TERMINAL variable."
 msgstr ""
 "Nenalezen žádný terminál. Nainstalujte xdg-terminal-exec nebo nastavte "
 "proměnnou TERMINAL."
 
-#: crates/dc-gui/src/commander.rs:116
+#: crates/dc-gui/src/commander.rs:119
 msgid "Cannot run the terminal"
 msgstr "Nelze spustit terminál"
 
-#: crates/dc-gui/src/commander.rs:197
+#: crates/dc-gui/src/commander.rs:218
 msgid "No text editor found. Set one in the VISUAL or EDITOR variable."
 msgstr ""
 "Nenalezen žádný textový editor. Nastavte ho v proměnné VISUAL nebo EDITOR."
 
-#: crates/dc-gui/src/commander.rs:199
+#: crates/dc-gui/src/commander.rs:220
 msgid "No application is set for text files (text/plain)."
 msgstr "Pro textové soubory (text/plain) není nastavená žádná aplikace."
 
-#: crates/dc-gui/src/commander.rs:203
+#: crates/dc-gui/src/commander.rs:224
 #, rust-format
 msgid "Cannot open {path} in an editor"
 msgstr "Nelze otevřít {path} v editoru"
 
-#: crates/dc-gui/src/commander.rs:307
+#: crates/dc-gui/src/commander.rs:328
 #, rust-format
 msgid "Delete selected \"{name}\" into trash can?"
 msgstr "Opravdu přesunout \"{name}\" do koše?"
 
-#: crates/dc-gui/src/commander.rs:309
+#: crates/dc-gui/src/commander.rs:330
 #, rust-format
 msgid "Delete selected \"{name}\"?"
 msgstr "Opravdu smazat \"{name}\"?"
 
-#: crates/dc-gui/src/commander.rs:317
+#: crates/dc-gui/src/commander.rs:338
 #, rust-format
 msgid "Delete {count} selected file/directory into trash can?"
 msgid_plural "Delete {count} selected files/directories into trash can?"
@@ -114,7 +114,7 @@ msgstr[0] "Opravdu přesunout {count} vybranou položku do koše?"
 msgstr[1] "Opravdu přesunout {count} vybrané položky do koše?"
 msgstr[2] "Opravdu přesunout {count} vybraných položek do koše?"
 
-#: crates/dc-gui/src/commander.rs:322
+#: crates/dc-gui/src/commander.rs:343
 #, rust-format
 msgid "Delete {count} selected file/directory?"
 msgid_plural "Delete {count} selected files/directories?"
@@ -122,17 +122,17 @@ msgstr[0] "Opravdu smazat {count} vybranou položku?"
 msgstr[1] "Opravdu smazat {count} vybrané položky?"
 msgstr[2] "Opravdu smazat {count} vybraných položek?"
 
-#: crates/dc-gui/src/commander.rs:364
+#: crates/dc-gui/src/commander.rs:385
 #, rust-format
 msgid "Copy selected \"{name}\"?"
 msgstr "Kopírovat \"{name}\"?"
 
-#: crates/dc-gui/src/commander.rs:364
+#: crates/dc-gui/src/commander.rs:385
 #, rust-format
 msgid "Rename/move selected \"{name}\"?"
 msgstr "Přejmenovat nebo přesunout \"{name}\"?"
 
-#: crates/dc-gui/src/commander.rs:370
+#: crates/dc-gui/src/commander.rs:391
 #, rust-format
 msgid "Copy {count} selected file/directory?"
 msgid_plural "Copy {count} selected files/directories?"
@@ -140,7 +140,7 @@ msgstr[0] "Kopírovat {count} vybranou položku?"
 msgstr[1] "Kopírovat {count} vybrané položky?"
 msgstr[2] "Kopírovat {count} vybraných položek?"
 
-#: crates/dc-gui/src/commander.rs:373
+#: crates/dc-gui/src/commander.rs:394
 #, rust-format
 msgid "Rename/move {count} selected file/directory?"
 msgid_plural "Rename/move {count} selected files/directories?"
@@ -909,51 +909,51 @@ msgstr ""
 "{queue} ({count})\n"
 "{operation} - {percent}"
 
-#: crates/dc-gui/src/panel_column.rs:74
+#: crates/dc-gui/src/panel_column.rs:76
 #, rust-format
 msgctxt "drive tooltip"
 msgid "{path} ({type})"
 msgstr "{path} ({type})"
 
-#: crates/dc-gui/src/panel_column.rs:115
+#: crates/dc-gui/src/panel_column.rs:117
 #, rust-format
 msgid "{free} free"
 msgstr "volné místo: {free}"
 
-#: crates/dc-gui/src/panel_column.rs:117
+#: crates/dc-gui/src/panel_column.rs:119
 #, rust-format
 msgid "{free} of {total} free"
 msgstr "volné místo: {free}, celková kapacita: {total}"
 
-#: crates/dc-gui/src/panel_column.rs:147
+#: crates/dc-gui/src/panel_column.rs:149
 msgid "Open drive list"
 msgstr "Otevřít seznam disků"
 
-#: crates/dc-gui/src/panel_column.rs:157
+#: crates/dc-gui/src/panel_column.rs:159
 msgid "Show current directory of the right panel in the left panel"
 msgstr "Zobrazit v levém panelu složku z pravého panelu"
 
-#: crates/dc-gui/src/panel_column.rs:159
+#: crates/dc-gui/src/panel_column.rs:161
 msgid "Show current directory of the left panel in the right panel"
 msgstr "Zobrazit v pravém panelu složku z levého panelu"
 
-#: crates/dc-gui/src/panel_column.rs:162
+#: crates/dc-gui/src/panel_column.rs:164
 msgid "Directory Hotlist"
 msgstr "Oblíbené složky"
 
-#: crates/dc-gui/src/panel_column.rs:163
+#: crates/dc-gui/src/panel_column.rs:165
 msgid "Go to root directory"
 msgstr "Přejít do kořenové složky"
 
-#: crates/dc-gui/src/panel_column.rs:164
+#: crates/dc-gui/src/panel_column.rs:166
 msgid "Go to parent directory"
 msgstr "Přejít do nadřazené složky"
 
-#: crates/dc-gui/src/panel_column.rs:165
+#: crates/dc-gui/src/panel_column.rs:167
 msgid "Go to home directory"
 msgstr "Přejít do domovské složky"
 
-#: crates/dc-gui/src/panel_column.rs:182 crates/dc-gui/src/toolbar.rs:73
+#: crates/dc-gui/src/panel_column.rs:184 crates/dc-gui/src/toolbar.rs:73
 #, rust-format
 msgctxt "tooltip of a disabled button"
 msgid "{hint} - {reason}"
@@ -979,15 +979,27 @@ msgstr "Datum"
 msgid "Attr"
 msgstr "Atr."
 
-#: crates/dc-gui/src/panel_view.rs:1178
+#: crates/dc-gui/src/panel_view.rs:645
+msgid "To browse an archive inside an archive, copy it out first."
+msgstr "Archiv uvnitř archivu lze procházet až po zkopírování ven."
+
+#: crates/dc-gui/src/panel_view.rs:649
+msgid "Reading the archive…"
+msgstr "Načítám archiv…"
+
+#: crates/dc-gui/src/panel_view.rs:1223
 #, rust-format
 msgid "(SEARCH: {text})"
 msgstr "(HLEDÁNÍ: {text})"
 
-#: crates/dc-gui/src/panel_view.rs:1208
+#: crates/dc-gui/src/panel_view.rs:1253
 #, rust-format
 msgid "Cannot open {path}"
 msgstr "Nelze otevřít {path}"
+
+#: crates/dc-gui/src/panel_view.rs:1341
+msgid "Archives can only be browsed so far."
+msgstr "Archivy zatím jde jen procházet."
 
 #: crates/dc-gui/src/progress_window.rs:53
 msgid "From:"
@@ -1172,7 +1184,7 @@ msgid "Cannot delete directory {path}"
 msgstr "Nelze smazat složku {path}"
 
 #: crates/dc-ops/src/delete.rs:147 crates/dc-ops/src/transfer.rs:476
-#: crates/dc-vfs/src/lib.rs:87
+#: crates/dc-vfs/src/lib.rs:103
 #, rust-format
 msgid "Can not delete file {path}"
 msgstr "Nelze smazat soubor {path}"
@@ -1333,7 +1345,7 @@ msgstr "Na cílovém disku není dost volného místa. Pokračovat?"
 msgid "Error creating symlink {path}"
 msgstr "Chyba při vytváření symbolického odkazu {path}"
 
-#: crates/dc-ops/src/transfer.rs:726 crates/dc-vfs/src/lib.rs:86
+#: crates/dc-ops/src/transfer.rs:726 crates/dc-vfs/src/lib.rs:102
 #, rust-format
 msgid "Can not create directory {path}!"
 msgstr "Složku {path} nelze vytvořit!"
@@ -1381,7 +1393,7 @@ msgstr "Soubor \"{path}\" nelze kopírovat ani přesunout sám na sebe!"
 msgid "Cannot copy special file {path}"
 msgstr "Nelze kopírovat speciální soubor {path}"
 
-#: crates/dc-ops/src/transfer.rs:917 crates/dc-vfs/src/lib.rs:83
+#: crates/dc-ops/src/transfer.rs:917 crates/dc-vfs/src/lib.rs:99
 #, rust-format
 msgid "Cannot read {path}"
 msgstr "Nelze přečíst {path}"
@@ -1419,17 +1431,27 @@ msgstr "Přesouvání"
 msgid "Copy ({number}) {name}"
 msgstr "Kopie ({number}) {name}"
 
-#: crates/dc-vfs/src/lib.rs:82
+#: crates/dc-vfs/src/lib.rs:98
 #, rust-format
 msgid "Cannot read directory {path}"
 msgstr "Nelze přečíst složku {path}"
 
-#: crates/dc-vfs/src/lib.rs:85
+#: crates/dc-vfs/src/lib.rs:101
 #, rust-format
 msgid "Directory {path} exists!"
 msgstr "Složka {path} už existuje!"
 
-#: crates/dc-vfs/src/lib.rs:88
+#: crates/dc-vfs/src/lib.rs:104
 #, rust-format
 msgid "Can not delete \"{path}\" to trash!"
 msgstr "\"{path}\" nelze přesunout do koše!"
+
+#: crates/dc-vfs/src/lib.rs:105
+#, rust-format
+msgid "Cannot read archive {path}"
+msgstr "Nelze přečíst archiv {path}"
+
+#: crates/dc-vfs/src/lib.rs:106
+#, rust-format
+msgid "Cannot change {path}, archives are read-only for now"
+msgstr "Nelze změnit {path}, archivy jsou zatím jen pro čtení"

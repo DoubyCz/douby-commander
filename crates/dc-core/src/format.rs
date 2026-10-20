@@ -48,10 +48,17 @@ pub fn size_column(item: &FileItem) -> String {
     }
 }
 
-/// The Name column: directories in square brackets.
+/// The Name column: directories in square brackets, archives the panel
+/// can enter in curly ones with their whole name (Jirka's choice).
 #[must_use]
 pub fn name_column(item: &FileItem) -> String {
-    if item.is_directory_like() { format!("[{}]", item.name_no_ext()) } else { item.name_no_ext().to_owned() }
+    if item.is_directory_like() {
+        format!("[{}]", item.name_no_ext())
+    } else if item.entry().kind == EntryKind::Archive {
+        format!("{{{}}}", item.display_name())
+    } else {
+        item.name_no_ext().to_owned()
+    }
 }
 
 /// Modification time in the local time zone.
@@ -68,7 +75,7 @@ pub fn attributes(mode: u32, kind: EntryKind) -> String {
     let type_char = match kind {
         EntryKind::Directory => 'd',
         EntryKind::Symlink { .. } => 'l',
-        EntryKind::File => '-',
+        EntryKind::File | EntryKind::Archive => '-',
         EntryKind::Other => match mode & 0o170_000 {
             0o060_000 => 'b',
             0o020_000 => 'c',

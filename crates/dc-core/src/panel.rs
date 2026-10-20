@@ -2,7 +2,7 @@ use std::collections::HashSet;
 use std::ffi::{OsStr, OsString};
 use std::path::{Path, PathBuf};
 
-use dc_vfs::FileSource;
+use dc_vfs::{EntryKind, FileSource};
 
 use crate::quick_search::Pattern;
 use crate::{FileItem, Sorting};
@@ -42,6 +42,9 @@ pub enum Activation {
     Navigated,
     /// The cursor is on a file, the caller decides how to open it.
     OpenFile(PathBuf),
+    /// The cursor is on an archive to browse; the caller lists it (which
+    /// may take a while) and then shows this path.
+    EnterArchive(PathBuf),
 }
 
 /// Totals for the status line under the panel.
@@ -208,6 +211,9 @@ impl Panel {
         if item.is_directory_like() {
             self.load(source, target, None)?;
             Ok(Some(Activation::Navigated))
+        } else if item.entry().kind == EntryKind::Archive {
+            // Listing it may take a while, the caller does it in the background.
+            Ok(Some(Activation::EnterArchive(target)))
         } else {
             Ok(Some(Activation::OpenFile(target)))
         }

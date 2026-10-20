@@ -68,6 +68,8 @@ impl FileRow {
             name: format::name_column(item),
             full_name: if item.is_directory_like() {
                 format!("[{}]", entry.name.to_string_lossy())
+            } else if entry.kind == dc_vfs::EntryKind::Archive {
+                format!("{{{}}}", entry.name.to_string_lossy())
             } else {
                 entry.name.to_string_lossy().into_owned()
             },

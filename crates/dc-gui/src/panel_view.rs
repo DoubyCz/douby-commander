@@ -17,7 +17,7 @@ use dc_core::command::{Direction, RangeStep};
 use dc_core::quick_search::{Pattern, TYPING_TIMEOUT, TypeAhead};
 use dc_core::{Panel, SortColumn, SortDirection, Sorting, format};
 use dc_i18n::{N_, fill, gettext};
-use dc_vfs::LocalFs;
+use dc_vfs::Vfs;
 use gtk::prelude::*;
 use gtk::{gdk, gio, glib};
 use jiff::tz::TimeZone;
@@ -36,7 +36,8 @@ const COLUMNS: [(SortColumn, &str, &str); 5] = [
 
 pub struct PanelView {
     panel: RefCell<Panel>,
-    source: LocalFs,
+    /// What is browsed: the local file system and archives in it.
+    source: Arc<Vfs>,
     tz: TimeZone,
     store: gio::ListStore,
     selection: gtk::SingleSelection,
@@ -190,7 +191,9 @@ const LIST_CELL_SIDE_PADDING: i32 = 12;
 const LIST_COLUMN_REM: f64 = 20.0;
 
 impl PanelView {
-    pub fn new(path: PathBuf) -> Rc<Self> {
+    /// `source` is shared by both panels: an archive open in both is
+    /// listed once.
+    pub fn new(path: PathBuf, source: Arc<Vfs>) -> Rc<Self> {
         let store = gio::ListStore::new::<FileRow>();
         let selection = gtk::SingleSelection::builder().model(&store).autoselect(true).build();
         let column_view = gtk::ColumnView::builder().model(&selection).reorderable(false).build();
@@ -244,7 +247,7 @@ impl PanelView {
 
         let view = Rc::new_cyclic(|this| Self {
             panel: RefCell::new(Panel::new(path.clone())),
-            source: LocalFs,
+            source,
             tz: TimeZone::system(),
             store,
             selection,
@@ -271,7 +274,7 @@ impl PanelView {
         view.setup_icon_view();
         view.connect_signals();
 
-        let loaded = view.panel.borrow_mut().load(&view.source, path, None);
+        let loaded = view.panel.borrow_mut().load(&*view.source, path, None);
         if let Err(err) = loaded {
             // Nothing to show yet, the panel stays empty with the error in the status line.
             view.status_label.set_text(&err.to_string());
@@ -356,8 +359,10 @@ impl PanelView {
         self.panel.borrow_mut().toggle_selection_at_cursor();
         self.after_marking();
         let marked = self.panel.borrow().current_item().is_some_and(dc_core::FileItem::is_selected);
+        // Inside an archive the sizes of its directories are not calculated (yet).
         if let Some(name) = directory
             && marked
+            && !self.in_archive()
         {
             self.calculate_size(name);
         }
@@ -521,7 +526,7 @@ impl PanelView {
 
     pub fn go_up(&self) {
         let left = self.leaving();
-        let result = self.panel.borrow_mut().go_up(&self.source);
+        let result = self.panel.borrow_mut().go_up(&*self.source);
         match result {
             Ok(true) => self.arrived(left),
             Ok(false) => {}
@@ -532,7 +537,7 @@ impl PanelView {
     /// Shows `path`, e.g. from a drive button or the `/` and `~` buttons.
     pub fn change_dir(&self, path: PathBuf) {
         let left = self.leaving();
-        let result = self.panel.borrow_mut().load(&self.source, path, None);
+        let result = self.panel.borrow_mut().load(&*self.source, path, None);
         match result {
             Ok(()) => self.arrived(left),
             Err(err) => self.show_error(&err),
@@ -615,13 +620,59 @@ impl PanelView {
     /// Enter or double click: opens the directory or file under the cursor.
     pub fn open_current(&self) {
         let left = self.leaving();
-        let result = self.panel.borrow_mut().activate(&self.source);
+        let result = self.panel.borrow_mut().activate(&*self.source);
         match result {
             Ok(Some(dc_core::Activation::Navigated)) => self.arrived(left),
-            Ok(Some(dc_core::Activation::OpenFile(path))) => self.open_file(&path),
+            Ok(Some(dc_core::Activation::OpenFile(path))) => {
+                if self.in_archive() {
+                    dialogs::show_error(self.window().as_ref(), &not_in_archives(), "");
+                } else {
+                    self.open_file(&path);
+                }
+            }
+            Ok(Some(dc_core::Activation::EnterArchive(path))) => self.enter_archive(path, left),
             Ok(None) => {}
             Err(err) => self.show_error(&err),
         }
+    }
+
+    /// Lists the archive `path` in a worker thread (a big one takes a
+    /// while), then shows its inside. Leaving the directory meanwhile
+    /// drops it.
+    fn enter_archive(&self, path: PathBuf, left: (PathBuf, ViewMode, f64)) {
+        // An archive inside an archive is not entered.
+        if self.in_archive() {
+            let message = gettext("To browse an archive inside an archive, copy it out first.");
+            dialogs::show_error(self.window().as_ref(), &message, "");
+            return;
+        }
+        self.status_label.set_text(&gettext("Reading the archive…"));
+        let (source, file, from) = (Arc::clone(&self.source), path.clone(), self.path());
+        let weak = self.this.clone();
+        glib::spawn_future_local(async move {
+            let opened = gio::spawn_blocking(move || source.open_archive(&file)).await;
+            let Some(view) = weak.upgrade() else { return };
+            if view.path() != from {
+                return;
+            }
+            match opened {
+                Ok(Ok(())) => {
+                    let loaded = view.panel.borrow_mut().load(&*view.source, path, None);
+                    match loaded {
+                        Ok(()) => view.arrived(left),
+                        Err(err) => {
+                            view.update_status();
+                            view.show_error(&err);
+                        }
+                    }
+                }
+                Ok(Err(err)) => {
+                    view.update_status();
+                    view.show_error(&err);
+                }
+                Err(_) => view.update_status(),
+            }
+        });
     }
 
     fn setup_columns(&self) {
@@ -1221,14 +1272,15 @@ impl PanelView {
         self.panel.borrow()
     }
 
-    pub fn source(&self) -> LocalFs {
-        self.source
+    /// Whether the panel shows the inside of an archive.
+    pub fn in_archive(&self) -> bool {
+        self.source.archive_of(&self.path()).is_some()
     }
 
     /// After a change on disk: lists the directory again, or leaves it for
     /// the nearest existing parent when it is gone.
     pub fn reload_or_leave(&self) {
-        let result = self.panel.borrow_mut().reload_or_leave(&self.source);
+        let result = self.panel.borrow_mut().reload_or_leave(&*self.source);
         match result {
             Ok(()) => self.refresh(),
             Err(err) => self.show_error(&err),
@@ -1237,7 +1289,7 @@ impl PanelView {
 
     /// Lists the directory again with the cursor on `name`.
     pub fn reload_focusing(&self, name: &OsStr) {
-        let result = self.panel.borrow_mut().reload_focusing(&self.source, Some(name));
+        let result = self.panel.borrow_mut().reload_focusing(&*self.source, Some(name));
         match result {
             Ok(()) => self.refresh(),
             Err(err) => self.show_error(&err),
@@ -1281,6 +1333,12 @@ fn setup_cell_with(view: &Weak<PanelView>, list_item: &gtk::ListItem, label: &gt
         .bind(label, "css-classes", Some(list_item));
 
     list_item.set_child(Some(child));
+}
+
+/// Told when something is asked of a file inside an archive that only
+/// works on disk for now (opening, editing, copying, ...).
+pub fn not_in_archives() -> String {
+    gettext("Archives can only be browsed so far.")
 }
 
 /// Sort headers for the list and icons views: a details table without

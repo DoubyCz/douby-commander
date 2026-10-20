@@ -2,6 +2,7 @@
 
 use std::path::PathBuf;
 use std::rc::Rc;
+use std::sync::Arc;
 
 use dc_core::keymap::Keymap;
 use dc_vfs::mounts;
@@ -19,7 +20,10 @@ pub fn build(app: &gtk::Application) {
     let start_dir = glib::home_dir();
     let operations = OperationsUi::new();
     let commander = Rc::new(Commander::new(
-        [PanelView::new(PathBuf::from(&start_dir)), PanelView::new(start_dir)],
+        {
+            let source = Arc::new(dc_vfs::Vfs::default());
+            [PanelView::new(PathBuf::from(&start_dir), Arc::clone(&source)), PanelView::new(start_dir, source)]
+        },
         Keymap::with_defaults(),
         Settings::default(),
         Rc::clone(&operations),
