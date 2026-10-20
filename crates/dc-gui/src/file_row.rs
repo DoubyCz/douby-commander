@@ -66,13 +66,7 @@ impl FileRow {
         let entry = item.entry();
         let texts = RowTexts {
             name: format::name_column(item),
-            full_name: if item.is_directory_like() {
-                format!("[{}]", entry.name.to_string_lossy())
-            } else if entry.kind == dc_vfs::EntryKind::Archive {
-                format!("{{{}}}", entry.name.to_string_lossy())
-            } else {
-                entry.name.to_string_lossy().into_owned()
-            },
+            full_name: format::full_name(item),
             file_name: entry.name.clone(),
             extension: item.extension().to_owned(),
             size: format::size_column(item),
