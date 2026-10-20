@@ -16,6 +16,7 @@ mod texts;
 mod theme;
 mod toolbar;
 mod window;
+mod wrap_layout;
 
 use std::path::PathBuf;
 

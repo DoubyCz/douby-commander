@@ -19,6 +19,7 @@ use gtk::prelude::*;
 
 use crate::commander::Commander;
 use crate::texts;
+use crate::wrap_layout::WrapLayout;
 
 /// Builds the column of panel `side` (0 left, 1 right) around its view.
 pub fn build(commander: &Rc<Commander>, side: usize, drives: &[MountPoint]) -> gtk::Box {
@@ -50,7 +51,8 @@ pub fn build(commander: &Rc<Commander>, side: usize, drives: &[MountPoint]) -> g
 }
 
 fn drive_bar(commander: &Rc<Commander>, side: usize, drives: &[MountPoint]) -> (gtk::Box, Vec<gtk::Button>) {
-    let bar = gtk::Box::builder().spacing(2).build();
+    // On more lines when the drives do not fit, as in the original.
+    let bar = WrapLayout::new_box();
     bar.add_css_class("dc-bar");
     let buttons: Vec<gtk::Button> = drives
         .iter()
