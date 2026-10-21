@@ -1,2 +1,4 @@
 # Tests may unwrap: a failing test is the point there.
 allow-unwrap-in-tests = true
+# Names of projects, not code.
+doc-valid-idents = ["GStreamer", ".."]

@@ -23,7 +23,7 @@ jobs:
         run: |
           apt-get update
           apt-get install -y --no-install-recommends ca-certificates curl git jq gh \
-            build-essential pkg-config libgtk-4-dev libadwaita-1-dev libarchive-dev libvte-2.91-gtk4-dev gettext desktop-file-utils
+            build-essential pkg-config libgtk-4-dev libadwaita-1-dev libarchive-dev libvte-2.91-gtk4-dev libgstreamer1.0-dev gettext desktop-file-utils
 
       - uses: actions/checkout@v5
 

@@ -58,7 +58,6 @@ impl PanelTerminal {
         terminal.set_mouse_autohide(true);
         terminal.set_audible_bell(false);
         terminal.set_scroll_on_keystroke(true);
-        terminal.set_font(Some(&monospace_font(&terminal)));
         let scrollbar = gtk::Scrollbar::new(gtk::Orientation::Vertical, terminal.vadjustment().as_ref());
         let root = gtk::Box::new(gtk::Orientation::Horizontal, 0);
         root.add_css_class("dc-terminal");
@@ -78,13 +77,7 @@ impl PanelTerminal {
             feeding: Cell::new(false),
             this: this.clone(),
         });
-        view.apply_colors();
-        let weak = Rc::downgrade(&view);
-        theme::connect_changed(move || {
-            let Some(view) = weak.upgrade() else { return false };
-            view.apply_colors();
-            true
-        });
+        follow_theme(&view.terminal);
         view.connect_signals(exited);
         view.spawn(dir);
         view
@@ -268,21 +261,6 @@ impl PanelTerminal {
         self.feeding.set(false);
         *self.typed.borrow_mut() = Some(String::new());
     }
-
-    fn apply_colors(&self) {
-        if let Some(colors) = theme::terminal_colors() {
-            let palette: Vec<&gdk::RGBA> = colors.palette.iter().collect();
-            self.terminal.set_colors(Some(&colors.foreground), Some(&colors.background), &palette);
-            self.terminal.set_color_cursor(colors.cursor.as_ref());
-            self.terminal.set_color_highlight(colors.selection_background.as_ref());
-            self.terminal.set_color_highlight_foreground(colors.selection_foreground.as_ref());
-        } else {
-            // Without a theme: the text color of the application on the
-            // panel's own background, VTE's palette for the rest.
-            let transparent = gdk::RGBA::new(0.0, 0.0, 0.0, 0.0);
-            self.terminal.set_colors(Some(&self.terminal.color()), Some(&transparent), &[]);
-        }
-    }
 }
 
 /// `ls` typed into the shell when the terminal is shown (the user's alias
@@ -299,11 +277,34 @@ fn user_shell() -> String {
     std::env::var("SHELL").ok().filter(|shell| !shell.is_empty()).unwrap_or_else(|| "/bin/sh".to_owned())
 }
 
-/// The system's monospace font at the size of the application's text.
-fn monospace_font(widget: &impl IsA<gtk::Widget>) -> gtk::pango::FontDescription {
-    let mut font = widget.pango_context().font_description().unwrap_or_default();
+/// The system's monospace font at the size of the application's text,
+/// and the terminal colors of the theme, also after it changes.
+pub fn follow_theme(terminal: &vte4::Terminal) {
+    let mut font = terminal.pango_context().font_description().unwrap_or_default();
     font.set_family("monospace");
-    font
+    terminal.set_font(Some(&font));
+    apply_colors(terminal);
+    let weak = terminal.downgrade();
+    theme::connect_changed(move || {
+        let Some(terminal) = weak.upgrade() else { return false };
+        apply_colors(&terminal);
+        true
+    });
+}
+
+fn apply_colors(terminal: &vte4::Terminal) {
+    if let Some(colors) = theme::terminal_colors() {
+        let palette: Vec<&gdk::RGBA> = colors.palette.iter().collect();
+        terminal.set_colors(Some(&colors.foreground), Some(&colors.background), &palette);
+        terminal.set_color_cursor(colors.cursor.as_ref());
+        terminal.set_color_highlight(colors.selection_background.as_ref());
+        terminal.set_color_highlight_foreground(colors.selection_foreground.as_ref());
+    } else {
+        // Without a theme: the text color of the application on the
+        // panel's own background, VTE's palette for the rest.
+        let transparent = gdk::RGBA::new(0.0, 0.0, 0.0, 0.0);
+        terminal.set_colors(Some(&terminal.color()), Some(&transparent), &[]);
+    }
 }
 
 /// Whether the shell `pid` is at its prompt: nothing else runs in the

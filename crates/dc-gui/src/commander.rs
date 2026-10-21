@@ -19,6 +19,7 @@ use crate::copy_dialog;
 use crate::launch::{self, LaunchError};
 use crate::operations::{OperationsUi, QueueMemory};
 use crate::panel_view::{PanelView, ViewMode, not_in_archives};
+use crate::quick_view::QuickView;
 use crate::splitter::Splitter;
 use crate::settings::Settings;
 use crate::{about, dialogs, keys, multi_rename};
@@ -31,11 +32,30 @@ pub struct Commander {
     operations: Rc<OperationsUi>,
     /// Set by the window once the panels are laid out.
     splitter: OnceCell<Rc<Splitter>>,
+    quick_view: Rc<QuickView>,
+    /// The panel whose place the quick view takes while it is open.
+    quick_view_side: Cell<Option<usize>>,
+    /// Per panel a stack of its whole column and the quick view: opening
+    /// the quick view only switches the page, the column stays as it was.
+    covers: OnceCell<[gtk::Stack; 2]>,
+    /// The quick view follows the cursor once the current event is over.
+    quick_view_pending: Cell<bool>,
 }
 
 impl Commander {
     pub fn new(panels: [Rc<PanelView>; 2], keymap: Keymap, settings: Settings, operations: Rc<OperationsUi>) -> Self {
-        Self { panels, active: Cell::new(0), keymap, settings, operations, splitter: OnceCell::new() }
+        Self {
+            panels,
+            active: Cell::new(0),
+            keymap,
+            settings,
+            operations,
+            splitter: OnceCell::new(),
+            quick_view: QuickView::new(),
+            quick_view_side: Cell::new(None),
+            covers: OnceCell::new(),
+            quick_view_pending: Cell::new(false),
+        }
     }
 
     pub fn settings(&self) -> &Settings {
@@ -59,7 +79,12 @@ impl Commander {
         &self.panels[self.active.get()]
     }
 
+    /// A panel the quick view stands for becomes active (Tab, a click on
+    /// its drive bar): the quick view closes, the panel is back as it was.
     pub fn set_active(&self, index: usize) {
+        if self.quick_view_side.get() == Some(index) {
+            self.close_quick_view();
+        }
         self.active.set(index);
         for (i, panel) in self.panels.iter().enumerate() {
             panel.set_active(i == index);
@@ -97,14 +122,21 @@ impl Commander {
             Command::ToggleMarkMoveDown => panel.toggle_selection_and_move(true),
             Command::MarkMove(direction) => panel.mark_and_move(direction),
             Command::MarkRange(step) => panel.select_range(step),
-            Command::View => {
-                if let Some(path) = panel.current_file() {
-                    self.edit(&path, launch::edit_in_terminal(&path));
+            Command::QuickView { close } => {
+                if self.quick_view_side.get().is_some() {
+                    self.close_quick_view();
+                } else if !close {
+                    self.open_quick_view();
                 }
             }
-            Command::Edit => {
-                if let Some(path) = panel.current_file() {
-                    self.edit(&path, launch::edit_in_desktop_editor(&path));
+            Command::ShellExecute => {
+                if let Some(path) = panel.current_path() {
+                    panel.open_file(&path);
+                }
+            }
+            Command::OpenWith => {
+                if let Some(path) = panel.current_path() {
+                    panel.open_file_with(&path);
                 }
             }
             Command::Copy => self.transfer(TransferMode::Copy, false),
@@ -117,7 +149,9 @@ impl Commander {
                 if let Err(err) = launch::open_terminal(&panel.terminal_dir()) {
                     let detail = match err {
                         LaunchError::Spawn(err) => err.to_string(),
-                        _ => gettext("No terminal found. Install xdg-terminal-exec or set the TERMINAL variable."),
+                        LaunchError::NoTerminal => {
+                            gettext("No terminal found. Install xdg-terminal-exec or set the TERMINAL variable.")
+                        }
                     };
                     dialogs::show_error(panel.window().as_ref(), &gettext("Cannot run the terminal"), &detail);
                 }
@@ -205,6 +239,11 @@ impl Commander {
         }
 
         if let Some(command) = keys::shortcut(key, state).and_then(|shortcut| self.keymap.command(&shortcut)) {
+            // Esc only closes an open quick view, otherwise it is left to
+            // the widgets (a popover closes with it).
+            if command == (Command::QuickView { close: true }) && self.quick_view_side.get().is_none() {
+                return glib::Propagation::Proceed;
+            }
             self.execute(command);
             return glib::Propagation::Stop;
         }
@@ -222,8 +261,8 @@ impl Commander {
     fn refused_in_archive(&self, command: Command) -> bool {
         let other = &self.panels[1 - self.active.get()];
         let refused = match command {
-            Command::View
-            | Command::Edit
+            Command::ShellExecute
+            | Command::OpenWith
             | Command::CopySamePanel
             | Command::MakeDir
             | Command::RunTerm
@@ -241,18 +280,77 @@ impl Commander {
         refused
     }
 
-    /// F3 and F4: reports a failed start of an editor.
-    fn edit(&self, path: &Path, result: Result<(), LaunchError>) {
-        let Err(err) = result else { return };
-        let detail = match err {
-            LaunchError::NoEditor => gettext("No text editor found. Set one in the VISUAL or EDITOR variable."),
-            LaunchError::NoTerminal => gettext("No terminal found. Install xdg-terminal-exec or set the TERMINAL variable."),
-            LaunchError::NoDesktopEditor => gettext("No application is set for text files (text/plain)."),
-            LaunchError::Spawn(err) => err.to_string(),
-            LaunchError::Launch(err) => err.to_string(),
-        };
-        let message = fill(&gettext("Cannot open {path} in an editor"), &[("path", &path.display())]);
-        dialogs::show_error(self.active().window().as_ref(), &message, &detail);
+    /// The window gives the stacks of both columns ([`Commander::covers`]).
+    pub fn set_covers(self: &Rc<Self>, covers: [gtk::Stack; 2]) {
+        // Only one window; a second call changes nothing.
+        let _ = self.covers.set(covers);
+        let weak = Rc::downgrade(self);
+        self.quick_view.connect_open(move |path| {
+            if let Some(this) = weak.upgrade() {
+                this.close_quick_view();
+                this.active().open_file(&path);
+            }
+        });
+        // The keyboard stays with the active panel, also after a click on
+        // the player or the button.
+        let focus = gtk::EventControllerFocus::new();
+        let weak = Rc::downgrade(self);
+        focus.connect_enter(move |_| {
+            let weak = weak.clone();
+            glib::idle_add_local_once(move || {
+                if let Some(this) = weak.upgrade() {
+                    this.active().focus();
+                }
+            });
+        });
+        self.quick_view.widget().add_controller(focus);
+        for (side, panel) in self.panels.iter().enumerate() {
+            let weak = Rc::downgrade(self);
+            panel.connect_cursor_changed(move || {
+                if let Some(this) = weak.upgrade()
+                    && this.quick_view_side.get().is_some()
+                    && this.active.get() == side
+                {
+                    this.follow_cursor();
+                }
+            });
+        }
+    }
+
+    /// F3: the quick view in the other panel's place.
+    fn open_quick_view(self: &Rc<Self>) {
+        let Some(covers) = self.covers.get() else { return };
+        let side = 1 - self.active.get();
+        let cover = &covers[side];
+        cover.add_named(self.quick_view.widget(), Some("quick-view"));
+        cover.set_visible_child(self.quick_view.widget());
+        self.quick_view_side.set(Some(side));
+        self.quick_view.show(self.active().quick_view_subject());
+    }
+
+    /// Esc, F3 again, Tab: the other panel is back, untouched.
+    fn close_quick_view(&self) {
+        let (Some(side), Some(covers)) = (self.quick_view_side.take(), self.covers.get()) else { return };
+        let cover = &covers[side];
+        cover.set_visible_child_name("files");
+        cover.remove(self.quick_view.widget());
+        self.quick_view.hide();
+    }
+
+    /// The cursor of the active panel moved: the quick view shows the new
+    /// item once the current event is over (one listing notifies a lot).
+    fn follow_cursor(self: &Rc<Self>) {
+        if self.quick_view_pending.replace(true) {
+            return;
+        }
+        let weak = Rc::downgrade(self);
+        glib::idle_add_local_once(move || {
+            let Some(this) = weak.upgrade() else { return };
+            this.quick_view_pending.set(false);
+            if this.quick_view_side.get().is_some() {
+                this.quick_view.show(this.active().quick_view_subject());
+            }
+        });
     }
 
     /// Ctrl+M, `cm_MultiRename`: marked items or the one under the cursor.

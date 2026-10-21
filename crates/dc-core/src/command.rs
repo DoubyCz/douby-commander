@@ -51,12 +51,17 @@ pub enum Command {
     MarkMove(Direction),
     /// Shift+PgUp/PgDn/Home/End: mark a range from the starting point.
     MarkRange(RangeStep),
-    /// F3: open the file under the cursor in the terminal text editor
-    /// (`$VISUAL`, `$EDITOR`); the original has its own viewer here.
-    View,
-    /// F4: open the file under the cursor in the desktop's text editor
-    /// (default application for `text/plain`), whatever its type.
-    Edit,
+    /// F3, Ctrl+Q: the other panel shows the file under the cursor of the
+    /// active one, following the cursor, until closed again; `close` only
+    /// closes it (Esc). The original has its own viewer window on F3.
+    QuickView { close: bool },
+    /// F4: open the item under the cursor in the application the desktop
+    /// associates with its type, at once (the original's editor is there).
+    ShellExecute,
+    /// Shift+F4: the desktop's choice of applications that can open the
+    /// item under the cursor. Our own command (the original creates a new
+    /// file there).
+    OpenWith,
     /// F5: copy marked items, or the one under the cursor, to the other panel.
     Copy,
     /// Shift+F5: copy within the active panel, under another name.
@@ -131,7 +136,7 @@ impl TrashChoice {
 
 impl Command {
     /// All commands with default parameters, for listings and for parsing.
-    pub const ALL: [Self; 45] = [
+    pub const ALL: [Self; 46] = [
         Self::Open,
         Self::ChangeDirToParent,
         Self::EnterDir,
@@ -146,8 +151,9 @@ impl Command {
         Self::MarkRange(RangeStep::PageDown),
         Self::MarkRange(RangeStep::First),
         Self::MarkRange(RangeStep::Last),
-        Self::View,
-        Self::Edit,
+        Self::QuickView { close: false },
+        Self::ShellExecute,
+        Self::OpenWith,
         Self::Copy,
         Self::CopySamePanel,
         Self::Rename,
@@ -197,8 +203,9 @@ impl Command {
             Self::MarkRange(RangeStep::PageDown) => "cm_MarkRangePageDown",
             Self::MarkRange(RangeStep::First) => "cm_MarkRangeToFirst",
             Self::MarkRange(RangeStep::Last) => "cm_MarkRangeToLast",
-            Self::View => "cm_View",
-            Self::Edit => "cm_Edit",
+            Self::QuickView { .. } => "cm_QuickView",
+            Self::ShellExecute => "cm_ShellExecute",
+            Self::OpenWith => "cm_OpenWith",
             Self::Copy => "cm_Copy",
             Self::CopySamePanel => "cm_CopySamePanel",
             Self::Rename => "cm_Rename",
@@ -237,14 +244,17 @@ impl Command {
     pub fn params(self) -> Vec<String> {
         match self {
             Self::Delete { trash: TrashChoice::ReverseSetting } => vec!["trashcan=reversesetting".to_owned()],
+            Self::QuickView { close: true } => vec!["Close".to_owned()],
             Self::PanelsSplitterPerPos { percent } if percent != 50 => vec![format!("splitpct={percent}")],
             _ => Vec::new(),
         }
     }
 
+    /// `key=value`, or a value alone: the default parameter of the original.
     fn with_param(self, param: &str) -> Option<Self> {
-        let (key, value) = param.split_once('=')?;
+        let (key, value) = param.split_once('=').unwrap_or(("", param));
         match (self, key.to_ascii_lowercase().as_str(), value.to_ascii_lowercase().as_str()) {
+            (Self::QuickView { .. }, "", "close") => Some(Self::QuickView { close: true }),
             (Self::Delete { .. }, "trashcan", "setting") => Some(Self::Delete { trash: TrashChoice::Setting }),
             (Self::Delete { .. }, "trashcan", "reversesetting") => {
                 Some(Self::Delete { trash: TrashChoice::ReverseSetting })
@@ -323,10 +333,12 @@ mod tests {
         assert_eq!(names.len(), Command::ALL.len());
 
         let reverse = Command::Delete { trash: TrashChoice::ReverseSetting };
-        for command in Command::ALL.into_iter().chain([reverse]) {
+        let close = Command::QuickView { close: true };
+        for command in Command::ALL.into_iter().chain([reverse, close]) {
             assert_eq!(command.to_string().parse::<Command>(), Ok(command));
         }
         assert_eq!(reverse.to_string(), "cm_Delete trashcan=reversesetting");
+        assert_eq!(close.to_string(), "cm_QuickView Close");
 
         let split = Command::PanelsSplitterPerPos { percent: 30 };
         assert_eq!(split.to_string(), "cm_PanelsSplitterPerPos splitpct=30");

@@ -13,7 +13,7 @@ the name and the abbreviation DC.
 It follows the theme of [Omarchy](https://omarchy.org/) live: switch the theme and the
 colors change at once, with no setup.
 
-> **Alpha (0.0.10).** Many features are not done yet. Most menu items and toolbar buttons
+> **Alpha (0.0.11).** Many features are not done yet. Most menu items and toolbar buttons
 > are not connected, and there is no settings dialog. Expect rough edges.
 
 ## What works
@@ -24,8 +24,11 @@ colors change at once, with no setup.
 - Space on a directory calculates its size in the background
 - Archives with a directory of their contents (zip, 7z, rar, iso, cab, tar) are shown
   like directories, `[name].zip` in bold, and browsed like them; F5 extracts from them
-- F3 opens a file in your terminal editor (`$VISUAL` or `$EDITOR`), F4 in your desktop
-  text editor, Enter in the default application
+- F3 quick view in the other panel, following the cursor: text and source code with syntax
+  highlighting (Neovim, read only), images, video, and music with its tags, cover and a wave
+  that moves with what plays. Esc closes it, Tab closes it and goes to the other panel
+- Enter and F4 open a file in its default application, Shift+F4 offers the applications
+  that can open it
 - F5 copy and F6 move, with the questions and options of the original, a progress
   window, pause, and queues
 - Shift+F6 or F2 renames the file under the cursor right in the list
@@ -62,20 +65,20 @@ install them for your distribution.
 Arch Linux (Omarchy):
 
 ```sh
-sudo pacman -S --needed base-devel rust gtk4 libadwaita libarchive vte4 gettext
+sudo pacman -S --needed base-devel rust gtk4 libadwaita libarchive vte4 gstreamer gst-plugins-good gettext
 ```
 
 Debian 13, Ubuntu 25.04 and newer:
 
 ```sh
-sudo apt install build-essential pkg-config libgtk-4-dev libadwaita-1-dev libarchive-dev libvte-2.91-gtk4-dev gettext
+sudo apt install build-essential pkg-config libgtk-4-dev libadwaita-1-dev libarchive-dev libvte-2.91-gtk4-dev libgstreamer1.0-dev gstreamer1.0-plugins-good gettext
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 
 Fedora, RHEL 10 and derivatives:
 
 ```sh
-sudo dnf install gcc pkgconf-pkg-config gtk4-devel libadwaita-devel libarchive-devel vte291-gtk4-devel gettext
+sudo dnf install gcc pkgconf-pkg-config gtk4-devel libadwaita-devel libarchive-devel vte291-gtk4-devel gstreamer1-devel gstreamer1-plugins-good gettext
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 

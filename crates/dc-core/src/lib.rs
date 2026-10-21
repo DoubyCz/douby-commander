@@ -9,6 +9,7 @@ mod item;
 pub mod keymap;
 pub mod multi_rename;
 mod panel;
+pub mod preview;
 pub mod quick_search;
 mod sort;
 

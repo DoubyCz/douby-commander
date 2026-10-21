@@ -43,8 +43,16 @@ pub fn build(app: &gtk::Application) {
 
     let drives = mounts::mount_points();
     let columns = [panel_column::build(&commander, 0, &drives), panel_column::build(&commander, 1, &drives)];
-    let splitter = Splitter::new(&columns[0], &columns[1]);
+    // Each column in a stack: the quick view (F3) shows in the place of a
+    // whole column without disturbing it.
+    let covers = columns.map(|column| {
+        let cover = gtk::Stack::new();
+        cover.add_named(&column, Some("files"));
+        cover
+    });
+    let splitter = Splitter::new(&covers[0], &covers[1]);
     commander.set_splitter(Rc::clone(&splitter));
+    commander.set_covers(covers);
     for (index, panel) in commander.panels().iter().enumerate() {
         let weak = Rc::downgrade(&commander);
         panel.connect_focus_enter(move || {

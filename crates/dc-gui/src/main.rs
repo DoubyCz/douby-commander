@@ -1,4 +1,5 @@
 mod about;
+mod audio_stream;
 mod commander;
 mod copy_dialog;
 mod dialogs;
@@ -8,17 +9,21 @@ mod keys;
 mod launch;
 mod menu;
 mod multi_rename;
+mod music_view;
 mod operations;
 mod panel_column;
 mod panel_terminal;
 mod panel_view;
+mod pixels;
 mod progress_window;
+mod quick_view;
 mod rename_edit;
 mod settings;
 mod splitter;
 mod texts;
 mod theme;
 mod toolbar;
+mod wave;
 mod window;
 mod wrap_layout;
 

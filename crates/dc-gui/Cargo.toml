@@ -16,6 +16,7 @@ dc-i18n.workspace = true
 dc-ops.workspace = true
 dc-vfs.workspace = true
 adw.workspace = true
+gst.workspace = true
 gtk.workspace = true
 jiff.workspace = true
 vte4.workspace = true
@@ -34,7 +35,9 @@ maintainer = "Jiří Doubravský <douby@douby.cz>"
 copyright = "Jiří Doubravský; icon and original design by the Double Commander authors"
 extended-description = "Two-panel file manager for Linux in Rust and GTK 4, a tribute to Double Commander."
 section = "utils"
-depends = "$auto"
+# `spectrum` for the wave of the music in the quick view; Neovim shows text there.
+depends = "$auto, gstreamer1.0-plugins-good"
+recommends = "neovim"
 assets = [
     ["../../target/stage/usr/bin/doubycmd", "usr/bin/", "755"],
     ["../../target/stage/usr/share/applications/cz.douby.DoubyCommander.desktop", "usr/share/applications/", "644"],
@@ -58,7 +61,12 @@ gtk4 = ">= 4.16"
 libadwaita = ">= 1.6"
 libarchive = ">= 3.6"
 vte291-gtk4 = ">= 0.70"
+gstreamer1 = ">= 1.20"
+gstreamer1-plugins-good = ">= 1.20"
 glibc = ">= 2.41"
+
+[package.metadata.generate-rpm.recommends]
+neovim = "*"
 
 [build-dependencies]
 glib-build-tools.workspace = true

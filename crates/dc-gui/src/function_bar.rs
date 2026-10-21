@@ -16,8 +16,8 @@ use crate::texts;
 
 /// Captions are translated when the buttons are built.
 const BUTTONS: [((&str, &str), Command); 8] = [
-    (NC_("function key", "View"), Command::View),
-    (NC_("function key", "Edit"), Command::Edit),
+    (NC_("function key", "View"), Command::QuickView { close: false }),
+    (NC_("function key", "Open"), Command::ShellExecute),
     (NC_("function key", "Copy"), Command::Copy),
     (NC_("function key", "Move"), Command::Rename),
     (NC_("function key", "Directory"), Command::MakeDir),

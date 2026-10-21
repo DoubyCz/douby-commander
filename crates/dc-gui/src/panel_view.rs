@@ -17,7 +17,7 @@ use dc_core::command::{Direction, RangeStep};
 use dc_core::quick_search::{Pattern, TYPING_TIMEOUT, TypeAhead};
 use dc_core::{Panel, SortColumn, SortDirection, Sorting, format};
 use dc_i18n::{N_, fill, gettext};
-use dc_vfs::Vfs;
+use dc_vfs::{EntryKind, Vfs};
 use gtk::prelude::*;
 use gtk::{gdk, gio, glib};
 use jiff::tz::TimeZone;
@@ -25,6 +25,8 @@ use jiff::tz::TimeZone;
 use crate::dialogs;
 use crate::file_row::FileRow;
 use crate::panel_terminal::PanelTerminal;
+use crate::pixels::Pixels;
+use crate::quick_view::Subject;
 use crate::rename_edit::RenameEdit;
 
 /// Sort key, column id, title (translated when the columns are built).
@@ -69,6 +71,8 @@ pub struct PanelView {
     syncing: Cell<bool>,
     type_ahead: RefCell<TypeAhead>,
     path_listeners: RefCell<Vec<PathListener>>,
+    /// Told when the item under the cursor may have changed (the quick view).
+    cursor_listeners: RefCell<Vec<Box<dyn Fn()>>>,
     /// Scroll position of directories left for a subdirectory, restored
     /// when coming back up, so the list looks as it did before.
     scroll_memory: RefCell<HashMap<PathBuf, (ViewMode, f64)>>,
@@ -142,20 +146,10 @@ struct Thumbnails {
     running: bool,
 }
 
-/// Pixels of a preview, made in a worker thread: textures are made from
-/// them in the main thread.
-struct PreviewPixels {
-    width: i32,
-    height: i32,
-    stride: usize,
-    alpha: bool,
-    bytes: glib::Bytes,
-}
-
 /// A preview of the image `path`: the desktop's own (`~/.cache/thumbnails`,
 /// shared with other file managers) if there is a valid one, else the
 /// image scaled down to `size`.
-fn load_preview(path: &Path, size: i32) -> Option<PreviewPixels> {
+fn load_preview(path: &Path, size: i32) -> Option<Pixels> {
     let file = gio::File::for_path(path);
     let cached = file
         .query_info("thumbnail::path,thumbnail::is-valid", gio::FileQueryInfoFlags::NONE, None::<&gio::Cancellable>)
@@ -167,20 +161,7 @@ fn load_preview(path: &Path, size: i32) -> Option<PreviewPixels> {
         None => gtk::gdk_pixbuf::Pixbuf::from_file_at_scale(path, size, size, true),
     }
     .ok()?;
-    Some(PreviewPixels {
-        width: pixbuf.width(),
-        height: pixbuf.height(),
-        stride: usize::try_from(pixbuf.rowstride()).ok()?,
-        alpha: pixbuf.has_alpha(),
-        bytes: pixbuf.read_pixel_bytes(),
-    })
-}
-
-impl PreviewPixels {
-    fn texture(&self) -> gdk::Texture {
-        let format = if self.alpha { gdk::MemoryFormat::R8g8b8a8 } else { gdk::MemoryFormat::R8g8b8 };
-        gdk::MemoryTexture::new(self.width, self.height, format, &self.bytes, self.stride).upcast()
-    }
+    Pixels::new(&pixbuf)
 }
 
 /// Icon of a file type for the icons view, by name as the desktop does.
@@ -278,6 +259,7 @@ impl PanelView {
             syncing: Cell::new(false),
             type_ahead: RefCell::new(TypeAhead::default()),
             path_listeners: RefCell::default(),
+            cursor_listeners: RefCell::default(),
             scroll_memory: RefCell::default(),
             size_jobs: RefCell::default(),
             terminal: RefCell::default(),
@@ -1397,6 +1379,17 @@ impl PanelView {
             }
         });
 
+        // After the handler above: the panel's cursor is where the list's is.
+        // New rows (another directory, a reload) count too.
+        let weak = Rc::downgrade(self);
+        self.selection.connect_selected_item_notify(move |_| {
+            if let Some(view) = weak.upgrade() {
+                for callback in view.cursor_listeners.borrow().iter() {
+                    callback();
+                }
+            }
+        });
+
         // A click on any header sorts the panel; the others then show it
         // too (`update_list_headers`), without sorting again.
         for header in std::iter::once(&self.column_view).chain(&self.sort_headers) {
@@ -1467,6 +1460,30 @@ impl PanelView {
         self.path_listeners.borrow_mut().push(Box::new(callback));
     }
 
+    /// `callback` runs when the item under the cursor may have changed,
+    /// often several times for one change: it should only schedule work.
+    pub fn connect_cursor_changed(&self, callback: impl Fn() + 'static) {
+        self.cursor_listeners.borrow_mut().push(Box::new(callback));
+    }
+
+    /// What the quick view shows for the item under the cursor: `..` is
+    /// the directory above.
+    pub fn quick_view_subject(&self) -> Option<Subject> {
+        let panel = self.panel.borrow();
+        let item = panel.current_item()?;
+        if item.is_parent() {
+            return Some(Subject::Directory(panel.path().parent()?.to_owned()));
+        }
+        let path = panel.path().join(&item.entry().name);
+        Some(if self.source.archive_of(panel.path()).is_some() {
+            Subject::InArchive(path)
+        } else if item.entry().kind == EntryKind::Directory || matches!(item.entry().kind, EntryKind::Symlink { to_directory: true }) {
+            Subject::Directory(path)
+        } else {
+            Subject::File(path)
+        })
+    }
+
     /// Copies marks from the panel to the rows. Only changed rows get the
     /// property set, bound cells restyle on its notification.
     fn sync_marks(&self) {
@@ -1531,22 +1548,36 @@ impl PanelView {
         self.scroll_to_row(cursor, flags);
     }
 
-    /// The file under the cursor, for F3 and F4; not `..` or a directory.
-    pub fn current_file(&self) -> Option<PathBuf> {
+    /// The item under the cursor, for F4 and Shift+F4; not `..`.
+    pub fn current_path(&self) -> Option<PathBuf> {
         let panel = self.panel.borrow();
-        let item = panel.current_item().filter(|item| !item.is_parent() && !item.is_directory_like())?;
+        let item = panel.current_item().filter(|item| !item.is_parent())?;
         Some(panel.path().join(&item.entry().name))
     }
 
-    /// In the application for its type, as the desktop decides.
+    /// In the application for its type, as the desktop decides (Enter, F4).
     pub fn open_file(&self, path: &Path) {
+        self.launch(path, false);
+    }
+
+    /// Shift+F4: the desktop's dialog of applications that can open it
+    /// (the portal's application chooser).
+    pub fn open_file_with(&self, path: &Path) {
+        self.launch(path, true);
+    }
+
+    fn launch(&self, path: &Path, ask: bool) {
         let launcher = gtk::FileLauncher::new(Some(&gio::File::for_path(path)));
+        launcher.set_always_ask(ask);
         let window = self.window();
         let parent = window.clone();
         let message = fill(&gettext("Cannot open {path}"), &[("path", &path.display())]);
         launcher.launch(window.as_ref(), None::<&gio::Cancellable>, move |result| {
-            if let Err(err) = result {
-                dialogs::show_error(parent.as_ref(), &message, &err.to_string());
+            match result {
+                Ok(()) => {}
+                // Closed the choice of applications without one.
+                Err(err) if err.matches(gtk::DialogError::Dismissed) || err.matches(gio::IOErrorEnum::Cancelled) => {}
+                Err(err) => dialogs::show_error(parent.as_ref(), &message, &err.to_string()),
             }
         });
     }

@@ -251,8 +251,14 @@ impl Keymap {
             (shift(Key::PageDown), Command::MarkRange(RangeStep::PageDown)),
             (shift(Key::Home), Command::MarkRange(RangeStep::First)),
             (shift(Key::End), Command::MarkRange(RangeStep::Last)),
-            (Shortcut::plain(Key::F(3)), Command::View),
-            (Shortcut::plain(Key::F(4)), Command::Edit),
+            // Deliberately unlike the original (its viewer and editor there):
+            // F3 the quick view, which Ctrl+Q opens in the original, F4 the
+            // associated application, Shift+F4 a choice of applications.
+            (Shortcut::plain(Key::F(3)), Command::QuickView { close: false }),
+            (ctrl(Key::Char('Q')), Command::QuickView { close: false }),
+            (Shortcut::plain(Key::Escape), Command::QuickView { close: true }),
+            (Shortcut::plain(Key::F(4)), Command::ShellExecute),
+            (shift(Key::F(4)), Command::OpenWith),
             (Shortcut::plain(Key::F(5)), Command::Copy),
             (shift(Key::F(5)), Command::CopySamePanel),
             (Shortcut::plain(Key::F(6)), Command::Rename),
