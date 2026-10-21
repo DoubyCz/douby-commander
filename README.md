@@ -18,6 +18,11 @@ colors change at once, with no setup.
 
 ## What works
 
+![Quick view of source code, music and video, and a panel as a terminal next to one with icons](docs/quick-view.webp)
+
+*F3 quick view of a TOML file, a song and a video; a panel turned into a terminal (F9) next to
+the icons view.*
+
 - Two panels, keyboard driven: Tab, quick search by typing, marking with Insert, Space
   and Shift; Alt+Left and Alt+Right go up and into directories
 - Three views: details, list (names in columns) and icons with image previews
