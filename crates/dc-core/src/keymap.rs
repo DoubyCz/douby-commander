@@ -265,7 +265,10 @@ impl Keymap {
             (shift(Key::F(6)), Command::RenameOnly),
             (Shortcut::plain(Key::F(2)), Command::RenameOnly),
             (Shortcut::plain(Key::F(7)), Command::MakeDir),
-            (Shortcut::plain(Key::F(9)), Command::TerminalView),
+            // Deliberately unlike the original (Ctrl+F1, Ctrl+F2 and
+            // Ctrl+Shift+F1 there, none of them here): F9 goes through all
+            // views of the panel, the terminal included (Jirka's wish).
+            (Shortcut::plain(Key::F(9)), Command::CycleView),
             (shift(Key::F(9)), Command::RunTerm),
             (Shortcut::plain(Key::F(8)), Command::Delete { trash: TrashChoice::Setting }),
             (Shortcut::plain(Key::Delete), Command::Delete { trash: TrashChoice::Setting }),
@@ -274,13 +277,10 @@ impl Keymap {
             (Shortcut::new(Modifiers { alt: true, ..Modifiers::NONE }, Key::Char('X')), Command::Exit),
             (ctrl(Key::Char('R')), Command::Refresh),
             (ctrl(Key::Char('M')), Command::MultiRename),
-            (ctrl(Key::F(1)), Command::BriefView),
-            (ctrl(Key::F(2)), Command::ColumnsView),
             (ctrl(Key::F(3)), Command::SortBy(SortColumn::Name)),
             (ctrl(Key::F(4)), Command::SortBy(SortColumn::Extension)),
             (ctrl(Key::F(5)), Command::SortBy(SortColumn::Modified)),
             (ctrl(Key::F(6)), Command::SortBy(SortColumn::Size)),
-            (Shortcut::new(Modifiers { ctrl: true, shift: true, ..Modifiers::NONE }, Key::F(1)), Command::ThumbnailsView),
             (ctrl(Key::Char('A')), Command::MarkMarkAll),
             (ctrl(Key::NumPlus), Command::MarkMarkAll),
             (ctrl(Key::NumMinus), Command::MarkUnmarkAll),
@@ -346,7 +346,14 @@ mod tests {
             Command::SortBy(SortColumn::Attributes),
             Command::ReverseOrder,
             Command::About,
+            // Menu and toolbar; the keyboard has F9 for all of them.
+            Command::BriefView,
+            Command::ColumnsView,
+            Command::ThumbnailsView,
+            Command::TerminalView,
         ];
+        assert_eq!(keymap.command(&parse("F9")), Some(Command::CycleView));
+        assert_eq!(keymap.command(&parse("Ctrl+F1")), None);
         for command in Command::ALL.into_iter().filter(|command| !without_shortcut.contains(command)) {
             assert!(!keymap.shortcuts(command).is_empty(), "{command} has no default shortcut");
         }

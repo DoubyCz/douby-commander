@@ -13,7 +13,7 @@ the name and the abbreviation DC.
 It follows the theme of [Omarchy](https://omarchy.org/) live: switch the theme and the
 colors change at once, with no setup.
 
-> **Alpha (0.0.11).** Many features are not done yet. Most menu items and toolbar buttons
+> **Alpha (0.0.12).** Many features are not done yet. Most menu items and toolbar buttons
 > are not connected, and there is no settings dialog. Expect rough edges.
 
 ## What works
@@ -40,8 +40,8 @@ the icons view.*
 - Ctrl+M renames many files at once: masks with placeholders (`[N]`, `[E]`, counter,
   date and time), find and replace with regular expressions, letter case, live preview
 - F7 new directory, F8 delete (to the trash, or permanently with Shift)
-- F9 turns the panel into a terminal that follows the panel's directory; the view
-  shortcuts bring the files back, `exit` closes it. Shift+F9 opens your own terminal
+- F9 switches the panel's view in turn: list, details, icons and a terminal that follows
+  the panel's directory (`exit` closes it). Shift+F9 opens your own terminal
 - Sorting by clicking the column headers, from the Show menu or with Ctrl+F3 to Ctrl+F6
 - Adjustable panel divider, drive list with free space
 - English and Czech

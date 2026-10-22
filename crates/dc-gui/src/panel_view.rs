@@ -328,7 +328,7 @@ impl PanelView {
         self.terminal_shown.get()
     }
 
-    /// F9 (`cm_TerminalView`): the terminal in the panel's place, started
+    /// `cm_TerminalView`, F9 after Icons: the terminal in the panel's place, started
     /// in the panel's directory the first time.
     pub fn show_terminal(&self) {
         if self.terminal_shown.get() {
@@ -1255,6 +1255,20 @@ impl PanelView {
     /// Rows per column of the list view.
     fn list_rows(&self) -> usize {
         usize::try_from(self.grid_view.max_columns()).unwrap_or(1).max(1)
+    }
+
+    /// F9: the next view, in turn List, Details, Icons, the terminal and
+    /// List again.
+    pub fn cycle_view(&self) {
+        if self.terminal_shown.get() {
+            self.set_view_mode(ViewMode::List);
+            return;
+        }
+        match self.mode.get() {
+            ViewMode::List => self.set_view_mode(ViewMode::Details),
+            ViewMode::Details => self.set_view_mode(ViewMode::Icons),
+            ViewMode::Icons => self.show_terminal(),
+        }
     }
 
     /// `cm_BriefView` / `cm_ColumnsView`: the same items, cursor, marks and

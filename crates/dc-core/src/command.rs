@@ -77,10 +77,13 @@ pub enum Command {
     /// Shift+F9: the desktop's terminal, in its own window, in the
     /// directory of the active panel.
     RunTerm,
-    /// F9: the active panel shows a terminal instead of its files, in the
+    /// The active panel shows a terminal instead of its files, in the
     /// panel's directory. Our own command (the original has none); the
     /// view commands show the files again.
     TerminalView,
+    /// F9: the active panel's next view, in turn List, Details, Icons,
+    /// Terminal and List again. Our own command.
+    CycleView,
     /// F8, Del: delete marked items, or the one under the cursor.
     Delete { trash: TrashChoice },
     /// Alt+X: close the application.
@@ -95,11 +98,11 @@ pub enum Command {
     MarkInvert,
     ChangeDirToRoot,
     ChangeDirToHome,
-    /// Ctrl+F1: the active panel shows names only, in columns ("List").
+    /// The active panel shows names only, in columns ("List").
     BriefView,
-    /// Ctrl+F2: the active panel shows all columns ("Details").
+    /// The active panel shows all columns ("Details").
     ColumnsView,
-    /// Ctrl+Shift+F1: the active panel shows icons and previews ("Icons").
+    /// The active panel shows icons and previews ("Icons").
     ThumbnailsView,
     /// Ctrl+F3 to Ctrl+F6: sort the active panel, as a click on the column
     /// header; again the same reverses.
@@ -136,7 +139,7 @@ impl TrashChoice {
 
 impl Command {
     /// All commands with default parameters, for listings and for parsing.
-    pub const ALL: [Self; 46] = [
+    pub const ALL: [Self; 47] = [
         Self::Open,
         Self::ChangeDirToParent,
         Self::EnterDir,
@@ -174,6 +177,7 @@ impl Command {
         Self::ColumnsView,
         Self::ThumbnailsView,
         Self::TerminalView,
+        Self::CycleView,
         Self::SortBy(SortColumn::Name),
         Self::SortBy(SortColumn::Extension),
         Self::SortBy(SortColumn::Size),
@@ -226,6 +230,7 @@ impl Command {
             Self::ColumnsView => "cm_ColumnsView",
             Self::ThumbnailsView => "cm_ThumbnailsView",
             Self::TerminalView => "cm_TerminalView",
+            Self::CycleView => "cm_CycleView",
             Self::SortBy(SortColumn::Name) => "cm_SortByName",
             Self::SortBy(SortColumn::Extension) => "cm_SortByExt",
             Self::SortBy(SortColumn::Size) => "cm_SortBySize",

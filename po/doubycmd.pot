@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: doubycmd\n"
 "Report-Msgid-Bugs-To: douby@douby.cz\n"
-"POT-Creation-Date: 2026-10-21 11:46+0200\n"
+"POT-Creation-Date: 2026-10-22 09:39+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,12 +18,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: crates/dc-core/src/command.rs:291
+#: crates/dc-core/src/command.rs:296
 #, rust-format
 msgid "Unknown command {command}"
 msgstr ""
 
-#: crates/dc-core/src/command.rs:293
+#: crates/dc-core/src/command.rs:298
 #, rust-format
 msgid "Command {command} does not accept parameter {param}"
 msgstr ""
@@ -331,54 +331,54 @@ msgstr ""
 msgid "Cannot run the terminal"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:366 crates/dc-gui/src/multi_rename.rs:555
+#: crates/dc-gui/src/commander.rs:371 crates/dc-gui/src/multi_rename.rs:555
 #: crates/dc-gui/src/panel_view.rs:496
 #, rust-format
 msgid "Invalid file name: {name}"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:502
+#: crates/dc-gui/src/commander.rs:507
 #, rust-format
 msgid "Delete selected \"{name}\" into trash can?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:504
+#: crates/dc-gui/src/commander.rs:509
 #, rust-format
 msgid "Delete selected \"{name}\"?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:512
+#: crates/dc-gui/src/commander.rs:517
 #, rust-format
 msgid "Delete {count} selected file/directory into trash can?"
 msgid_plural "Delete {count} selected files/directories into trash can?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: crates/dc-gui/src/commander.rs:517
+#: crates/dc-gui/src/commander.rs:522
 #, rust-format
 msgid "Delete {count} selected file/directory?"
 msgid_plural "Delete {count} selected files/directories?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: crates/dc-gui/src/commander.rs:559
+#: crates/dc-gui/src/commander.rs:564
 #, rust-format
 msgid "Copy selected \"{name}\"?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:559
+#: crates/dc-gui/src/commander.rs:564
 #, rust-format
 msgid "Rename/move selected \"{name}\"?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:565
+#: crates/dc-gui/src/commander.rs:570
 #, rust-format
 msgid "Copy {count} selected file/directory?"
 msgid_plural "Copy {count} selected files/directories?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: crates/dc-gui/src/commander.rs:568
+#: crates/dc-gui/src/commander.rs:573
 #, rust-format
 msgid "Rename/move {count} selected file/directory?"
 msgid_plural "Rename/move {count} selected files/directories?"
@@ -576,7 +576,7 @@ msgstr ""
 
 #: crates/dc-gui/src/function_bar.rs:25
 msgctxt "function key"
-msgid "Terminal"
+msgid "Panel mode"
 msgstr ""
 
 #: crates/dc-gui/src/function_bar.rs:26
@@ -1363,17 +1363,17 @@ msgstr ""
 msgid "Some files could not be renamed."
 msgstr ""
 
-#: crates/dc-gui/src/music_view.rs:117
+#: crates/dc-gui/src/music_view.rs:121
 #, rust-format
 msgid "{album} ({year})"
 msgstr ""
 
-#: crates/dc-gui/src/music_view.rs:125
+#: crates/dc-gui/src/music_view.rs:129
 #, rust-format
 msgid "Track {number} of {count}"
 msgstr ""
 
-#: crates/dc-gui/src/music_view.rs:127
+#: crates/dc-gui/src/music_view.rs:131
 #, rust-format
 msgid "Track {number}"
 msgstr ""
@@ -1472,17 +1472,17 @@ msgstr ""
 msgid "Reading the archive…"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:1533
+#: crates/dc-gui/src/panel_view.rs:1547
 #, rust-format
 msgid "(SEARCH: {text})"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:1574
+#: crates/dc-gui/src/panel_view.rs:1588
 #, rust-format
 msgid "Cannot open {path}"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:1683
+#: crates/dc-gui/src/panel_view.rs:1697
 msgid "Archives can only be browsed so far."
 msgstr ""
 
@@ -1582,15 +1582,15 @@ msgstr ""
 msgid "The image cannot be read."
 msgstr ""
 
-#: crates/dc-gui/src/quick_view.rs:297
+#: crates/dc-gui/src/quick_view.rs:298
 msgid "The file name cannot be passed to the viewer."
 msgstr ""
 
-#: crates/dc-gui/src/quick_view.rs:303
+#: crates/dc-gui/src/quick_view.rs:304
 msgid "Install Neovim (or Vim) to view text files."
 msgstr ""
 
-#: crates/dc-gui/src/quick_view.rs:319
+#: crates/dc-gui/src/quick_view.rs:320
 msgid "The text viewer ended."
 msgstr ""
 

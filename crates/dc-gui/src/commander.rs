@@ -173,6 +173,7 @@ impl Commander {
             Command::ColumnsView => panel.set_view_mode(ViewMode::Details),
             Command::ThumbnailsView => panel.set_view_mode(ViewMode::Icons),
             Command::TerminalView => panel.show_terminal(),
+            Command::CycleView => panel.cycle_view(),
             Command::SortBy(column) => panel.sort_by(column),
             Command::ReverseOrder => panel.reverse_order(),
             Command::LeftEqualRight => self.panels[0].change_dir(self.panels[1].path()),
@@ -208,13 +209,17 @@ impl Commander {
         if panel.is_renaming() {
             return glib::Propagation::Proceed;
         }
-        // In the terminal every key is the shell's (Tab, F9 for programs,
-        // ...), except those that show the files again and Shift+F9.
+        // In the terminal every key is the shell's (Tab, ...), except those
+        // that show the files again (F9 too) and Shift+F9.
         if panel.is_terminal_shown() && panel.has_focus() {
             let command = keys::shortcut(key, state).and_then(|shortcut| self.keymap.command(&shortcut));
             return match command {
                 Some(
-                    command @ (Command::BriefView | Command::ColumnsView | Command::ThumbnailsView | Command::RunTerm),
+                    command @ (Command::BriefView
+                    | Command::ColumnsView
+                    | Command::ThumbnailsView
+                    | Command::CycleView
+                    | Command::RunTerm),
                 ) => {
                     self.execute(command);
                     glib::Propagation::Stop
