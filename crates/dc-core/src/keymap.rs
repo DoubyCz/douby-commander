@@ -232,10 +232,11 @@ impl Keymap {
             (Shortcut::plain(Key::Enter), Command::Open),
             (Shortcut::plain(Key::Backspace), Command::ChangeDirToParent),
             (Shortcut::new(Modifiers::CTRL, Key::PageUp), Command::ChangeDirToParent),
-            // Deliberately unlike the original (history back and forward there):
-            // Alt+Left up as Backspace, Alt+Right into a directory as Enter.
-            (alt(Key::Left), Command::ChangeDirToParent),
-            (alt(Key::Right), Command::EnterDir),
+            // Deliberately unlike the original (history back and forward
+            // there, the transfer on Ctrl+Left and Ctrl+Right): the arrow
+            // points to the panel that gets the directory (Jirka's wish).
+            (alt(Key::Left), Command::TransferLeft),
+            (alt(Key::Right), Command::TransferRight),
             (Shortcut::plain(Key::Tab), Command::FocusSwap),
             // Deliberately unlike the original (`cm_FocusTreeView` there):
             // Shift+Tab is "back" where Tab is "forward", and with two panels
@@ -365,8 +366,9 @@ mod tests {
         assert_eq!(keymap.command(&parse("Shift+PgDn")), Some(Command::MarkRange(RangeStep::PageDown)));
         assert_eq!(keymap.command(&parse("PgDn")), None);
         let parent: Vec<_> = keymap.shortcuts(Command::ChangeDirToParent).iter().map(ToString::to_string).collect();
-        assert_eq!(parent, ["Alt+Left", "BkSp", "Ctrl+PgUp"]);
-        assert_eq!(keymap.command(&parse("Alt+Right")), Some(Command::EnterDir));
+        assert_eq!(parent, ["BkSp", "Ctrl+PgUp"]);
+        assert_eq!(keymap.command(&parse("Alt+Left")), Some(Command::TransferLeft));
+        assert_eq!(keymap.command(&parse("Alt+Right")), Some(Command::TransferRight));
         assert_eq!(
             keymap.command(&parse("Shift+F8")),
             Some(Command::Delete { trash: TrashChoice::ReverseSetting })

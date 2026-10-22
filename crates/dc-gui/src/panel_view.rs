@@ -798,8 +798,13 @@ impl PanelView {
 
     /// Shows `path`, e.g. from a drive button or the `/` and `~` buttons.
     pub fn change_dir(&self, path: PathBuf) {
+        self.change_dir_focusing(path, None);
+    }
+
+    /// Shows `path` with the cursor on `focus`, when it is there.
+    pub fn change_dir_focusing(&self, path: PathBuf, focus: Option<&OsStr>) {
         let left = self.leaving();
-        let result = self.panel.borrow_mut().load(&*self.source, path, None);
+        let result = self.panel.borrow_mut().load(&*self.source, path, focus);
         match result {
             Ok(()) => self.arrived(left),
             Err(err) => self.show_error(&err),

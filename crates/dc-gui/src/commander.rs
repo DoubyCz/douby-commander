@@ -2,7 +2,7 @@
 //! become commands and commands get executed.
 
 use std::cell::{Cell, OnceCell, RefCell};
-use std::ffi::OsString;
+use std::ffi::{OsStr, OsString};
 use std::path::{Component, Path, PathBuf};
 use std::rc::Rc;
 
@@ -139,12 +139,6 @@ impl Commander {
         match command {
             Command::Open => panel.open_current(),
             Command::ChangeDirToParent => panel.go_up(),
-            Command::EnterDir => {
-                // Only into a directory: not up from `..`, and files stay closed.
-                if panel.panel().current_item().is_some_and(|item| !item.is_parent() && item.is_directory_like()) {
-                    panel.open_current();
-                }
-            }
             Command::FocusSwap => {
                 let other = 1 - self.active.get();
                 self.set_active(other);
@@ -212,6 +206,8 @@ impl Commander {
             Command::ReverseOrder => panel.reverse_order(),
             Command::LeftEqualRight => self.panels[0].change_dir(self.panels[1].path()),
             Command::RightEqualLeft => self.panels[1].change_dir(self.panels[0].path()),
+            Command::TransferLeft => self.transfer_path(0),
+            Command::TransferRight => self.transfer_path(1),
             Command::PanelsSplitterPerPos { percent } => {
                 if let Some(splitter) = self.splitter.get() {
                     splitter.set_percent(percent);
@@ -434,6 +430,32 @@ impl Commander {
                 this.refresh_panels();
             }
         });
+    }
+
+    /// Alt+Left / Alt+Right, `cm_TransferLeft` / `cm_TransferRight`: the
+    /// panel of `target` shows the directory under the cursor of the other,
+    /// active one; `..` its parent with the cursor on the directory left, on
+    /// a file the active panel's directory with the cursor on the file. Towards the active panel itself nothing.
+    fn transfer_path(&self, target: usize) {
+        if target == self.active.get() {
+            return;
+        }
+        let (path, focus) = {
+            let state = self.active().panel();
+            let dir = state.path().to_owned();
+            match state.current_item() {
+                // As if the target panel went up itself: the cursor on the
+                // directory we come from.
+                Some(item) if item.is_parent() => match dir.parent() {
+                    Some(parent) => (parent.to_owned(), dir.file_name().map(OsStr::to_owned)),
+                    None => (dir, None),
+                },
+                Some(item) if item.is_directory_like() => (dir.join(&item.entry().name), None),
+                Some(item) => (dir, Some(item.entry().name.clone())),
+                None => (dir, None),
+            }
+        };
+        self.panels[target].change_dir_focusing(path, focus.as_deref());
     }
 
     /// Num+ / Num- (`+` / `-`), `cm_MarkPlus` / `cm_MarkMinus`: asks for a

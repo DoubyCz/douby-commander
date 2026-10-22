@@ -37,9 +37,6 @@ pub enum Command {
     /// Enter: open the directory or the file under the cursor.
     Open,
     ChangeDirToParent,
-    /// Alt+Right: into the directory under the cursor, as Enter; on `..` and
-    /// on files nothing. Our own command (the original has history there).
-    EnterDir,
     /// Tab: make the other panel active.
     FocusSwap,
     /// Space: toggle the mark of the item under the cursor.
@@ -115,6 +112,12 @@ pub enum Command {
     ReverseOrder,
     /// Left panel shows the directory of the right one (`<` above the left panel).
     LeftEqualRight,
+    /// Alt+Left from the right panel: the left panel shows the directory
+    /// under the cursor; `..` its parent, on a file the current directory.
+    /// The active panel stays active.
+    TransferLeft,
+    /// Alt+Right from the left panel, the same into the right panel.
+    TransferRight,
     /// Right panel shows the directory of the left one (`>` above the right panel).
     RightEqualLeft,
     /// Divider between the panels to `percent` of the width (double click: 50).
@@ -143,10 +146,9 @@ impl TrashChoice {
 
 impl Command {
     /// All commands with default parameters, for listings and for parsing.
-    pub const ALL: [Self; 49] = [
+    pub const ALL: [Self; 50] = [
         Self::Open,
         Self::ChangeDirToParent,
-        Self::EnterDir,
         Self::FocusSwap,
         Self::ToggleMark,
         Self::ToggleMarkMoveDown,
@@ -191,6 +193,8 @@ impl Command {
         Self::SortBy(SortColumn::Attributes),
         Self::ReverseOrder,
         Self::LeftEqualRight,
+        Self::TransferLeft,
+        Self::TransferRight,
         Self::RightEqualLeft,
         Self::PanelsSplitterPerPos { percent: 50 },
     ];
@@ -201,7 +205,6 @@ impl Command {
         match self {
             Self::Open => "cm_Open",
             Self::ChangeDirToParent => "cm_ChangeDirToParent",
-            Self::EnterDir => "cm_EnterDir",
             Self::FocusSwap => "cm_FocusSwap",
             Self::ToggleMark => "cm_ToggleMark",
             Self::ToggleMarkMoveDown => "cm_ToggleMarkMoveDown",
@@ -246,6 +249,8 @@ impl Command {
             Self::SortBy(SortColumn::Attributes) => "cm_SortByAttr",
             Self::ReverseOrder => "cm_ReverseOrder",
             Self::LeftEqualRight => "cm_LeftEqualRight",
+            Self::TransferLeft => "cm_TransferLeft",
+            Self::TransferRight => "cm_TransferRight",
             Self::RightEqualLeft => "cm_RightEqualLeft",
             Self::PanelsSplitterPerPos { .. } => "cm_PanelsSplitterPerPos",
         }
