@@ -96,6 +96,10 @@ pub enum Command {
     MarkMarkAll,
     MarkUnmarkAll,
     MarkInvert,
+    /// Num+: mark the items matching a mask the user enters.
+    MarkPlus,
+    /// Num-: unmark the items matching a mask the user enters.
+    MarkMinus,
     ChangeDirToRoot,
     ChangeDirToHome,
     /// The active panel shows names only, in columns ("List").
@@ -139,7 +143,7 @@ impl TrashChoice {
 
 impl Command {
     /// All commands with default parameters, for listings and for parsing.
-    pub const ALL: [Self; 47] = [
+    pub const ALL: [Self; 49] = [
         Self::Open,
         Self::ChangeDirToParent,
         Self::EnterDir,
@@ -171,6 +175,8 @@ impl Command {
         Self::MarkMarkAll,
         Self::MarkUnmarkAll,
         Self::MarkInvert,
+        Self::MarkPlus,
+        Self::MarkMinus,
         Self::ChangeDirToRoot,
         Self::ChangeDirToHome,
         Self::BriefView,
@@ -224,6 +230,8 @@ impl Command {
             Self::MarkMarkAll => "cm_MarkMarkAll",
             Self::MarkUnmarkAll => "cm_MarkUnmarkAll",
             Self::MarkInvert => "cm_MarkInvert",
+            Self::MarkPlus => "cm_MarkPlus",
+            Self::MarkMinus => "cm_MarkMinus",
             Self::ChangeDirToRoot => "cm_ChangeDirToRoot",
             Self::ChangeDirToHome => "cm_ChangeDirToHome",
             Self::BriefView => "cm_BriefView",

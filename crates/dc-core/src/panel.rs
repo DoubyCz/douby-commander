@@ -4,6 +4,7 @@ use std::path::{Path, PathBuf};
 
 use dc_vfs::{EntryKind, FileSource};
 
+use crate::mask::MaskList;
 use crate::quick_search::Pattern;
 use crate::{FileItem, Sorting};
 
@@ -344,6 +345,17 @@ impl Panel {
         self.range = None;
         for item in self.items.iter_mut().filter(|item| !item.is_parent()) {
             item.selected = selected;
+        }
+    }
+
+    /// `cm_MarkPlus` / `cm_MarkMinus`: items whose name matches `masks`,
+    /// directories too, never `..`.
+    pub fn mark_group(&mut self, masks: &MaskList, selected: bool) {
+        self.range = None;
+        for item in self.items.iter_mut().filter(|item| !item.is_parent()) {
+            if masks.matches(&item.entry().name.to_string_lossy()) {
+                item.selected = selected;
+            }
         }
     }
 
@@ -730,6 +742,22 @@ mod tests {
         assert_eq!(marked(&panel), [1, 2, 3]);
         panel.mark_all(false);
         assert!(marked(&panel).is_empty());
+    }
+
+    #[test]
+    fn mark_group_adds_and_removes_by_mask() {
+        let tmp = fixture();
+        let mut panel = Panel::new(PathBuf::new());
+        panel.load(&LocalFs, tmp.path().to_owned(), None).unwrap();
+        let options = crate::mask::MaskOptions::default();
+
+        panel.mark_group(&MaskList::new("*.txt;*.bin", options), true);
+        assert_eq!(marked_names(&panel), ["big.bin", "small.txt"]);
+        // Directories too, `..` never.
+        panel.mark_group(&MaskList::new("*", options), true);
+        assert_eq!(marked_names(&panel), ["docs", "big.bin", "small.txt"]);
+        panel.mark_group(&MaskList::new("*.BIN", options), false);
+        assert_eq!(marked_names(&panel), ["docs", "small.txt"]);
     }
 
     #[test]

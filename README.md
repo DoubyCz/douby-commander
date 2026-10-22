@@ -13,7 +13,7 @@ the name and the abbreviation DC.
 It follows the theme of [Omarchy](https://omarchy.org/) live: switch the theme and the
 colors change at once, with no setup.
 
-> **Alpha (0.0.12).** Many features are not done yet. Most menu items and toolbar buttons
+> **Alpha (0.0.13).** Many features are not done yet. Most menu items and toolbar buttons
 > are not connected, and there is no settings dialog. Expect rough edges.
 
 ## What works
@@ -24,7 +24,8 @@ colors change at once, with no setup.
 the icons view.*
 
 - Two panels, keyboard driven: Tab, quick search by typing, marking with Insert, Space
-  and Shift; Alt+Left and Alt+Right go up and into directories
+  and Shift; `+` and `-` select and unselect a group by a mask (`*.doc;*.odt`), `*` inverts
+  the selection; Alt+Left and Alt+Right go up and into directories
 - Three views: details, list (names in columns) and icons with image previews
 - Space on a directory calculates its size in the background
 - Archives with a directory of their contents (zip, 7z, rar, iso, cab, tar) are shown

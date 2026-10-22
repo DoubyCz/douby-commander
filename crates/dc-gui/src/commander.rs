@@ -1,7 +1,7 @@
 //! The two panels, which one is active, and the single place where keys
 //! become commands and commands get executed.
 
-use std::cell::{Cell, OnceCell};
+use std::cell::{Cell, OnceCell, RefCell};
 use std::ffi::OsString;
 use std::path::{Component, Path, PathBuf};
 use std::rc::Rc;
@@ -9,6 +9,8 @@ use std::rc::Rc;
 use dc_core::command::{Command, TrashChoice};
 use dc_core::multi_rename::RenameFile;
 use dc_core::keymap::{Key, Keymap, Shortcut};
+use dc_core::mask::{MaskList, MaskOptions};
+use dc_core::FileItem;
 use dc_i18n::{fill, gettext, ngettext, plural_count};
 use dc_ops::{DeleteMode, DeleteOperation, Destination, ExtractOperation, TransferMode, TransferOperation};
 use dc_vfs::{FileSource, LocalFs};
@@ -40,6 +42,35 @@ pub struct Commander {
     covers: OnceCell<[gtk::Stack; 2]>,
     /// The quick view follows the cursor once the current event is over.
     quick_view_pending: Cell<bool>,
+    mark_memory: RefCell<MarkMemory>,
+}
+
+/// What the mask dialog of Num+ / Num- offers next time.
+struct MarkMemory {
+    mask: String,
+    options: MaskOptions,
+    /// Masks used before, newest first.
+    history: Vec<String>,
+}
+
+impl MarkMemory {
+    /// Masks kept in the history.
+    const HISTORY: usize = 20;
+
+    fn remember(&mut self, mask: &str, options: MaskOptions) {
+        mask.clone_into(&mut self.mask);
+        self.options = options;
+        self.history.retain(|earlier| earlier != mask);
+        self.history.insert(0, mask.to_owned());
+        self.history.truncate(Self::HISTORY);
+    }
+}
+
+impl Default for MarkMemory {
+    /// `*` as in the original.
+    fn default() -> Self {
+        Self { mask: "*".to_owned(), options: MaskOptions::default(), history: Vec::new() }
+    }
 }
 
 impl Commander {
@@ -55,6 +86,7 @@ impl Commander {
             quick_view_side: Cell::new(None),
             covers: OnceCell::new(),
             quick_view_pending: Cell::new(false),
+            mark_memory: RefCell::default(),
         }
     }
 
@@ -167,6 +199,8 @@ impl Commander {
             Command::MarkMarkAll => panel.mark_all(true),
             Command::MarkUnmarkAll => panel.mark_all(false),
             Command::MarkInvert => panel.invert_marks(),
+            Command::MarkPlus => self.mark_group(true),
+            Command::MarkMinus => self.mark_group(false),
             Command::ChangeDirToRoot => panel.change_dir(PathBuf::from("/")),
             Command::ChangeDirToHome => panel.change_dir(glib::home_dir()),
             Command::BriefView => panel.set_view_mode(ViewMode::List),
@@ -252,10 +286,23 @@ impl Commander {
             self.execute(command);
             return glib::Propagation::Stop;
         }
-        if let Some(ch) = typed
-            && panel.type_char(ch)
-        {
-            return glib::Propagation::Stop;
+        if let Some(ch) = typed {
+            if panel.type_char(ch) {
+                return glib::Propagation::Stop;
+            }
+            // Outside a quick search `+`, `-` and `*` of any key (not only
+            // the keypad) select or unselect a group and invert the marks;
+            // inside one they are typed.
+            let group = match ch {
+                '+' => Some(Command::MarkPlus),
+                '-' => Some(Command::MarkMinus),
+                '*' => Some(Command::MarkInvert),
+                _ => None,
+            };
+            if let Some(command) = group {
+                self.execute(command);
+                return glib::Propagation::Stop;
+            }
         }
         glib::Propagation::Proceed
     }
@@ -386,6 +433,27 @@ impl Commander {
             if let Some(this) = this.upgrade() {
                 this.refresh_panels();
             }
+        });
+    }
+
+    /// Num+ / Num- (`+` / `-`), `cm_MarkPlus` / `cm_MarkMinus`: asks for a
+    /// mask and marks or unmarks what matches it. The mask, the options and
+    /// the history are shared by both panels.
+    fn mark_group(self: &Rc<Self>, select: bool) {
+        let panel = Rc::clone(self.active());
+        if panel.panel().items().iter().all(FileItem::is_parent) {
+            return;
+        }
+        let (mask, history, options) = {
+            let memory = self.mark_memory.borrow();
+            (memory.mask.clone(), memory.history.clone(), memory.options)
+        };
+        let this = Rc::downgrade(self);
+        dialogs::ask_mask(panel.window().as_ref(), select, &mask, &history, options, move |mask, options| {
+            let Some(this) = this.upgrade() else { return };
+            this.mark_memory.borrow_mut().remember(&mask, options);
+            panel.mark_group(&MaskList::new(&mask, options), select);
+            panel.focus();
         });
     }
 

@@ -284,6 +284,8 @@ impl Keymap {
             (ctrl(Key::Char('A')), Command::MarkMarkAll),
             (ctrl(Key::NumPlus), Command::MarkMarkAll),
             (ctrl(Key::NumMinus), Command::MarkUnmarkAll),
+            (Shortcut::plain(Key::NumPlus), Command::MarkPlus),
+            (Shortcut::plain(Key::NumMinus), Command::MarkMinus),
             (Shortcut::plain(Key::NumMultiply), Command::MarkInvert),
             (ctrl(Key::Char('\\')), Command::ChangeDirToRoot),
             (Shortcut::new(Modifiers { ctrl: true, shift: true, ..Modifiers::NONE }, Key::Home), Command::ChangeDirToHome),

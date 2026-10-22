@@ -4,6 +4,7 @@
 use std::cell::Cell;
 use std::rc::Rc;
 
+use dc_core::mask::MaskOptions;
 use dc_i18n::{fill, gettext, pgettext};
 use dc_ops::{Answer, QueueId, Question};
 
@@ -61,6 +62,120 @@ pub fn ask_new_directory(parent: Option<&gtk::Window>, suggestion: &str, on_ok: 
             dialog.close();
             if let Some(on_ok) = on_ok.take() {
                 on_ok(text);
+            }
+        }
+    ));
+    cancel.connect_clicked(glib::clone!(
+        #[weak]
+        dialog,
+        move |_| dialog.close()
+    ));
+
+    dialog.present();
+    entry.grab_focus();
+    entry.select_region(0, -1);
+}
+
+/// Num+ / Num- (`TfrmMaskInputDlg` of the original, without its predefined
+/// selections): asks for a mask, `mask` prefilled and selected, earlier masks
+/// under the arrow next to it. `on_ok` gets the mask and the options as set.
+pub fn ask_mask(
+    parent: Option<&gtk::Window>,
+    select: bool,
+    mask: &str,
+    history: &[String],
+    options: MaskOptions,
+    on_ok: impl FnOnce(String, MaskOptions) + 'static,
+) {
+    let title = if select { gettext("Select mask") } else { gettext("Unselect mask") };
+    let dialog = gtk::Window::builder().title(title).modal(true).resizable(false).default_width(380).build();
+    dialog.set_transient_for(parent);
+
+    let label = gtk::Label::builder().label(gettext("_Input mask:")).use_underline(true).xalign(0.0).build();
+    let entry = gtk::Entry::builder().text(mask).activates_default(true).hexpand(true).build();
+    label.set_mnemonic_widget(Some(&entry));
+
+    // Earlier masks, newest first; a click puts one into the entry.
+    let earlier = gtk::Box::new(gtk::Orientation::Vertical, 0);
+    let popover = gtk::Popover::builder().child(&earlier).build();
+    for text in history {
+        let item = gtk::Button::builder().label(text).build();
+        item.add_css_class("flat");
+        if let Some(label) = item.child().and_downcast::<gtk::Label>() {
+            label.set_xalign(0.0);
+        }
+        item.connect_clicked(glib::clone!(
+            #[weak]
+            entry,
+            #[weak]
+            popover,
+            move |item| {
+                entry.set_text(&item.label().unwrap_or_default());
+                popover.popdown();
+                entry.grab_focus();
+                entry.select_region(0, -1);
+            }
+        ));
+        earlier.append(&item);
+    }
+    let history_button = gtk::MenuButton::builder()
+        .popover(&popover)
+        .tooltip_text(gettext("Previous masks"))
+        .sensitive(!history.is_empty())
+        .build();
+    let mask_row = gtk::Box::builder().css_classes(["linked"]).build();
+    mask_row.append(&entry);
+    mask_row.append(&history_button);
+
+    let case_sensitive =
+        gtk::CheckButton::builder().label(gettext("_Case sensitive")).use_underline(true).active(options.case_sensitive).build();
+    let ignore_accents = gtk::CheckButton::builder()
+        .label(gettext("Ignore _accents"))
+        .use_underline(true)
+        .active(options.ignore_accents)
+        .build();
+
+    let cancel = gtk::Button::with_mnemonic(&cancel_label());
+    let ok = gtk::Button::with_mnemonic(&ok_label());
+    ok.add_css_class("suggested-action");
+    let buttons = gtk::Box::builder().spacing(8).halign(gtk::Align::End).margin_top(8).build();
+    buttons.append(&cancel);
+    buttons.append(&ok);
+
+    let content = gtk::Box::builder()
+        .orientation(gtk::Orientation::Vertical)
+        .spacing(6)
+        .margin_top(12)
+        .margin_bottom(12)
+        .margin_start(12)
+        .margin_end(12)
+        .build();
+    content.append(&label);
+    content.append(&mask_row);
+    content.append(&case_sensitive);
+    content.append(&ignore_accents);
+    content.append(&buttons);
+    dialog.set_child(Some(&content));
+    dialog.set_default_widget(Some(&ok));
+    close_on_escape(&dialog);
+
+    let on_ok = Cell::new(Some(on_ok));
+    ok.connect_clicked(glib::clone!(
+        #[weak]
+        dialog,
+        #[weak]
+        entry,
+        #[weak]
+        case_sensitive,
+        #[weak]
+        ignore_accents,
+        move |_| {
+            let options =
+                MaskOptions { case_sensitive: case_sensitive.is_active(), ignore_accents: ignore_accents.is_active() };
+            let mask = entry.text().to_string();
+            dialog.close();
+            if let Some(on_ok) = on_ok.take() {
+                on_ok(mask, options);
             }
         }
     ));

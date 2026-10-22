@@ -14,6 +14,7 @@ use std::rc::{Rc, Weak};
 use std::time::{Duration, Instant};
 
 use dc_core::command::{Direction, RangeStep};
+use dc_core::mask::MaskList;
 use dc_core::quick_search::{Pattern, TYPING_TIMEOUT, TypeAhead};
 use dc_core::{Panel, SortColumn, SortDirection, Sorting, format};
 use dc_i18n::{N_, fill, gettext};
@@ -870,6 +871,12 @@ impl PanelView {
     /// `cm_MarkMarkAll` (true) / `cm_MarkUnmarkAll` (false).
     pub fn mark_all(&self, selected: bool) {
         self.panel.borrow_mut().mark_all(selected);
+        self.after_marking();
+    }
+
+    /// Num+ / Num-: marks or unmarks the items matching `masks`.
+    pub fn mark_group(&self, masks: &MaskList, selected: bool) {
+        self.panel.borrow_mut().mark_group(masks, selected);
         self.after_marking();
     }
 

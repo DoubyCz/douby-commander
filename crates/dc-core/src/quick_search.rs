@@ -13,8 +13,7 @@
 
 use std::time::{Duration, Instant};
 
-use unicode_normalization::UnicodeNormalization;
-use unicode_normalization::char::is_combining_mark;
+use crate::mask::{MaskOptions, normalize, wildcard_match};
 
 /// Characters typed further apart than this start a new search.
 pub const TYPING_TIMEOUT: Duration = Duration::from_millis(1000);
@@ -94,51 +93,7 @@ impl Pattern {
 
 /// Lowercase without diacritics, so `sablony` finds `Šablony` and the other way round.
 fn fold(text: &str) -> impl Iterator<Item = char> + '_ {
-    text.nfd().filter(|&ch| !is_combining_mark(ch)).flat_map(char::to_lowercase).map(base_letter)
-}
-
-/// Letters whose stroke or ligature has no Unicode decomposition.
-fn base_letter(ch: char) -> char {
-    match ch {
-        'ł' => 'l',
-        'đ' | 'ð' => 'd',
-        'ø' => 'o',
-        'ħ' => 'h',
-        'ı' => 'i',
-        'ŧ' => 't',
-        'ƀ' => 'b',
-        'ƶ' => 'z',
-        _ => ch,
-    }
-}
-
-/// Glob match with `*` (any run of characters) and `?` (one character).
-fn wildcard_match(mask: &[char], name: &[char]) -> bool {
-    let (mut m, mut n) = (0, 0);
-    // Position after the last `*` and the name position it is matched against.
-    let mut backtrack: Option<(usize, usize)> = None;
-
-    while n < name.len() {
-        match mask.get(m) {
-            Some('*') => {
-                m += 1;
-                backtrack = Some((m, n));
-            }
-            Some(&c) if c == '?' || c == name[n] => {
-                m += 1;
-                n += 1;
-            }
-            _ => match backtrack {
-                Some((star_m, star_n)) => {
-                    m = star_m;
-                    n = star_n + 1;
-                    backtrack = Some((star_m, star_n + 1));
-                }
-                None => return false,
-            },
-        }
-    }
-    mask[m..].iter().all(|&c| c == '*')
+    normalize(text, MaskOptions { case_sensitive: false, ignore_accents: true })
 }
 
 #[cfg(test)]
