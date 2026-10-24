@@ -13,7 +13,7 @@ the name and the abbreviation DC.
 It follows the theme of [Omarchy](https://omarchy.org/) live: switch the theme and the
 colors change at once, with no setup.
 
-> **Alpha (0.0.14).** Many features are not done yet. Most menu items and toolbar buttons
+> **Alpha (0.0.15).** Many features are not done yet. Most menu items and toolbar buttons
 > are not connected, and there is no settings dialog. Expect rough edges.
 
 ## What works
@@ -33,7 +33,10 @@ the icons view.*
   like directories, `[name].zip` in bold, and browsed like them; F5 extracts from them
 - F3 quick view in the other panel, following the cursor: text and source code with syntax
   highlighting (Neovim, read only), images, video, and music with its tags, cover and a wave
-  that moves with what plays. Esc closes it, Tab closes it and goes to the other panel
+  that moves with what plays, PDF as pages to scroll through. Other files show what the
+  programs installed on the system tell (exiftool, pandoc, fluidsynth, thumbnailers of the
+  desktop), with the command that installs the missing ones on your distribution.
+  Esc closes it, Tab closes it and goes to the other panel
 - Enter and F4 open a file in its default application, Shift+F4 offers the applications
   that can open it
 - F5 copy and F6 move, with the questions and options of the original, a progress

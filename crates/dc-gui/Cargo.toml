@@ -19,6 +19,7 @@ adw.workspace = true
 gst.workspace = true
 gtk.workspace = true
 jiff.workspace = true
+tempfile.workspace = true
 vte4.workspace = true
 
 [features]

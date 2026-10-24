@@ -4,6 +4,15 @@
 //! The decision takes the MIME type the desktop guesses from the name and
 //! the first bytes, and those bytes themselves: a file of an unknown type
 //! that reads as text is text, a "text" file with NUL bytes is not.
+//!
+//! Files no viewer here can show are described by the programs of the
+//! system ([`tools`], [`thumbnailer`]): as much as those that are installed
+//! tell, with the others named, so that whoever needs more knows what to
+//! install.
+
+pub mod pages;
+pub mod thumbnailer;
+pub mod tools;
 
 /// How many bytes from the start of a file decide.
 pub const HEAD_SIZE: usize = 8192;
@@ -18,13 +27,32 @@ pub enum PreviewKind {
     Other,
 }
 
-/// `mime` as the desktop guessed it, `text_type` whether that type is a
+/// A SoundFont, a bank of instruments for MIDI. The desktop knows it only
+/// as RIFF data, SoundFont 3 as `audio/x.sf3`.
+pub const SOUNDFONT: &str = "audio/x-sfbk";
+
+/// The MIME type of `head` where the content tells more than the desktop's
+/// guess.
+#[must_use]
+pub fn sniff(head: &[u8]) -> Option<&'static str> {
+    (head.starts_with(b"RIFF") && head.get(8..12) == Some(b"sfbk".as_slice())).then_some(SOUNDFONT)
+}
+
+/// Whether `mime` is a SoundFont (2 or 3).
+#[must_use]
+pub fn is_soundfont(mime: &str) -> bool {
+    mime == SOUNDFONT || mime == "audio/x.sf3"
+}
+
+/// `mime` as the desktop guessed it (or [`sniff`] found), `text_type` whether that type is a
 /// kind of `text/plain` (scripts, sources, configuration), `head` the
 /// first [`HEAD_SIZE`] bytes of the file (all of it when shorter).
 #[must_use]
 pub fn classify(mime: &str, text_type: bool, head: &[u8]) -> PreviewKind {
     let (top, _) = mime.split_once('/').unwrap_or((mime, ""));
     match top {
+        // Audio, but nothing to play: samples for a synthesizer.
+        _ if is_soundfont(mime) => PreviewKind::Other,
         "image" => PreviewKind::Image,
         "video" => PreviewKind::Video,
         "audio" => PreviewKind::Audio,
@@ -52,6 +80,15 @@ mod tests {
         assert_eq!(classify("image/svg+xml", true, b"<svg>"), PreviewKind::Image);
         assert_eq!(classify("video/mp4", false, b"\0\0"), PreviewKind::Video);
         assert_eq!(classify("audio/flac", false, b"fLaC\0"), PreviewKind::Audio);
+    }
+
+    #[test]
+    fn soundfont_by_content() {
+        assert_eq!(sniff(b"RIFF\x10\0\0\0sfbkLIST"), Some(SOUNDFONT));
+        assert_eq!(sniff(b"RIFF\x10\0\0\0WAVEfmt "), None);
+        assert_eq!(sniff(b"RIFF"), None);
+        assert_eq!(classify(SOUNDFONT, false, b"RIFF\0"), PreviewKind::Other);
+        assert_eq!(classify("audio/x.sf3", false, b"RIFF\0"), PreviewKind::Other);
     }
 
     #[test]

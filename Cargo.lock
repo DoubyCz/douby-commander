@@ -107,7 +107,7 @@ dependencies = [
 
 [[package]]
 name = "dc-core"
-version = "0.0.14"
+version = "0.0.15"
 dependencies = [
  "dc-i18n",
  "dc-vfs",
@@ -119,7 +119,7 @@ dependencies = [
 
 [[package]]
 name = "dc-gui"
-version = "0.0.14"
+version = "0.0.15"
 dependencies = [
  "dc-core",
  "dc-i18n",
@@ -130,19 +130,20 @@ dependencies = [
  "gtk4",
  "jiff",
  "libadwaita",
+ "tempfile",
  "vte4",
 ]
 
 [[package]]
 name = "dc-i18n"
-version = "0.0.14"
+version = "0.0.15"
 dependencies = [
  "gettext-rs",
 ]
 
 [[package]]
 name = "dc-ops"
-version = "0.0.14"
+version = "0.0.15"
 dependencies = [
  "dc-core",
  "dc-i18n",
@@ -154,7 +155,7 @@ dependencies = [
 
 [[package]]
 name = "dc-vfs"
-version = "0.0.14"
+version = "0.0.15"
 dependencies = [
  "compress-tools",
  "dc-i18n",

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: doubycmd\n"
 "Report-Msgid-Bugs-To: douby@douby.cz\n"
-"POT-Creation-Date: 2026-10-22 09:48+0200\n"
+"POT-Creation-Date: 2026-10-24 12:59+0200\n"
 "PO-Revision-Date: 2026-10-19 18:45+0200\n"
 "Last-Translator: Jiří Doubravský <douby@douby.cz>\n"
 "Language-Team: Czech\n"
@@ -17,12 +17,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: crates/dc-core/src/command.rs:304
+#: crates/dc-core/src/command.rs:309
 #, rust-format
 msgid "Unknown command {command}"
 msgstr "Neznámý příkaz {command}"
 
-#: crates/dc-core/src/command.rs:306
+#: crates/dc-core/src/command.rs:311
 #, rust-format
 msgid "Command {command} does not accept parameter {param}"
 msgstr "Příkaz {command} nepřijímá parametr {param}"
@@ -286,6 +286,80 @@ msgctxt "weekday short"
 msgid "Sat"
 msgstr "so"
 
+#: crates/dc-core/src/preview/pages.rs:48
+msgid "pages of the document"
+msgstr "stránky dokumentu"
+
+#: crates/dc-core/src/preview/tools.rs:65
+msgid "list of instruments in the bank"
+msgstr "seznam nástrojů v bance"
+
+#: crates/dc-core/src/preview/tools.rs:66
+msgid "beginning of the text"
+msgstr "začátek textu"
+
+#: crates/dc-core/src/preview/tools.rs:67
+msgid "metadata of the file"
+msgstr "metadata souboru"
+
+#: crates/dc-core/src/preview/tools.rs:118
+#, rust-format
+msgid "Instruments in the bank: {count}"
+msgstr "Nástroje v bance: {count}"
+
+#: crates/dc-core/src/preview/tools.rs:134
+msgid "Metadata"
+msgstr "Metadata"
+
+#: crates/dc-core/src/preview/tools.rs:171
+msgid "Title"
+msgstr "Název"
+
+#: crates/dc-core/src/preview/tools.rs:172
+msgid "Author"
+msgstr "Autor"
+
+#: crates/dc-core/src/preview/tools.rs:173
+msgid "Publisher"
+msgstr "Vydavatel"
+
+#: crates/dc-core/src/preview/tools.rs:174
+#: crates/dc-gui/src/multi_rename.rs:338 crates/dc-gui/src/panel_view.rs:38
+msgid "Date"
+msgstr "Datum"
+
+#: crates/dc-core/src/preview/tools.rs:175
+msgid "Language"
+msgstr "Jazyk"
+
+#: crates/dc-core/src/preview/tools.rs:176
+msgid "Description"
+msgstr "Popis"
+
+#: crates/dc-core/src/preview/tools.rs:196
+msgid "About the book"
+msgstr "O knize"
+
+#: crates/dc-core/src/preview/tools.rs:200
+msgid "Beginning of the text"
+msgstr "Začátek textu"
+
+#: crates/dc-core/src/preview/tools.rs:278
+msgid "picture of the first page"
+msgstr "obrázek první stránky"
+
+#: crates/dc-core/src/preview/tools.rs:280
+msgid "picture of the document"
+msgstr "obrázek dokumentu"
+
+#: crates/dc-core/src/preview/tools.rs:282
+msgid "cover of the book"
+msgstr "obálka knihy"
+
+#: crates/dc-core/src/preview/tools.rs:284
+msgid "sample of the font"
+msgstr "ukázka písma"
+
 #: crates/dc-gui/src/about.rs:38
 msgid ""
 "A two-panel file manager for Linux. A tribute to Double Commander by "
@@ -328,34 +402,34 @@ msgstr "Platforma: {platform}"
 msgid "System: {system}"
 msgstr "Systém: {system}"
 
-#: crates/dc-gui/src/commander.rs:185
+#: crates/dc-gui/src/commander.rs:179
 msgid ""
 "No terminal found. Install xdg-terminal-exec or set the TERMINAL variable."
 msgstr ""
 "Nenalezen žádný terminál. Nainstalujte xdg-terminal-exec nebo nastavte "
 "proměnnou TERMINAL."
 
-#: crates/dc-gui/src/commander.rs:188
+#: crates/dc-gui/src/commander.rs:182
 msgid "Cannot run the terminal"
 msgstr "Nelze spustit terminál"
 
-#: crates/dc-gui/src/commander.rs:418 crates/dc-gui/src/multi_rename.rs:555
+#: crates/dc-gui/src/commander.rs:414 crates/dc-gui/src/multi_rename.rs:555
 #: crates/dc-gui/src/panel_view.rs:497
 #, rust-format
 msgid "Invalid file name: {name}"
 msgstr "Neplatný název souboru: {name}"
 
-#: crates/dc-gui/src/commander.rs:575
+#: crates/dc-gui/src/commander.rs:597
 #, rust-format
 msgid "Delete selected \"{name}\" into trash can?"
 msgstr "Opravdu přesunout \"{name}\" do koše?"
 
-#: crates/dc-gui/src/commander.rs:577
+#: crates/dc-gui/src/commander.rs:599
 #, rust-format
 msgid "Delete selected \"{name}\"?"
 msgstr "Opravdu smazat \"{name}\"?"
 
-#: crates/dc-gui/src/commander.rs:585
+#: crates/dc-gui/src/commander.rs:607
 #, rust-format
 msgid "Delete {count} selected file/directory into trash can?"
 msgid_plural "Delete {count} selected files/directories into trash can?"
@@ -363,7 +437,7 @@ msgstr[0] "Opravdu přesunout {count} vybranou položku do koše?"
 msgstr[1] "Opravdu přesunout {count} vybrané položky do koše?"
 msgstr[2] "Opravdu přesunout {count} vybraných položek do koše?"
 
-#: crates/dc-gui/src/commander.rs:590
+#: crates/dc-gui/src/commander.rs:612
 #, rust-format
 msgid "Delete {count} selected file/directory?"
 msgid_plural "Delete {count} selected files/directories?"
@@ -371,17 +445,17 @@ msgstr[0] "Opravdu smazat {count} vybranou položku?"
 msgstr[1] "Opravdu smazat {count} vybrané položky?"
 msgstr[2] "Opravdu smazat {count} vybraných položek?"
 
-#: crates/dc-gui/src/commander.rs:632
+#: crates/dc-gui/src/commander.rs:654
 #, rust-format
 msgid "Copy selected \"{name}\"?"
 msgstr "Kopírovat \"{name}\"?"
 
-#: crates/dc-gui/src/commander.rs:632
+#: crates/dc-gui/src/commander.rs:654
 #, rust-format
 msgid "Rename/move selected \"{name}\"?"
 msgstr "Přejmenovat nebo přesunout \"{name}\"?"
 
-#: crates/dc-gui/src/commander.rs:638
+#: crates/dc-gui/src/commander.rs:660
 #, rust-format
 msgid "Copy {count} selected file/directory?"
 msgid_plural "Copy {count} selected files/directories?"
@@ -389,7 +463,7 @@ msgstr[0] "Kopírovat {count} vybranou položku?"
 msgstr[1] "Kopírovat {count} vybrané položky?"
 msgstr[2] "Kopírovat {count} vybraných položek?"
 
-#: crates/dc-gui/src/commander.rs:641
+#: crates/dc-gui/src/commander.rs:663
 #, rust-format
 msgid "Rename/move {count} selected file/directory?"
 msgid_plural "Rename/move {count} selected files/directories?"
@@ -579,6 +653,27 @@ msgstr "_OK"
 msgctxt "button"
 msgid "_Cancel"
 msgstr "_Zrušit"
+
+#: crates/dc-gui/src/document_view.rs:99
+msgid "First page"
+msgstr "První stránka"
+
+#: crates/dc-gui/src/document_view.rs:100
+msgid "Previous page"
+msgstr "Předchozí stránka"
+
+#: crates/dc-gui/src/document_view.rs:101
+msgid "Next page"
+msgstr "Další stránka"
+
+#: crates/dc-gui/src/document_view.rs:102
+msgid "Last page"
+msgstr "Poslední stránka"
+
+#: crates/dc-gui/src/document_view.rs:270
+#, rust-format
+msgid "{page} / {count}"
+msgstr "{page} / {count}"
 
 #: crates/dc-gui/src/function_bar.rs:19
 msgctxt "function key"
@@ -1339,10 +1434,6 @@ msgstr "Den v týdnu (dlouhý, např. \"pondělí\")"
 msgid "Complete date"
 msgstr "Celé datum"
 
-#: crates/dc-gui/src/multi_rename.rs:338 crates/dc-gui/src/panel_view.rs:38
-msgid "Date"
-msgstr "Datum"
-
 #: crates/dc-gui/src/multi_rename.rs:342
 msgid "Hour"
 msgstr "Hodina"
@@ -1502,25 +1593,25 @@ msgstr "{name} už existuje."
 msgid "Cannot rename file {from} to {to}"
 msgstr "Nelze přejmenovat soubor {from} na {to}"
 
-#: crates/dc-gui/src/panel_view.rs:913
+#: crates/dc-gui/src/panel_view.rs:918
 msgid "To browse an archive inside an archive, copy it out first."
 msgstr "Archiv uvnitř archivu lze procházet až po zkopírování ven."
 
-#: crates/dc-gui/src/panel_view.rs:917
+#: crates/dc-gui/src/panel_view.rs:922
 msgid "Reading the archive…"
 msgstr "Načítám archiv…"
 
-#: crates/dc-gui/src/panel_view.rs:1554
+#: crates/dc-gui/src/panel_view.rs:1559
 #, rust-format
 msgid "(SEARCH: {text})"
 msgstr "(HLEDÁNÍ: {text})"
 
-#: crates/dc-gui/src/panel_view.rs:1595
+#: crates/dc-gui/src/panel_view.rs:1600
 #, rust-format
 msgid "Cannot open {path}"
 msgstr "Nelze otevřít {path}"
 
-#: crates/dc-gui/src/panel_view.rs:1704
+#: crates/dc-gui/src/panel_view.rs:1709
 msgid "Archives can only be browsed so far."
 msgstr "Archivy zatím jde jen procházet."
 
@@ -1590,45 +1681,66 @@ msgstr "Rychlost {speed}/s, zbývá {time}"
 msgid "Speed {speed}/s"
 msgstr "Rychlost {speed}/s"
 
-#: crates/dc-gui/src/quick_view.rs:93
+#: crates/dc-gui/src/quick_details.rs:175
+#, rust-format
+msgid "{program} - {adds}"
+msgstr "{program} - {adds}"
+
+#: crates/dc-gui/src/quick_details.rs:194
+msgid "Copy the command"
+msgstr "Zkopírovat příkaz"
+
+#: crates/dc-gui/src/quick_details.rs:208
+msgid "For a better preview install"
+msgstr "Pro lepší náhled nainstalujte"
+
+#: crates/dc-gui/src/quick_details.rs:271
+msgid "picture of the file"
+msgstr "obrázek souboru"
+
+#: crates/dc-gui/src/quick_view.rs:102
 msgid "Open in application"
 msgstr "Otevřít v aplikaci"
 
-#: crates/dc-gui/src/quick_view.rs:94
+#: crates/dc-gui/src/quick_view.rs:103
 msgid "Close the quick view and open the file in its application"
 msgstr "Zavřít rychlý náhled a otevřít soubor v jeho aplikaci"
 
-#: crates/dc-gui/src/quick_view.rs:209
+#: crates/dc-gui/src/quick_view.rs:199
 msgid "Folder"
 msgstr "Složka"
 
-#: crates/dc-gui/src/quick_view.rs:215
+#: crates/dc-gui/src/quick_view.rs:205
 msgid "Files inside archives cannot be shown yet."
 msgstr "Soubory uvnitř archivů zatím nejde zobrazit."
 
-#: crates/dc-gui/src/quick_view.rs:257
+#: crates/dc-gui/src/quick_view.rs:253
+msgid "SoundFont, a bank of instruments"
+msgstr "SoundFont, banka nástrojů"
+
+#: crates/dc-gui/src/quick_view.rs:258
 #, rust-format
 msgid "{type}, {size}"
 msgstr "{type}, {size}"
 
-#: crates/dc-gui/src/quick_view.rs:268
+#: crates/dc-gui/src/quick_view.rs:269
 #, rust-format
 msgid "{type}, {width} × {height}, {size}"
 msgstr "{type}, {width} × {height}, {size}"
 
-#: crates/dc-gui/src/quick_view.rs:275
+#: crates/dc-gui/src/quick_view.rs:276
 msgid "The image cannot be read."
 msgstr "Obrázek nejde načíst."
 
-#: crates/dc-gui/src/quick_view.rs:298
+#: crates/dc-gui/src/quick_view.rs:351
 msgid "The file name cannot be passed to the viewer."
 msgstr "Název souboru nejde předat prohlížeči."
 
-#: crates/dc-gui/src/quick_view.rs:304
+#: crates/dc-gui/src/quick_view.rs:357
 msgid "Install Neovim (or Vim) to view text files."
 msgstr "Pro prohlížení textových souborů nainstalujte Neovim (nebo Vim)."
 
-#: crates/dc-gui/src/quick_view.rs:320
+#: crates/dc-gui/src/quick_view.rs:373
 msgid "The text viewer ended."
 msgstr "Prohlížeč textu skončil."
 
@@ -2020,3 +2132,10 @@ msgstr "Nelze přečíst archiv {path}"
 #, rust-format
 msgid "Cannot change {path}, archives are read-only for now"
 msgstr "Nelze změnit {path}, archivy jsou zatím jen pro čtení"
+
+#~ msgid ""
+#~ "{queue} ({count})\n"
+#~ "{operation} - {percent}"
+#~ msgstr ""
+#~ "{queue} ({count})\n"
+#~ "{operation} - {percent}"

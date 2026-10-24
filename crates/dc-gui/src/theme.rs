@@ -137,6 +137,10 @@ menubar > item:focus-visible {
 .dc-current-drive { background: var(--dc-current-drive-color); }
 .dc-tab { padding: 2px 10px; border-radius: 4px 4px 0 0; background: color-mix(in srgb, currentColor 8%, transparent); }
 .dc-active .dc-tab { background: var(--dc-current-drive-color); }
+/* A page of a document in the quick view, on its own sheet. */
+.dc-page { background: white; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4); }
+/* A command to copy in the quick view, as a block of code. */
+.dc-command { padding: 6px 4px 6px 10px; border-radius: 6px; background: color-mix(in srgb, currentColor 8%, transparent); }
 ";
 
 /// Name of the palette stylesheet the Omarchy template produces.

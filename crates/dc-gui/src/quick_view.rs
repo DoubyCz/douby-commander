@@ -5,8 +5,10 @@
 //! terminal colors of the theme, without the user's configuration (no
 //! plugins or language servers starting for every file passed by), read
 //! only. One editor serves the whole quick view; each next file is opened
-//! in it by a typed `:view`. Images, video and music in GTK, folders and
-//! other files as what they are. Nothing can be changed here; the button in
+//! in it by a typed `:view`. Images, video and music in GTK, documents as
+//! pages drawn by the programs of the system (`document_view`), folders as
+//! what they are, other files as much as the programs of the system tell
+//! (`quick_details`). Nothing can be changed here; the button in
 //! the header opens the file in its application.
 //!
 //! The view never takes the keyboard: keys stay with the active panel,
@@ -17,8 +19,11 @@ use std::fs::File;
 use std::io::{self, Read};
 use std::path::{Path, PathBuf};
 use std::rc::{Rc, Weak};
+use std::sync::Arc;
+use std::sync::atomic::{AtomicBool, Ordering};
 
 use dc_core::format;
+use dc_core::preview::pages::PageRenderer;
 use dc_core::preview::{self, HEAD_SIZE, PreviewKind};
 use dc_i18n::{fill, gettext};
 use gtk::gdk_pixbuf::Pixbuf;
@@ -26,8 +31,10 @@ use gtk::prelude::*;
 use gtk::{gio, glib};
 use vte4::prelude::*;
 
+use crate::document_view::{self, DocumentView};
 use crate::launch;
 use crate::music_view::MusicView;
+use crate::quick_details::{self, Details, InfoPage};
 use crate::panel_terminal;
 use crate::pixels::Pixels;
 
@@ -58,6 +65,7 @@ impl Subject {
 struct Probe {
     kind: PreviewKind,
     content_type: String,
+    mime: String,
     size: u64,
     image: Option<(Pixels, i32, i32)>,
 }
@@ -74,9 +82,10 @@ pub struct QuickView {
     video: gtk::Picture,
     controls: gtk::MediaControls,
     music: MusicView,
-    info_icon: gtk::Image,
-    info_name: gtk::Label,
-    info_text: gtk::Label,
+    document: Rc<DocumentView>,
+    info: InfoPage,
+    /// Stops the programs asked about the file shown.
+    details_cancel: RefCell<Arc<AtomicBool>>,
     status: gtk::Label,
     shown: RefCell<Option<Subject>>,
     /// Raised by every new subject: results of slower ones are dropped.
@@ -110,35 +119,16 @@ impl QuickView {
         media.append(&controls);
         let music = MusicView::new();
 
-        let info_icon = gtk::Image::builder().pixel_size(96).build();
-        // Long names are shortened in the middle (the extension stays), the
-        // whole name is in the tooltip and in the header: a label that wraps
-        // cannot break a name without spaces and would widen the window.
-        let info_name = gtk::Label::builder().ellipsize(gtk::pango::EllipsizeMode::Middle).build();
-        info_name.add_css_class("title-3");
-        let info_text = gtk::Label::builder()
-            .wrap(true)
-            .wrap_mode(gtk::pango::WrapMode::WordChar)
-            .justify(gtk::Justification::Center)
-            .build();
-        info_text.add_css_class("dim-label");
-        let info = gtk::Box::builder()
-            .orientation(gtk::Orientation::Vertical)
-            .spacing(12)
-            .valign(gtk::Align::Center)
-            .margin_start(24)
-            .margin_end(24)
-            .build();
-        info.append(&info_icon);
-        info.append(&info_name);
-        info.append(&info_text);
+        let document = DocumentView::new();
+        let info = InfoPage::new();
 
         let pages = gtk::Stack::builder().vexpand(true).hexpand(true).build();
-        pages.add_named(&info, Some("info"));
+        pages.add_named(info.widget(), Some("info"));
         pages.add_named(&text_page, Some("text"));
         pages.add_named(&picture, Some("image"));
         pages.add_named(&media, Some("video"));
         pages.add_named(music.widget(), Some("music"));
+        pages.add_named(document.widget(), Some("document"));
 
         let status = gtk::Label::builder().xalign(0.0).ellipsize(gtk::pango::EllipsizeMode::End).build();
         status.add_css_class("dc-status");
@@ -161,9 +151,9 @@ impl QuickView {
             video,
             controls,
             music,
-            info_icon,
-            info_name,
-            info_text,
+            document,
+            info,
+            details_cancel: RefCell::default(),
             status,
             shown: RefCell::default(),
             generation: Cell::new(0),
@@ -198,7 +188,7 @@ impl QuickView {
         if *self.shown.borrow() == subject {
             return;
         }
-        self.generation.set(self.generation.get() + 1);
+        self.next_generation();
         self.stop_media();
         self.picture.set_paintable(None::<&gtk::gdk::Paintable>);
         self.open_button.set_sensitive(matches!(subject, Some(Subject::File(_))));
@@ -223,13 +213,20 @@ impl QuickView {
     /// The quick view is closed: the player stops, the editor lets go of
     /// the file. What was shown is forgotten, the next time starts anew.
     pub fn hide(&self) {
-        self.generation.set(self.generation.get() + 1);
+        self.next_generation();
         self.stop_media();
         self.picture.set_paintable(None::<&gtk::gdk::Paintable>);
         if let Some(text) = self.text.borrow().as_ref() {
             text.release();
         }
         self.shown.replace(None);
+    }
+
+    /// Results for what was shown are dropped, its programs stopped.
+    fn next_generation(&self) {
+        self.generation.set(self.generation.get() + 1);
+        self.details_cancel.borrow().store(true, Ordering::Relaxed);
+        self.document.clear();
     }
 
     /// Finds out in a worker thread what the file is, then shows it.
@@ -252,7 +249,11 @@ impl QuickView {
     }
 
     fn show_probed(&self, path: &Path, probe: Probe) {
-        let description = gio::content_type_get_description(&probe.content_type).to_string();
+        let description = if preview::is_soundfont(&probe.mime) {
+            gettext("SoundFont, a bank of instruments")
+        } else {
+            gio::content_type_get_description(&probe.content_type).to_string()
+        };
         let size = format::size(probe.size);
         let status = fill(&gettext("{type}, {size}"), &[("type", &description), ("size", &size)]);
         match probe.kind {
@@ -289,8 +290,60 @@ impl QuickView {
                 self.pages.set_visible_child_name("music");
                 self.status.set_text(&status);
             }
-            PreviewKind::Other => self.show_info(&icon_name(&probe.content_type), &file_name(path), &description, Some(&status)),
+            PreviewKind::Other => {
+                self.show_info(&icon_name(&probe.content_type), &file_name(path), &description, Some(&status));
+                if !std::fs::metadata(path).is_ok_and(|metadata| metadata.is_file()) {
+                    return;
+                }
+                match PageRenderer::for_mime(&probe.mime).filter(|renderer| quick_details::renderer_installed(*renderer)) {
+                    Some(renderer) => self.open_document(path.to_owned(), renderer, probe.mime),
+                    None => self.find_details(path.to_owned(), probe.mime),
+                }
+            }
         }
+    }
+
+    /// The pages of a document once their sizes are known; a document the
+    /// renderer cannot read stays an other file.
+    fn open_document(&self, path: PathBuf, renderer: PageRenderer, mime: String) {
+        let generation = self.generation.get();
+        let weak = self.this.clone();
+        glib::spawn_future_local(async move {
+            let asked = path.clone();
+            let sizes = gio::spawn_blocking(move || document_view::page_sizes(&asked, renderer)).await.unwrap_or_default();
+            let Some(view) = weak.upgrade() else { return };
+            if view.generation.get() != generation {
+                return;
+            }
+            if sizes.is_empty() {
+                view.find_details(path, mime);
+            } else {
+                view.document.show(&path, renderer, sizes);
+                view.pages.set_visible_child_name("document");
+            }
+        });
+    }
+
+    /// Asks the programs of the system in a worker thread, then adds what
+    /// they told to the info page shown meanwhile.
+    fn find_details(&self, path: PathBuf, mime: String) {
+        let generation = self.generation.get();
+        let weak = self.this.clone();
+        let cancel = Arc::new(AtomicBool::new(false));
+        self.details_cancel.replace(Arc::clone(&cancel));
+        glib::spawn_future_local(async move {
+            let details = gio::spawn_blocking(move || quick_details::find(&path, &mime, &cancel)).await;
+            let Some(view) = weak.upgrade() else { return };
+            if view.generation.get() == generation
+                && let Ok(details) = details
+            {
+                view.show_details(details);
+            }
+        });
+    }
+
+    fn show_details(&self, details: Details) {
+        self.info.add_details(details);
     }
 
     /// The file in the editor; a message why not when there is none.
@@ -322,10 +375,7 @@ impl QuickView {
     }
 
     fn show_info(&self, icon: &str, name: &str, text: &str, status: Option<&str>) {
-        self.info_icon.set_icon_name((!icon.is_empty()).then_some(icon));
-        self.info_name.set_text(name);
-        self.info_name.set_tooltip_text((!name.is_empty()).then_some(name));
-        self.info_text.set_text(text);
+        self.info.show(icon, name, text);
         self.status.set_text(status.unwrap_or_default());
         self.pages.set_visible_child_name("info");
     }
@@ -444,15 +494,19 @@ fn probe(path: &Path) -> io::Result<Probe> {
     if metadata.is_file() {
         File::open(path)?.take(HEAD_SIZE as u64).read_to_end(&mut head)?;
     }
-    let (content_type, _) = gio::content_type_guess(Some(path), Some(head.as_slice()));
+    let (mut content_type, _) = gio::content_type_guess(Some(path), Some(head.as_slice()));
+    let mut mime: String = gio::content_type_get_mime_type(&content_type).map_or_else(|| content_type.to_string(), Into::into);
+    if let Some(sniffed) = preview::sniff(&head) {
+        sniffed.clone_into(&mut mime);
+        content_type = gio::content_type_from_mime_type(sniffed).unwrap_or(content_type);
+    }
     let kind = if metadata.is_file() {
-        let mime = gio::content_type_get_mime_type(&content_type).map_or_else(|| content_type.to_string(), Into::into);
         preview::classify(&mime, gio::content_type_is_a(&content_type, "text/plain"), &head)
     } else {
         PreviewKind::Other
     };
     let image = (kind == PreviewKind::Image).then(|| load_image(path)).flatten();
-    Ok(Probe { kind, content_type: content_type.to_string(), size: metadata.len(), image })
+    Ok(Probe { kind, content_type: content_type.to_string(), mime, size: metadata.len(), image })
 }
 
 /// The image turned as the camera says (EXIF), at most [`MAX_IMAGE_SIDE`],
