@@ -16,6 +16,8 @@ dc-i18n.workspace = true
 dc-ops.workspace = true
 dc-vfs.workspace = true
 adw.workspace = true
+# Only for its GLib 2.80 API, used through `gtk::gio`.
+gio.workspace = true
 gst.workspace = true
 gtk.workspace = true
 jiff.workspace = true
@@ -65,6 +67,7 @@ vte291-gtk4 = ">= 0.70"
 gstreamer1 = ">= 1.20"
 gstreamer1-plugins-good = ">= 1.20"
 glibc = ">= 2.41"
+glib2 = ">= 2.80"
 
 [package.metadata.generate-rpm.recommends]
 neovim = "*"

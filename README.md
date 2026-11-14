@@ -13,7 +13,7 @@ the name and the abbreviation DC.
 It follows the theme of [Omarchy](https://omarchy.org/) live: switch the theme and the
 colors change at once, with no setup.
 
-> **Alpha (0.0.15).** Many features are not done yet. Most menu items and toolbar buttons
+> **Alpha (0.0.16).** Many features are not done yet. Most menu items and toolbar buttons
 > are not connected, and there is no settings dialog. Expect rough edges.
 
 ## What works
@@ -42,6 +42,10 @@ the icons view.*
 - F5 copy and F6 move, with the questions and options of the original, a progress
   window, pause, and queues
 - Shift+F6 or F2 renames the file under the cursor right in the list
+- A double click on the path above a panel lets you type where to go (`~`, `$VARIABLES`
+  and relative paths work). The button at its end says what Enter does: go there, or
+  create the missing directories (how many) and go there; a key shows when you may not
+  create them
 - Ctrl+M renames many files at once: masks with placeholders (`[N]`, `[E]`, counter,
   date and time), find and replace with regular expressions, letter case, live preview
 - F7 new directory, F8 delete (to the trash, or permanently with Shift)
@@ -49,6 +53,11 @@ the icons view.*
   the panel's directory (`exit` closes it). Shift+F9 opens your own terminal
 - Sorting by clicking the column headers, from the Show menu or with Ctrl+F3 to Ctrl+F6
 - Adjustable panel divider, drive list with free space
+- Command line: `doubycmd PATH` opens the path in the active panel, `doubycmd LEFT RIGHT`
+  both panels; `-L`, `-R` and `-P L|R` (active panel) as in the original, `doubycmd --help`
+  lists them. A file opens its directory with the cursor on it. With Douby Commander
+  running already, it goes there in the running window. It can open folders from other
+  applications
 - English and Czech
 
 ## Installing

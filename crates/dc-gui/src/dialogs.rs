@@ -2,10 +2,12 @@
 //! keeps running while a dialog is open.
 
 use std::cell::Cell;
+use std::ffi::OsString;
+use std::path::Path;
 use std::rc::Rc;
 
 use dc_core::mask::MaskOptions;
-use dc_i18n::{fill, gettext, pgettext};
+use dc_i18n::{fill, gettext, ngettext, pgettext, plural_count};
 use dc_ops::{Answer, QueueId, Question};
 
 use crate::texts;
@@ -271,6 +273,152 @@ pub fn confirm_operation(
 
     dialog.present();
     ok.grab_focus();
+}
+
+/// What [`confirm_create_directories`] asks about.
+pub struct NewDirectories<'a> {
+    /// The path typed, which does not exist.
+    pub target: &'a Path,
+    /// The deepest directory on the way that does.
+    pub existing: &'a Path,
+    /// The directories to create under it, outermost first.
+    pub missing: &'a [OsString],
+    /// Whether the user may create them (see `path_input::Destination`).
+    pub allowed: bool,
+}
+
+/// The typed path does not exist: asks whether to create the missing
+/// directories and go there. Shows how many, and the path as a tree: what
+/// is there dimmed, each directory to create on a line of its own,
+/// highlighted. Without permission to create them they have a key and
+/// are struck through, and the dialog only says so. Esc or Cancel: nothing.
+pub fn confirm_create_directories(parent: Option<&gtk::Window>, request: &NewDirectories, on_yes: impl FnOnce() + 'static) {
+    let NewDirectories { target, existing, missing, allowed } = *request;
+    let dialog = gtk::Window::builder().title(gettext("Create directories")).modal(true).resizable(false).build();
+    dialog.set_transient_for(parent);
+
+    let message = fill(&gettext("Directory {path} does not exist."), &[("path", &target.display())]);
+    let text = gtk::Label::builder().label(message).xalign(0.0).wrap(true).max_width_chars(70).build();
+    let count = plural_count(missing.len());
+    let question = fill(
+        &ngettext(
+            "Create {count} directory and go there?",
+            "Create {count} directories and go there?",
+            count,
+        ),
+        &[("count", &count)],
+    );
+    let question = gtk::Label::builder().label(question).xalign(0.0).wrap(true).max_width_chars(70).build();
+    question.add_css_class("heading");
+
+    let scrolled = directory_tree(existing, missing, allowed);
+
+    let cancel = gtk::Button::with_mnemonic(&cancel_label());
+    let create = gtk::Button::with_mnemonic(&gettext("C_reate and go"));
+    create.add_css_class("suggested-action");
+    let buttons = gtk::Box::builder().spacing(8).halign(gtk::Align::End).margin_top(8).build();
+    buttons.append(&cancel);
+    buttons.append(&create);
+
+    let content = gtk::Box::builder()
+        .orientation(gtk::Orientation::Vertical)
+        .spacing(8)
+        .margin_top(12)
+        .margin_bottom(12)
+        .margin_start(12)
+        .margin_end(12)
+        .width_request(420)
+        .build();
+    content.append(&text);
+    if allowed {
+        content.append(&question);
+    } else {
+        let refusal = crate::panel_view::no_permission_to_create(existing);
+        let refusal = gtk::Label::builder().label(refusal).xalign(0.0).wrap(true).max_width_chars(70).build();
+        refusal.add_css_class("heading");
+        refusal.add_css_class("error");
+        content.append(&refusal);
+    }
+    content.append(&scrolled);
+    content.append(&buttons);
+    dialog.set_child(Some(&content));
+    close_on_escape(&dialog);
+    if allowed {
+        dialog.set_default_widget(Some(&create));
+    } else {
+        create.set_sensitive(false);
+    }
+
+    let on_yes = Cell::new(Some(on_yes));
+    create.connect_clicked(glib::clone!(
+        #[weak]
+        dialog,
+        move |_| {
+            dialog.close();
+            if let Some(on_yes) = on_yes.take() {
+                on_yes();
+            }
+        }
+    ));
+    cancel.connect_clicked(glib::clone!(
+        #[weak]
+        dialog,
+        move |_| dialog.close()
+    ));
+
+    dialog.present();
+    if allowed {
+        create.grab_focus();
+    } else {
+        cancel.grab_focus();
+    }
+}
+
+/// The path of [`confirm_create_directories`] as a tree: `existing`, then
+/// each directory of `missing` a step deeper.
+fn directory_tree(existing: &Path, missing: &[OsString], allowed: bool) -> gtk::ScrolledWindow {
+    let tree = gtk::Box::builder().orientation(gtk::Orientation::Vertical).spacing(2).margin_top(4).build();
+    tree.add_css_class("dc-new-directories");
+    let line = |depth: usize, icon: &str, name: &str, new: bool| {
+        let locked = new && !allowed;
+        let row = gtk::Box::builder().spacing(6).build();
+        let indent = i32::try_from(depth * 18).unwrap_or(i32::MAX);
+        row.set_margin_start(indent);
+        if depth > 0 {
+            row.append(&gtk::Label::new(Some("└")));
+        }
+        row.append(&gtk::Image::from_icon_name(if locked { "dialog-password-symbolic" } else { icon }));
+        let label = gtk::Label::builder().label(name).xalign(0.0).wrap(true).max_width_chars(60).build();
+        label.set_wrap_mode(gtk::pango::WrapMode::WordChar);
+        if locked {
+            let struck = gtk::pango::AttrList::new();
+            struck.insert(gtk::pango::AttrInt::new_strikethrough(true));
+            label.set_attributes(Some(&struck));
+        }
+        row.append(&label);
+        if locked {
+            row.add_css_class("dc-locked-directory");
+        } else if new {
+            row.add_css_class("dc-new-directory");
+            let badge = gtk::Label::new(Some(&gettext("new")));
+            badge.add_css_class("dc-new-badge");
+            row.append(&badge);
+        } else {
+            row.add_css_class("dim-label");
+        }
+        tree.append(&row);
+    };
+    line(0, "folder", &existing.display().to_string(), false);
+    for (depth, name) in missing.iter().enumerate() {
+        line(depth + 1, "folder-new", &name.to_string_lossy(), true);
+    }
+    // A very deep path scrolls instead of growing past the screen.
+    gtk::ScrolledWindow::builder()
+        .child(&tree)
+        .hscrollbar_policy(gtk::PolicyType::Never)
+        .propagate_natural_height(true)
+        .max_content_height(320)
+        .build()
 }
 
 /// Yes / No question, Yes is the default. Dismissing it counts as No.

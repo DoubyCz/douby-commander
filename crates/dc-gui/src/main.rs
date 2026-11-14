@@ -15,6 +15,7 @@ mod operations;
 mod panel_column;
 mod panel_terminal;
 mod panel_view;
+mod path_edit;
 mod pixels;
 mod progress_window;
 mod quick_details;
@@ -29,10 +30,18 @@ mod wave;
 mod window;
 mod wrap_layout;
 
+use std::cell::RefCell;
+use std::ffi::OsStr;
 use std::path::PathBuf;
+use std::rc::Weak;
+
+use dc_core::startup::{self, Startup};
+use dc_i18n::{fill, gettext};
 
 use gtk::prelude::*;
-use gtk::{gdk, glib};
+use gtk::{gdk, gio, glib};
+
+use crate::commander::Commander;
 
 const APP_ID: &str = "cz.douby.DoubyCommander";
 
@@ -44,14 +53,79 @@ const BUILD_LOCALE_DIR: &str = env!("DC_LOCALE_DIR");
 const ICONS: &str = "/cz/douby/DoubyCommander/icons";
 
 fn main() -> glib::ExitCode {
+    // The locale of the environment, which GTK sets as it starts: the help
+    // of the command line is made before the application starts GTK. No
+    // display (`--help` over ssh) only fails here, the help still works.
+    let _ = gtk::init();
     dc_i18n::init(&locale_dir());
     gtk::gio::resources_register_include!("dc-gui.gresource").expect("bundled resources are valid");
     // libadwaita: its stylesheet colors every widget through CSS variables,
     // which the palette of the theme sets (theme.rs).
-    let app = adw::Application::builder().application_id(APP_ID).build();
+    // One instance: a second `doubycmd PATH` hands its command line to the
+    // running one, whose panels go there.
+    let app = adw::Application::builder()
+        .application_id(APP_ID)
+        .flags(gio::ApplicationFlags::HANDLES_COMMAND_LINE)
+        .build();
+    add_options(&app);
     app.connect_startup(|_| load_style());
-    app.connect_activate(|app| window::build(app.upcast_ref()));
+    let commander: RefCell<Weak<Commander>> = RefCell::default();
+    app.connect_command_line(move |app, command_line| {
+        let startup = match read_command_line(command_line) {
+            Ok(startup) => startup,
+            Err(err) => {
+                command_line.printerr_literal(&format!("{err}\n"));
+                return glib::ExitCode::FAILURE;
+            }
+        };
+        let running = commander.borrow().upgrade();
+        match running {
+            Some(running) => {
+                running.apply_startup(&startup);
+                if let Some(window) = running.active().window() {
+                    window.present();
+                }
+            }
+            None => *commander.borrow_mut() = window::build(app.upcast_ref(), &startup),
+        }
+        glib::ExitCode::SUCCESS
+    });
     app.run()
+}
+
+/// The options of the original (`ucmdlineparams.pas`), `--help` lists them.
+fn add_options(app: &adw::Application) {
+    app.set_option_context_parameter_string(Some(&gettext("[PATH] | [LEFT RIGHT]")));
+    app.set_option_context_summary(Some(&gettext(
+        "A path alone is shown in the active panel (the left one at start), two paths in the left and the right panel.",
+    )));
+    let path = gettext("PATH");
+    let options = [
+        ("left", b'L', glib::OptionArg::Filename, gettext("Path for the left panel"), path.as_str()),
+        ("right", b'R', glib::OptionArg::Filename, gettext("Path for the right panel"), path.as_str()),
+        ("active-panel", b'P', glib::OptionArg::String, gettext("Active panel: L (left) or R (right)"), "L|R"),
+    ];
+    for (name, short, arg, description, value) in options {
+        app.add_main_option(name, glib::Char::from(short), glib::OptionFlags::NONE, arg, &description, Some(value));
+    }
+}
+
+/// The command line as panels and paths. Paths are relative to where the
+/// command was run (a second instance too), `file://` URIs are taken.
+fn read_command_line(command_line: &gtk::gio::ApplicationCommandLine) -> Result<Startup<PathBuf>, String> {
+    let options = command_line.options_dict();
+    let path = |arg: &OsStr| {
+        command_line
+            .create_file_for_arg(arg)
+            .path()
+            .ok_or_else(|| fill(&gettext("Not a local path: {path}"), &[("path", &arg.to_string_lossy())]))
+    };
+    let option = |name: &str| options.lookup::<PathBuf>(name).ok().flatten().map(|arg| path(arg.as_os_str())).transpose();
+    let (left, right) = (option("left")?, option("right")?);
+    let active: Option<String> = options.lookup("active-panel").ok().flatten();
+    // The first argument is the program.
+    let paths = command_line.arguments().iter().skip(1).map(|arg| path(arg)).collect::<Result<Vec<_>, _>>()?;
+    startup::arrange(left, right, active.as_deref(), paths).map_err(|err| err.to_string())
 }
 
 /// Installed (`install.sh`, packages): `<prefix>/bin/doubycmd` finds its

@@ -107,24 +107,26 @@ dependencies = [
 
 [[package]]
 name = "dc-core"
-version = "0.0.15"
+version = "0.0.16"
 dependencies = [
  "dc-i18n",
  "dc-vfs",
  "jiff",
  "regex",
+ "rustix",
  "tempfile",
  "unicode-normalization",
 ]
 
 [[package]]
 name = "dc-gui"
-version = "0.0.15"
+version = "0.0.16"
 dependencies = [
  "dc-core",
  "dc-i18n",
  "dc-ops",
  "dc-vfs",
+ "gio",
  "glib-build-tools",
  "gstreamer",
  "gtk4",
@@ -136,14 +138,14 @@ dependencies = [
 
 [[package]]
 name = "dc-i18n"
-version = "0.0.15"
+version = "0.0.16"
 dependencies = [
  "gettext-rs",
 ]
 
 [[package]]
 name = "dc-ops"
-version = "0.0.15"
+version = "0.0.16"
 dependencies = [
  "dc-core",
  "dc-i18n",
@@ -155,7 +157,7 @@ dependencies = [
 
 [[package]]
 name = "dc-vfs"
-version = "0.0.15"
+version = "0.0.16"
 dependencies = [
  "compress-tools",
  "dc-i18n",

@@ -16,8 +16,9 @@ use std::time::{Duration, Instant};
 use dc_core::command::{Direction, RangeStep};
 use dc_core::mask::MaskList;
 use dc_core::quick_search::{Pattern, TYPING_TIMEOUT, TypeAhead};
+use dc_core::path_input::{self, Destination};
 use dc_core::{Panel, SortColumn, SortDirection, Sorting, format};
-use dc_i18n::{N_, fill, gettext};
+use dc_i18n::{N_, fill, gettext, ngettext, plural_count};
 use dc_vfs::{EntryKind, Vfs};
 use gtk::prelude::*;
 use gtk::{gdk, gio, glib};
@@ -28,6 +29,7 @@ use crate::file_row::FileRow;
 use crate::panel_terminal::PanelTerminal;
 use crate::pixels::Pixels;
 use crate::quick_view::Subject;
+use crate::path_edit::PathEdit;
 use crate::rename_edit::RenameEdit;
 
 /// Sort key, column id, title (translated when the columns are built).
@@ -64,7 +66,15 @@ pub struct PanelView {
     mode: Cell<ViewMode>,
     /// Last seen height of a details row, the list view uses the same.
     details_row_height: Cell<i32>,
-    path_label: gtk::Label,
+    /// The path above the list, and its editing (`cm_EditPath`, a double
+    /// click on the path).
+    path_edit: PathEdit,
+    /// Counts the texts typed, so that a late answer about an older one
+    /// does not label the button.
+    path_hint: Cell<u64>,
+    /// Told the text of the path entry on Enter; the entry stays open
+    /// until [`PanelView::end_path_edit`].
+    path_entered: RefCell<Option<PathEntered>>,
     status_label: gtk::Label,
     root: gtk::Box,
     /// Set while the view itself moves the cursor, so the selection
@@ -105,6 +115,8 @@ struct SizeJobs {
 }
 
 type PathListener = Box<dyn Fn(&Path)>;
+/// The text typed, and whether it came by the button (`true`) or Enter.
+type PathEntered = Rc<dyn Fn(String, bool)>;
 
 /// How a panel shows its items (`cm_BriefView`, `cm_ColumnsView` of the
 /// original, there "brief" and "full"; icons will follow).
@@ -192,8 +204,7 @@ impl PanelView {
         let column_view = gtk::ColumnView::builder().model(&selection).reorderable(false).build();
         column_view.add_css_class("data-table");
 
-        let path_label = gtk::Label::builder().xalign(0.0).ellipsize(gtk::pango::EllipsizeMode::Start).build();
-        path_label.add_css_class("dc-path");
+        let path_edit = PathEdit::new();
         let status_label = gtk::Label::builder().xalign(0.0).ellipsize(gtk::pango::EllipsizeMode::End).build();
         status_label.add_css_class("dc-status");
 
@@ -234,7 +245,7 @@ impl PanelView {
 
         let root = gtk::Box::new(gtk::Orientation::Vertical, 0);
         root.add_css_class("dc-panel");
-        root.append(&path_label);
+        root.append(&path_edit.row);
         let rename = RenameEdit::new(&views);
         root.append(rename.widget());
         root.append(&status_label);
@@ -254,7 +265,9 @@ impl PanelView {
             rename,
             mode: Cell::new(ViewMode::Details),
             details_row_height: Cell::new(0),
-            path_label,
+            path_edit,
+            path_hint: Cell::new(0),
+            path_entered: RefCell::default(),
             status_label,
             root,
             syncing: Cell::new(false),
@@ -273,6 +286,7 @@ impl PanelView {
         view.setup_icon_view();
         view.connect_signals();
         view.connect_rename();
+        view.connect_path_edit();
 
         let loaded = view.panel.borrow_mut().load(&*view.source, path, None);
         if let Err(err) = loaded {
@@ -318,7 +332,13 @@ impl PanelView {
 
     pub fn connect_focus_enter(&self, callback: impl Fn() + 'static) {
         let callback: Rc<dyn Fn()> = Rc::new(callback);
-        for widget in [self.column_view.upcast_ref::<gtk::Widget>(), self.grid_view.upcast_ref(), self.icon_view.upcast_ref()] {
+        let widgets = [
+            self.column_view.upcast_ref::<gtk::Widget>(),
+            self.grid_view.upcast_ref(),
+            self.icon_view.upcast_ref(),
+            self.path_edit.entry.upcast_ref(),
+        ];
+        for widget in widgets {
             notify_focus_enter(widget, &callback);
         }
         *self.focus_enter.borrow_mut() = Some(callback);
@@ -587,6 +607,190 @@ impl PanelView {
         entry.add_controller(focus);
     }
 
+    /// Whether the path is being edited; the window then leaves the keys
+    /// to the entry.
+    pub fn is_editing_path(&self) -> bool {
+        self.path_edit.is_active()
+    }
+
+    /// `cm_EditPath`, a double click on the path: the path becomes an
+    /// entry in its place, all of it selected, so typing replaces it.
+    pub fn start_path_edit(&self) {
+        if self.terminal_shown.get() {
+            return;
+        }
+        self.cancel_rename();
+        self.path_edit.show(&self.path().display().to_string());
+        self.update_path_hint();
+        // Only once the entry is laid out: selected right after it is shown,
+        // the end of the double click that showed it clears the selection.
+        let entry = self.path_edit.entry.downgrade();
+        glib::idle_add_local_once(move || {
+            if let Some(entry) = entry.upgrade() {
+                entry.grab_focus();
+                entry.select_region(0, -1);
+            }
+        });
+    }
+
+    /// The path entry is gone, the path shown again; `focus` gives the
+    /// keyboard back to the list.
+    pub fn end_path_edit(&self, focus: bool) {
+        if !self.is_editing_path() {
+            return;
+        }
+        self.path_edit.hide();
+        if focus {
+            self.focus();
+        }
+    }
+
+    /// The path `text` typed into the path entry stands for, `None` for
+    /// no path (see [`path_input::expand`]).
+    pub fn typed_path(&self, text: &str) -> Option<PathBuf> {
+        path_input::expand(text, &self.path(), &glib::home_dir(), |name| std::env::var_os(name))
+    }
+
+    /// The button at the end of the path entry tells what Enter does with
+    /// the text typed: go there, or create the directories missing (how
+    /// many) and go there. Looked up in a worker thread: a slow or dead
+    /// network disk must not hold up typing.
+    fn update_path_hint(&self) {
+        let generation = self.path_hint.get() + 1;
+        self.path_hint.set(generation);
+        let target = self.typed_path(&self.path_edit.entry.text());
+        let Some(target) = target.filter(|target| !self.is_archive_path(target)) else {
+            // Nothing typed, or an archive, which only the panel can look into.
+            self.show_path_hint(&Destination::Directory, !self.path_edit.entry.text().trim().is_empty());
+            return;
+        };
+        let weak = self.this.clone();
+        glib::spawn_future_local(async move {
+            let Ok(destination) = gio::spawn_blocking(move || path_input::destination(&target)).await else { return };
+            if let Some(view) = weak.upgrade()
+                && view.path_hint.get() == generation
+            {
+                view.show_path_hint(&destination, true);
+            }
+        });
+    }
+
+    fn show_path_hint(&self, destination: &Destination, enabled: bool) {
+        let (markup, tooltip, enabled, locked) = match destination {
+            Destination::Missing { missing, allowed: true, .. } => {
+                let markup = fill(&gettext("Create ({count}) and go"), &[("count", &missing.len())]);
+                let count = plural_count(missing.len());
+                let tooltip = fill(
+                    &ngettext("{count} directory will be created", "{count} directories will be created", count),
+                    &[("count", &count)],
+                );
+                (glib::markup_escape_text(&markup).to_string(), Some(tooltip), enabled, false)
+            }
+            Destination::Missing { missing, existing, allowed: false } => {
+                // TRANSLATORS: Pango markup, <s> is struck through; keep the tags.
+                let markup = fill(&gettext("<s>Create</s> ({count}) and go"), &[("count", &missing.len())]);
+                (markup, Some(no_permission_to_create(existing)), false, true)
+            }
+            Destination::Blocked(path) => {
+                let tooltip = fill(&gettext("{path} is not a directory."), &[("path", &path.display())]);
+                (glib::markup_escape_text(&gettext("Go")).to_string(), Some(tooltip), false, false)
+            }
+            Destination::Directory | Destination::File { .. } => {
+                (glib::markup_escape_text(&gettext("Go")).to_string(), None, enabled, false)
+            }
+        };
+        self.path_edit.set_go(&markup, locked);
+        self.path_edit.go.set_tooltip_text(tooltip.as_deref());
+        self.path_edit.go.set_sensitive(enabled);
+    }
+
+    /// `callback` gets the text of the path entry on Enter.
+    pub fn connect_path_entered(&self, callback: impl Fn(String, bool) + 'static) {
+        *self.path_entered.borrow_mut() = Some(Rc::new(callback));
+    }
+
+    /// Enter (`by_button` false) or the button at the end of the entry.
+    fn enter_typed_path(&self, by_button: bool) {
+        let callback = self.path_entered.borrow().clone();
+        if let Some(callback) = callback {
+            callback(self.path_edit.entry.text().to_string(), by_button);
+        }
+    }
+
+    fn connect_path_edit(self: &Rc<Self>) {
+        let click = gtk::GestureClick::new();
+        let weak = Rc::downgrade(self);
+        // A click makes the panel active (the list takes the keyboard), as
+        // in the original; a double click edits the path.
+        click.connect_pressed(move |_, presses, _, _| {
+            let Some(view) = weak.upgrade() else { return };
+            match presses {
+                1 => view.focus(),
+                2 => view.start_path_edit(),
+                _ => {}
+            }
+        });
+        self.path_edit.label.add_controller(click);
+
+        let weak = Rc::downgrade(self);
+        self.path_edit.entry.connect_activate(move |_| {
+            if let Some(view) = weak.upgrade() {
+                view.enter_typed_path(false);
+            }
+        });
+        // The button does what Enter does, the cross what Esc does.
+        let weak = Rc::downgrade(self);
+        self.path_edit.go.connect_clicked(move |_| {
+            if let Some(view) = weak.upgrade() {
+                view.enter_typed_path(true);
+            }
+        });
+        let weak = Rc::downgrade(self);
+        self.path_edit.cancel.connect_clicked(move |_| {
+            if let Some(view) = weak.upgrade() {
+                view.end_path_edit(true);
+            }
+        });
+        let weak = Rc::downgrade(self);
+        self.path_edit.entry.connect_changed(move |_| {
+            if let Some(view) = weak.upgrade()
+                && view.is_editing_path()
+            {
+                view.update_path_hint();
+            }
+        });
+        let keys = gtk::EventControllerKey::new();
+        let weak = Rc::downgrade(self);
+        keys.connect_key_pressed(move |_, key, _, _| {
+            if key == gdk::Key::Escape
+                && let Some(view) = weak.upgrade()
+            {
+                view.end_path_edit(true);
+                return glib::Propagation::Stop;
+            }
+            glib::Propagation::Proceed
+        });
+        self.path_edit.entry.add_controller(keys);
+        // Clicking elsewhere in the window ends it without going anywhere,
+        // as renaming; a dialog over the window (an error, the question
+        // whether to create directories) does not.
+        let focus = gtk::EventControllerFocus::new();
+        let weak = Rc::downgrade(self);
+        focus.connect_leave(move |_| {
+            let weak = weak.clone();
+            glib::idle_add_local_once(move || {
+                let Some(view) = weak.upgrade() else { return };
+                let entry = &view.path_edit.entry;
+                let focus = entry.root().and_then(|root| gtk::prelude::RootExt::focus(&root));
+                let inside = focus.is_some_and(|widget| widget.is_ancestor(entry) || &widget == entry.upcast_ref::<gtk::Widget>());
+                if !inside {
+                    view.end_path_edit(false);
+                }
+            });
+        });
+        self.path_edit.entry.add_controller(focus);
+    }
+
     pub fn end_held_mark(&self) {
         self.panel.borrow_mut().end_held_mark();
     }
@@ -801,13 +1005,25 @@ impl PanelView {
         self.change_dir_focusing(path, None);
     }
 
-    /// Shows `path` with the cursor on `focus`, when it is there.
-    pub fn change_dir_focusing(&self, path: PathBuf, focus: Option<&OsStr>) {
+    /// Whether `path` is in an archive, or is one.
+    pub fn is_archive_path(&self, path: &Path) -> bool {
+        self.source.archive_of(path).is_some()
+    }
+
+    /// Shows `path` with the cursor on `focus`, when it is there. `false`
+    /// when it cannot be listed (the error is shown, the panel stays).
+    pub fn change_dir_focusing(&self, path: PathBuf, focus: Option<&OsStr>) -> bool {
         let left = self.leaving();
         let result = self.panel.borrow_mut().load(&*self.source, path, focus);
         match result {
-            Ok(()) => self.arrived(left),
-            Err(err) => self.show_error(&err),
+            Ok(()) => {
+                self.arrived(left);
+                true
+            }
+            Err(err) => {
+                self.show_error(&err);
+                false
+            }
         }
     }
 
@@ -1459,7 +1675,7 @@ impl PanelView {
         self.store.splice(0, self.store.n_items(), &rows);
         self.syncing.set(false);
 
-        self.path_label.set_text(&panel.path().display().to_string());
+        self.path_edit.label.set_text(&panel.path().display().to_string());
         let path = panel.path().to_owned();
         drop(panel);
         self.update_status();
@@ -1701,6 +1917,12 @@ fn notify_focus_enter(widget: &gtk::Widget, callback: &Rc<dyn Fn()>) {
     let callback = Rc::clone(callback);
     focus.connect_enter(move |_| callback());
     widget.add_controller(focus);
+}
+
+/// Directories cannot be created in `dir` (no permission, a disk mounted
+/// read-only): the hint at the path entry and in the question.
+pub fn no_permission_to_create(dir: &Path) -> String {
+    fill(&gettext("You may not create directories in {path}."), &[("path", &dir.display())])
 }
 
 /// Told when something is asked of a file inside an archive that only

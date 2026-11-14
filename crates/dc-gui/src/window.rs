@@ -1,10 +1,11 @@
 //! Main window, laid out as the original's.
 
 use std::path::PathBuf;
-use std::rc::Rc;
+use std::rc::{Rc, Weak};
 use std::sync::Arc;
 
 use dc_core::keymap::Keymap;
+use dc_core::startup::Startup;
 use dc_vfs::mounts;
 use gtk::glib;
 use gtk::prelude::*;
@@ -16,7 +17,10 @@ use crate::settings::Settings;
 use crate::splitter::Splitter;
 use crate::{function_bar, menu, panel_column, texts, toolbar};
 
-pub fn build(app: &gtk::Application) {
+/// The main window, its panels where `startup` (the command line) says,
+/// else at home. The window owns the commander; the caller gets a weak
+/// reference, for a later command line.
+pub fn build(app: &gtk::Application, startup: &Startup<PathBuf>) -> Weak<Commander> {
     let start_dir = glib::home_dir();
     let operations = OperationsUi::new();
     let commander = Rc::new(Commander::new(
@@ -35,7 +39,12 @@ pub fn build(app: &gtk::Application) {
             // The progress window is gone: back to the panel, unless the
             // user is somewhere else (another dialog has the window).
             let main = commander.active().window();
-            if main.is_some_and(|window| window.is_active()) && !commander.panels().iter().any(|panel| panel.has_focus()) {
+            // Nor while a name or the path is being typed.
+            let typing = commander.panels().iter().any(|panel| panel.is_renaming() || panel.is_editing_path());
+            if main.is_some_and(|window| window.is_active())
+                && !typing
+                && !commander.panels().iter().any(|panel| panel.has_focus())
+            {
                 commander.active().focus();
             }
         }
@@ -58,6 +67,12 @@ pub fn build(app: &gtk::Application) {
         panel.connect_focus_enter(move || {
             if let Some(commander) = weak.upgrade() {
                 commander.set_active(index);
+            }
+        });
+        let weak = Rc::downgrade(&commander);
+        panel.connect_path_entered(move |text, by_button| {
+            if let Some(commander) = weak.upgrade() {
+                commander.enter_path(index, &text, by_button);
             }
         });
     }
@@ -100,6 +115,7 @@ pub fn build(app: &gtk::Application) {
         function_bar.play_wave();
     }
     commander.set_active(0);
+    commander.apply_startup(startup);
     // Only once the window is laid out: scrolling to the cursor earlier
     // leaves the list scrolled somewhere in the middle.
     let first_focus = Rc::clone(&commander);
@@ -108,6 +124,7 @@ pub fn build(app: &gtk::Application) {
     // Keys are caught before the list views see them, so commands win over
     // the default list behaviour. The window owns the commander through this
     // handler, everything else holds only weak references to it.
+    let built = Rc::downgrade(&commander);
     let keys = gtk::EventControllerKey::new();
     keys.set_propagation_phase(gtk::PropagationPhase::Capture);
     let released = Rc::downgrade(&commander);
@@ -118,4 +135,5 @@ pub fn build(app: &gtk::Application) {
     });
     keys.connect_key_pressed(move |_, key, _, state| commander.handle_key(key, state));
     window.add_controller(keys);
+    built
 }

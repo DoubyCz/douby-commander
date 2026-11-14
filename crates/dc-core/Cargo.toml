@@ -11,6 +11,7 @@ dc-i18n.workspace = true
 dc-vfs.workspace = true
 jiff.workspace = true
 regex.workspace = true
+rustix.workspace = true
 unicode-normalization.workspace = true
 
 [dev-dependencies]

@@ -11,6 +11,8 @@ use dc_core::multi_rename::RenameFile;
 use dc_core::keymap::{Key, Keymap, Shortcut};
 use dc_core::mask::{MaskList, MaskOptions};
 use dc_core::FileItem;
+use dc_core::path_input;
+use dc_core::startup::{self, Startup};
 use dc_i18n::{fill, gettext, ngettext, plural_count};
 use dc_ops::{DeleteMode, DeleteOperation, Destination, ExtractOperation, TransferMode, TransferOperation};
 use dc_vfs::{FileSource, LocalFs};
@@ -197,6 +199,7 @@ impl Commander {
             Command::MarkMinus => self.mark_group(false),
             Command::ChangeDirToRoot => panel.change_dir(PathBuf::from("/")),
             Command::ChangeDirToHome => panel.change_dir(glib::home_dir()),
+            Command::EditPath => panel.start_path_edit(),
             Command::BriefView => panel.set_view_mode(ViewMode::List),
             Command::ColumnsView => panel.set_view_mode(ViewMode::Details),
             Command::ThumbnailsView => panel.set_view_mode(ViewMode::Icons),
@@ -235,8 +238,8 @@ impl Commander {
         // A new press of Shift too, in case its release went to another window.
         self.handle_key_released(key);
         let panel = self.active();
-        // Renaming in place: the keys belong to its entry.
-        if panel.is_renaming() {
+        // Renaming in place or editing the path: the keys belong to the entry.
+        if panel.is_renaming() || panel.is_editing_path() {
             return glib::Propagation::Proceed;
         }
         // In the terminal every key is the shell's (Tab, ...), except those
@@ -506,6 +509,99 @@ impl Commander {
         });
     }
 
+    /// Enter in the path entry of the panel at `side`: goes where `text`
+    /// leads. An existing file is shown in its directory with the cursor
+    /// on it, a path that does not exist can be created after a question
+    /// that shows which directories it takes; `by_button` (the button
+    /// "Create (N) and go" clicked, which says it already) creates them
+    /// without asking. On an error or a refused question the entry stays
+    /// open to correct the text.
+    pub fn enter_path(self: &Rc<Self>, side: usize, text: &str, by_button: bool) {
+        let panel = Rc::clone(&self.panels[side]);
+        let Some(target) = panel.typed_path(text) else {
+            panel.end_path_edit(true);
+            return;
+        };
+        let went = if panel.is_archive_path(&target) {
+            show_archive_path(&panel, target)
+        } else {
+            match path_input::destination(&target) {
+                path_input::Destination::Directory => panel.change_dir_focusing(target, None),
+                path_input::Destination::File { dir, name } => panel.change_dir_focusing(dir, Some(&name)),
+                path_input::Destination::Blocked(path) => {
+                    let message = fill(&gettext("{path} is not a directory."), &[("path", &path.display())]);
+                    dialogs::show_error(panel.window().as_ref(), &message, "");
+                    false
+                }
+                path_input::Destination::Missing { allowed: true, .. } if by_button => self.create_and_go(&panel, target),
+                path_input::Destination::Missing { existing, missing, allowed } => {
+                    let this = Rc::downgrade(self);
+                    let (window, dir) = (panel.window(), target.clone());
+                    let request = dialogs::NewDirectories { target: &target, existing: &existing, missing: &missing, allowed };
+                    dialogs::confirm_create_directories(window.as_ref(), &request, move || {
+                        if let Some(this) = this.upgrade()
+                            && this.create_and_go(&panel, dir)
+                        {
+                            panel.end_path_edit(true);
+                        }
+                    });
+                    false
+                }
+            }
+        };
+        if went {
+            self.panels[side].end_path_edit(true);
+        }
+    }
+
+    /// The command line (at start, or given to the running application):
+    /// the panel `-P` names becomes active, `-L` and `-R` and a path alone
+    /// (for the active panel) are shown.
+    pub fn apply_startup(&self, startup: &Startup<PathBuf>) {
+        if let Some(side) = startup.active {
+            self.set_active(side.index());
+        }
+        for (side, path) in [(0, &startup.left), (1, &startup.right)] {
+            if let Some(path) = path {
+                self.show_at_start(side, path);
+            }
+        }
+        if let Some(path) = &startup.active_path {
+            self.show_at_start(self.active.get(), path);
+        }
+        self.active().focus();
+    }
+
+    /// `path` of the command line in the panel at `side`: a file in its
+    /// directory with the cursor on it, a path that does not exist as far
+    /// as it does.
+    fn show_at_start(&self, side: usize, path: &Path) {
+        let panel = &self.panels[side];
+        panel.end_path_edit(false);
+        if panel.is_archive_path(path) {
+            show_archive_path(panel, path.to_owned());
+        } else {
+            let (dir, focus) = startup::place(path);
+            panel.change_dir_focusing(dir, focus.as_deref());
+        }
+    }
+
+    /// Creates the directory `dir` with the missing ones on the way, then
+    /// `panel` shows it. `false` on an error (shown).
+    fn create_and_go(&self, panel: &PanelView, dir: PathBuf) -> bool {
+        match LocalFs.create_directory(&dir) {
+            Ok(()) => {
+                // The other panel may show where they were made.
+                self.refresh_panels();
+                panel.change_dir_focusing(dir, None)
+            }
+            Err(err) => {
+                panel.show_error(&err);
+                false
+            }
+        }
+    }
+
     /// F8, Del, `cm_Delete`: marked items or the one under the cursor.
     fn delete(self: &Rc<Self>, trash: TrashChoice) {
         let panel = Rc::clone(self.active());
@@ -671,6 +767,16 @@ fn transfer_question(names: &[OsString], mode: TransferMode) -> String {
 }
 
 /// First directory of a relative path, the one that appears in the panel.
+/// A path in an archive, the archive itself knows what is there; the
+/// archive file is a file to stand on, Enter goes in. `false` when it
+/// cannot be listed (the error is shown).
+fn show_archive_path(panel: &PanelView, target: PathBuf) -> bool {
+    match (target.parent(), target.file_name()) {
+        (Some(dir), Some(name)) if !panel.is_archive_path(dir) => panel.change_dir_focusing(dir.to_owned(), Some(name)),
+        _ => panel.change_dir_focusing(target, None),
+    }
+}
+
 fn first_component(path: &Path) -> Option<OsString> {
     match path.components().next()? {
         Component::Normal(name) => Some(name.to_owned()),

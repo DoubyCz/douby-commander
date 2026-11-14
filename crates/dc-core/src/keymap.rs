@@ -349,6 +349,8 @@ mod tests {
             Command::SortBy(SortColumn::Attributes),
             Command::ReverseOrder,
             Command::About,
+            // No shortcut in the original either; a double click on the path.
+            Command::EditPath,
             // Menu and toolbar; the keyboard has F9 for all of them.
             Command::BriefView,
             Command::ColumnsView,

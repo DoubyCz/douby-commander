@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: doubycmd\n"
 "Report-Msgid-Bugs-To: douby@douby.cz\n"
-"POT-Creation-Date: 2026-10-24 12:59+0200\n"
+"POT-Creation-Date: 2026-11-14 06:13+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,12 +18,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: crates/dc-core/src/command.rs:309
+#: crates/dc-core/src/command.rs:314
 #, rust-format
 msgid "Unknown command {command}"
 msgstr ""
 
-#: crates/dc-core/src/command.rs:311
+#: crates/dc-core/src/command.rs:316
 #, rust-format
 msgid "Command {command} does not accept parameter {param}"
 msgstr ""
@@ -323,7 +323,7 @@ msgid "Publisher"
 msgstr ""
 
 #: crates/dc-core/src/preview/tools.rs:174
-#: crates/dc-gui/src/multi_rename.rs:338 crates/dc-gui/src/panel_view.rs:38
+#: crates/dc-gui/src/multi_rename.rs:338 crates/dc-gui/src/panel_view.rs:40
 msgid "Date"
 msgstr ""
 
@@ -357,6 +357,16 @@ msgstr ""
 
 #: crates/dc-core/src/preview/tools.rs:284
 msgid "sample of the font"
+msgstr ""
+
+#: crates/dc-core/src/startup.rs:69
+#, rust-format
+msgid "Active panel must be L (left) or R (right), not {value}."
+msgstr ""
+
+#: crates/dc-core/src/startup.rs:73
+#, rust-format
+msgid "At most two paths (left and right panel), not {count}."
 msgstr ""
 
 #: crates/dc-gui/src/about.rs:38
@@ -396,63 +406,68 @@ msgstr ""
 msgid "System: {system}"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:179
+#: crates/dc-gui/src/commander.rs:181
 msgid ""
 "No terminal found. Install xdg-terminal-exec or set the TERMINAL variable."
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:182
+#: crates/dc-gui/src/commander.rs:184
 msgid "Cannot run the terminal"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:414 crates/dc-gui/src/multi_rename.rs:555
-#: crates/dc-gui/src/panel_view.rs:497
+#: crates/dc-gui/src/commander.rs:417 crates/dc-gui/src/multi_rename.rs:555
+#: crates/dc-gui/src/panel_view.rs:517
 #, rust-format
 msgid "Invalid file name: {name}"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:597
+#: crates/dc-gui/src/commander.rs:532 crates/dc-gui/src/panel_view.rs:695
+#, rust-format
+msgid "{path} is not a directory."
+msgstr ""
+
+#: crates/dc-gui/src/commander.rs:693
 #, rust-format
 msgid "Delete selected \"{name}\" into trash can?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:599
+#: crates/dc-gui/src/commander.rs:695
 #, rust-format
 msgid "Delete selected \"{name}\"?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:607
+#: crates/dc-gui/src/commander.rs:703
 #, rust-format
 msgid "Delete {count} selected file/directory into trash can?"
 msgid_plural "Delete {count} selected files/directories into trash can?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: crates/dc-gui/src/commander.rs:612
+#: crates/dc-gui/src/commander.rs:708
 #, rust-format
 msgid "Delete {count} selected file/directory?"
 msgid_plural "Delete {count} selected files/directories?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: crates/dc-gui/src/commander.rs:654
+#: crates/dc-gui/src/commander.rs:750
 #, rust-format
 msgid "Copy selected \"{name}\"?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:654
+#: crates/dc-gui/src/commander.rs:750
 #, rust-format
 msgid "Rename/move selected \"{name}\"?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:660
+#: crates/dc-gui/src/commander.rs:756
 #, rust-format
 msgid "Copy {count} selected file/directory?"
 msgid_plural "Copy {count} selected files/directories?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: crates/dc-gui/src/commander.rs:663
+#: crates/dc-gui/src/commander.rs:759
 #, rust-format
 msgid "Rename/move {count} selected file/directory?"
 msgid_plural "Rename/move {count} selected files/directories?"
@@ -532,7 +547,7 @@ msgctxt "button"
 msgid "_Start"
 msgstr ""
 
-#: crates/dc-gui/src/copy_dialog.rs:141 crates/dc-gui/src/dialogs.rs:257
+#: crates/dc-gui/src/copy_dialog.rs:141 crates/dc-gui/src/dialogs.rs:259
 msgid "New queue"
 msgstr ""
 
@@ -580,64 +595,88 @@ msgstr ""
 msgid "Copy on write"
 msgstr ""
 
-#: crates/dc-gui/src/dialogs.rs:20
+#: crates/dc-gui/src/dialogs.rs:22
 msgid "Create new directory"
 msgstr ""
 
-#: crates/dc-gui/src/dialogs.rs:28
+#: crates/dc-gui/src/dialogs.rs:30
 msgid "_Input new directory name:"
 msgstr ""
 
-#: crates/dc-gui/src/dialogs.rs:90
+#: crates/dc-gui/src/dialogs.rs:92
 msgid "Select mask"
 msgstr ""
 
-#: crates/dc-gui/src/dialogs.rs:90
+#: crates/dc-gui/src/dialogs.rs:92
 msgid "Unselect mask"
 msgstr ""
 
-#: crates/dc-gui/src/dialogs.rs:94
+#: crates/dc-gui/src/dialogs.rs:96
 msgid "_Input mask:"
 msgstr ""
 
-#: crates/dc-gui/src/dialogs.rs:123
+#: crates/dc-gui/src/dialogs.rs:125
 msgid "Previous masks"
 msgstr ""
 
-#: crates/dc-gui/src/dialogs.rs:131
+#: crates/dc-gui/src/dialogs.rs:133
 msgid "_Case sensitive"
 msgstr ""
 
-#: crates/dc-gui/src/dialogs.rs:133
+#: crates/dc-gui/src/dialogs.rs:135
 msgid "Ignore _accents"
 msgstr ""
 
-#: crates/dc-gui/src/dialogs.rs:208
+#: crates/dc-gui/src/dialogs.rs:210
 #, rust-format
 msgid "A_dd To Queue #{number}"
 msgstr ""
 
-#: crates/dc-gui/src/dialogs.rs:280 crates/dc-ops/src/operation.rs:86
+#: crates/dc-gui/src/dialogs.rs:297
+msgid "Create directories"
+msgstr ""
+
+#: crates/dc-gui/src/dialogs.rs:300
+#, rust-format
+msgid "Directory {path} does not exist."
+msgstr ""
+
+#: crates/dc-gui/src/dialogs.rs:305
+#, rust-format
+msgid "Create {count} directory and go there?"
+msgid_plural "Create {count} directories and go there?"
+msgstr[0] ""
+msgstr[1] ""
+
+#: crates/dc-gui/src/dialogs.rs:317
+msgid "C_reate and go"
+msgstr ""
+
+#: crates/dc-gui/src/dialogs.rs:403
+msgid "new"
+msgstr ""
+
+#: crates/dc-gui/src/dialogs.rs:428 crates/dc-ops/src/operation.rs:86
 msgctxt "button"
 msgid "_No"
 msgstr ""
 
-#: crates/dc-gui/src/dialogs.rs:280 crates/dc-ops/src/operation.rs:85
+#: crates/dc-gui/src/dialogs.rs:428 crates/dc-ops/src/operation.rs:85
 msgctxt "button"
 msgid "_Yes"
 msgstr ""
 
-#: crates/dc-gui/src/dialogs.rs:378
+#: crates/dc-gui/src/dialogs.rs:526
 msgctxt "button"
 msgid "Ot_her"
 msgstr ""
 
-#: crates/dc-gui/src/dialogs.rs:425
+#: crates/dc-gui/src/dialogs.rs:573
 msgctxt "button"
 msgid "_OK"
 msgstr ""
 
-#: crates/dc-gui/src/dialogs.rs:429 crates/dc-ops/src/operation.rs:92
+#: crates/dc-gui/src/dialogs.rs:577 crates/dc-ops/src/operation.rs:92
 msgctxt "button"
 msgid "_Cancel"
 msgstr ""
@@ -701,6 +740,37 @@ msgstr ""
 #: crates/dc-gui/src/function_bar.rs:26
 msgctxt "function key"
 msgid "Exit"
+msgstr ""
+
+#: crates/dc-gui/src/main.rs:94
+msgid "[PATH] | [LEFT RIGHT]"
+msgstr ""
+
+#: crates/dc-gui/src/main.rs:96
+msgid ""
+"A path alone is shown in the active panel (the left one at start), two paths "
+"in the left and the right panel."
+msgstr ""
+
+#: crates/dc-gui/src/main.rs:98
+msgid "PATH"
+msgstr ""
+
+#: crates/dc-gui/src/main.rs:104
+msgid "Path for the left panel"
+msgstr ""
+
+#: crates/dc-gui/src/main.rs:112
+msgid "Path for the right panel"
+msgstr ""
+
+#: crates/dc-gui/src/main.rs:120
+msgid "Active panel: L (left) or R (right)"
+msgstr ""
+
+#: crates/dc-gui/src/main.rs:133
+#, rust-format
+msgid "Not a local path: {path}"
 msgstr ""
 
 #: crates/dc-gui/src/menu.rs:37
@@ -1346,7 +1416,7 @@ msgid "_Close"
 msgstr ""
 
 #: crates/dc-gui/src/multi_rename.rs:298 crates/dc-gui/src/multi_rename.rs:309
-#: crates/dc-gui/src/panel_view.rs:35
+#: crates/dc-gui/src/panel_view.rs:37
 msgid "Name"
 msgstr ""
 
@@ -1557,48 +1627,79 @@ msgctxt "tooltip of a disabled button"
 msgid "{hint} - {reason}"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:36
+#: crates/dc-gui/src/panel_view.rs:38
 msgid "Ext"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:37
+#: crates/dc-gui/src/panel_view.rs:39
 msgid "Size"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:39
+#: crates/dc-gui/src/panel_view.rs:41
 msgid "Attr"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:510
+#: crates/dc-gui/src/panel_view.rs:530
 #, rust-format
 msgid "{name} already exists."
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:516 crates/dc-ops/src/transfer.rs:850
+#: crates/dc-gui/src/panel_view.rs:536 crates/dc-ops/src/transfer.rs:850
 #, rust-format
 msgid "Cannot rename file {from} to {to}"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:918
+#: crates/dc-gui/src/panel_view.rs:681
+#, rust-format
+msgid "Create ({count}) and go"
+msgstr ""
+
+#: crates/dc-gui/src/panel_view.rs:684
+#, rust-format
+msgid "{count} directory will be created"
+msgid_plural "{count} directories will be created"
+msgstr[0] ""
+msgstr[1] ""
+
+#. TRANSLATORS: Pango markup, <s> is struck through; keep the tags.
+#: crates/dc-gui/src/panel_view.rs:691
+#, rust-format
+msgid "<s>Create</s> ({count}) and go"
+msgstr ""
+
+#: crates/dc-gui/src/panel_view.rs:696 crates/dc-gui/src/panel_view.rs:699
+msgid "Go"
+msgstr ""
+
+#: crates/dc-gui/src/panel_view.rs:1134
 msgid "To browse an archive inside an archive, copy it out first."
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:922
+#: crates/dc-gui/src/panel_view.rs:1138
 msgid "Reading the archive…"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:1559
+#: crates/dc-gui/src/panel_view.rs:1775
 #, rust-format
 msgid "(SEARCH: {text})"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:1600
+#: crates/dc-gui/src/panel_view.rs:1816
 #, rust-format
 msgid "Cannot open {path}"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:1709
+#: crates/dc-gui/src/panel_view.rs:1925
+#, rust-format
+msgid "You may not create directories in {path}."
+msgstr ""
+
+#: crates/dc-gui/src/panel_view.rs:1931
 msgid "Archives can only be browsed so far."
+msgstr ""
+
+#: crates/dc-gui/src/path_edit.rs:40
+msgid "Cancel editing, stay here (Esc)"
 msgstr ""
 
 #: crates/dc-gui/src/progress_window.rs:53

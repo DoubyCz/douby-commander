@@ -741,7 +741,7 @@ mod tests {
         panel.mark_all(true);
         assert_eq!(marked(&panel), [1, 2, 3]);
         panel.mark_all(false);
-        assert!(marked(&panel).is_empty());
+        assert_eq!(marked(&panel), Vec::<usize>::new());
     }
 
     #[test]

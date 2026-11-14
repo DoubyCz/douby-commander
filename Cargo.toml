@@ -3,7 +3,7 @@ resolver = "3"
 members = ["crates/*"]
 
 [workspace.package]
-version = "0.0.15"
+version = "0.0.16"
 edition = "2024"
 rust-version = "1.92"
 license = "GPL-2.0-or-later"
@@ -22,6 +22,9 @@ glib-build-tools = "0.22.8"
 # variables, so the Omarchy palette recolors every widget at once.
 adw = { package = "libadwaita", version = "0.9.2", features = ["v1_6"] }
 gtk = { package = "gtk4", version = "0.11.5", features = ["v4_16"] }
+# GLib 2.80 (every distribution with GTK 4.16 has it): a second `doubycmd`
+# writes its errors to its own terminal (`printerr_literal`).
+gio = { version = "0.22.10", features = ["v2_80"] }
 # Music in the quick view: playing, tags and the spectrum of what plays,
 # through the system's GStreamer (which GTK's own player uses too).
 gst = { package = "gstreamer", version = "0.25" }

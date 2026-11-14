@@ -56,6 +56,52 @@ const BASE_CSS: &str = "
 
 .dc-path { padding: 2px 6px; }
 .dc-active .dc-path { background: var(--dc-active-path-bg-color); color: var(--dc-active-path-fg-color); }
+/* Editing the path (cm_EditPath): one frame laid over the path label, in
+   its height (the label sets it), with the entry and at its right end the
+   buttons (Go or Create and go, the cross) inside, parted by thin lines
+   only. The frame is what the entry alone would look like focused, the
+   parts inside have no frames of their own. The text starts where the
+   label has it (6px: 1px border and 5px padding). */
+.dc-path-frame {
+    border: 1px solid var(--accent-bg-color);
+    background-color: var(--view-bg-color);
+}
+.dc-path-frame > entry {
+    min-height: 0;
+    padding: 0 5px;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+    outline: none;
+}
+.dc-path-frame > button {
+    min-height: 0;
+    padding: 0 10px;
+    margin: 0;
+    border: none;
+    border-left: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+}
+.dc-path-frame > button:hover { background-color: color-mix(in srgb, currentColor 10%, transparent); }
+.dc-path-frame > button:active { background-color: color-mix(in srgb, currentColor 18%, transparent); }
+/* The question whether to create the directories of a typed path: the
+   ones to create in the accent, with a small mark saying so. */
+.dc-new-directory { color: var(--accent-color); font-weight: bold; }
+/* Those that cannot be created (no permission): key, struck through, in
+   the error color. */
+.dc-locked-directory { color: var(--error-color); }
+.dc-new-badge {
+    font-size: smaller;
+    font-weight: normal;
+    padding: 0 6px;
+    border-radius: 9px;
+    background-color: var(--accent-bg-color);
+    color: var(--accent-fg-color);
+}
 .dc-panel columnview > listview > row:selected {
     background-color: var(--dc-cursor-bg-color);
     color: var(--dc-cursor-fg-color);

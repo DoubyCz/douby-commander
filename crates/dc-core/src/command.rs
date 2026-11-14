@@ -99,6 +99,9 @@ pub enum Command {
     MarkMinus,
     ChangeDirToRoot,
     ChangeDirToHome,
+    /// The path above the active panel's list becomes an entry, to type
+    /// where to go (a double click on the path does the same).
+    EditPath,
     /// The active panel shows names only, in columns ("List").
     BriefView,
     /// The active panel shows all columns ("Details").
@@ -146,7 +149,7 @@ impl TrashChoice {
 
 impl Command {
     /// All commands with default parameters, for listings and for parsing.
-    pub const ALL: [Self; 50] = [
+    pub const ALL: [Self; 51] = [
         Self::Open,
         Self::ChangeDirToParent,
         Self::FocusSwap,
@@ -181,6 +184,7 @@ impl Command {
         Self::MarkMinus,
         Self::ChangeDirToRoot,
         Self::ChangeDirToHome,
+        Self::EditPath,
         Self::BriefView,
         Self::ColumnsView,
         Self::ThumbnailsView,
@@ -237,6 +241,7 @@ impl Command {
             Self::MarkMinus => "cm_MarkMinus",
             Self::ChangeDirToRoot => "cm_ChangeDirToRoot",
             Self::ChangeDirToHome => "cm_ChangeDirToHome",
+            Self::EditPath => "cm_EditPath",
             Self::BriefView => "cm_BriefView",
             Self::ColumnsView => "cm_ColumnsView",
             Self::ThumbnailsView => "cm_ThumbnailsView",

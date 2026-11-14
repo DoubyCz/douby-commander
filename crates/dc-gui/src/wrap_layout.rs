@@ -162,6 +162,6 @@ mod tests {
 
     #[test]
     fn no_children_no_lines() {
-        assert!(lines(&[], 100).is_empty());
+        assert_eq!(lines(&[], 100), Vec::<std::ops::Range<usize>>::new());
     }
 }
