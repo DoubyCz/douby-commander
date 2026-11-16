@@ -14,7 +14,9 @@ use dc_core::FileItem;
 use dc_core::path_input;
 use dc_core::startup::{self, Startup};
 use dc_i18n::{fill, gettext, ngettext, plural_count};
-use dc_ops::{DeleteMode, DeleteOperation, Destination, ExtractOperation, TransferMode, TransferOperation};
+use dc_ops::{
+    DeleteMode, DeleteOperation, Destination, ExtractOperation, QueueId, SetAttributesOperation, TransferMode, TransferOperation,
+};
 use dc_vfs::{FileSource, LocalFs};
 use gtk::prelude::*;
 use gtk::{gdk, glib};
@@ -28,7 +30,7 @@ use crate::panel_view::{PanelView, ViewMode, not_in_archives};
 use crate::quick_view::QuickView;
 use crate::splitter::Splitter;
 use crate::settings::Settings;
-use crate::{about, dialogs, keys, menu, multi_rename};
+use crate::{about, dialogs, keys, menu, multi_rename, properties};
 
 pub struct Commander {
     panels: [Rc<PanelView>; 2],
@@ -204,6 +206,9 @@ impl Commander {
             Command::RenameOnly => panel.start_rename(),
             Command::MultiRename => self.multi_rename(),
             Command::Search => self.search(),
+            Command::CalculateSpace => panel.calculate_space(),
+            Command::FileProperties => self.properties(properties::Page::General),
+            Command::SetFileProperties => self.properties(properties::Page::Permissions),
             Command::Addons => self.addons.overview(panel.window().as_ref()),
             Command::MakeDir => self.make_dir(),
             Command::RunTerm => {
@@ -354,7 +359,9 @@ impl Commander {
             | Command::Delete { .. }
             | Command::Rename
             | Command::RenameOnly
-            | Command::MultiRename => self.active().in_archive(),
+            | Command::MultiRename
+            | Command::FileProperties
+            | Command::SetFileProperties => self.active().in_archive(),
             // Out of an archive it extracts; into one not yet.
             Command::Copy => other.in_archive(),
             _ => false,
@@ -530,6 +537,22 @@ impl Commander {
         if let Some(window) = panel.window() {
             window.present();
         }
+    }
+
+    /// Alt+Enter and File > Change Attributes: the properties of the marked
+    /// items or the one under the cursor (on `..` the directory shown);
+    /// what changes there runs as an operation.
+    fn properties(&self, page: properties::Page) {
+        let panel = self.active();
+        let paths: Vec<PathBuf> = {
+            let state = panel.panel();
+            let targets = state.targets();
+            if targets.is_empty() { vec![state.path().to_owned()] } else { targets.iter().map(|item| state.item_path(item)).collect() }
+        };
+        let operations = Rc::clone(&self.operations);
+        properties::show(panel.window().as_ref(), paths, page, move |paths, changes| {
+            operations.start(Box::new(SetAttributesOperation::new(paths, changes)), QueueId::Free, QueueMemory::Transfer);
+        });
     }
 
     /// Ctrl+M, `cm_MultiRename`: marked items or the one under the cursor.

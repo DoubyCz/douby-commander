@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: doubycmd\n"
 "Report-Msgid-Bugs-To: douby@douby.cz\n"
-"POT-Creation-Date: 2026-11-16 09:02+0100\n"
+"POT-Creation-Date: 2026-11-16 09:30+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -62,12 +62,12 @@ msgstr ""
 msgid "sample of fonts"
 msgstr ""
 
-#: crates/dc-core/src/command.rs:328
+#: crates/dc-core/src/command.rs:340
 #, rust-format
 msgid "Unknown command {command}"
 msgstr ""
 
-#: crates/dc-core/src/command.rs:330
+#: crates/dc-core/src/command.rs:342
 #, rust-format
 msgid "Command {command} does not accept parameter {param}"
 msgstr ""
@@ -610,6 +610,55 @@ msgstr ""
 msgid "sample of the font"
 msgstr ""
 
+#: crates/dc-core/src/properties.rs:196
+msgid "immutable: cannot be changed, deleted or renamed, not even by root"
+msgstr ""
+
+#: crates/dc-core/src/properties.rs:197
+msgid "append only"
+msgstr ""
+
+#: crates/dc-core/src/properties.rs:198
+msgid "no copy on write"
+msgstr ""
+
+#: crates/dc-core/src/properties.rs:199
+msgid "compressed by the file system"
+msgstr ""
+
+#: crates/dc-core/src/properties.rs:200
+msgid "left out of backups by dump"
+msgstr ""
+
+#: crates/dc-core/src/properties.rs:201
+msgid "time of access not updated"
+msgstr ""
+
+#: crates/dc-core/src/properties.rs:202
+msgid "written synchronously"
+msgstr ""
+
+#: crates/dc-core/src/properties.rs:203
+msgid "directory changes written synchronously"
+msgstr ""
+
+#: crates/dc-core/src/properties.rs:204
+msgid "data journaled"
+msgstr ""
+
+#: crates/dc-core/src/properties.rs:205
+msgid "project inherited"
+msgstr ""
+
+#: crates/dc-core/src/properties.rs:206
+msgid "top of a directory hierarchy"
+msgstr ""
+
+#: crates/dc-core/src/properties.rs:239
+#, rust-format
+msgid "{count} bytes of binary data"
+msgstr ""
+
 #: crates/dc-core/src/startup.rs:69
 #, rust-format
 msgid "Active panel must be L (left) or R (right), not {value}."
@@ -657,11 +706,11 @@ msgstr ""
 msgid "System: {system}"
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:129
+#: crates/dc-gui/src/addons.rs:142
 msgid "Install add-ons"
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:141
+#: crates/dc-gui/src/addons.rs:154
 #, rust-format
 msgid ""
 "Add-ons are programs from the packages of your distribution, {distribution}. "
@@ -669,178 +718,179 @@ msgid ""
 "it."
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:144
+#: crates/dc-gui/src/addons.rs:157
 msgid ""
 "Add-ons are programs from the packages of your distribution. The packages of "
 "this distribution are not known here, install the programs with its package "
 "manager."
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:154
+#: crates/dc-gui/src/addons.rs:167
 msgid "_Install"
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:175
+#: crates/dc-gui/src/addons.rs:188
 msgid "Neither sudo, run0 nor pkexec is installed."
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:222
+#: crates/dc-gui/src/addons.rs:235
 msgid "Everything is installed."
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:234
+#: crates/dc-gui/src/addons.rs:247
 msgid "installed"
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:235
+#: crates/dc-gui/src/addons.rs:248
 msgid "package not known here"
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:236
+#: crates/dc-gui/src/addons.rs:249
 msgid "being installed"
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:242
+#: crates/dc-gui/src/addons.rs:255
 #, rust-format
 msgid "package {package}"
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:306
+#: crates/dc-gui/src/addons.rs:325
 #, rust-format
 msgid ""
 "Installing add-ons ({packages}) needs the rights of the administrator. "
 "Password for sudo:"
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:309
+#: crates/dc-gui/src/addons.rs:328
 msgid "Wrong password, try again."
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:406 crates/dc-gui/src/find_files/mod.rs:130
+#: crates/dc-gui/src/addons.rs:427 crates/dc-gui/src/find_files/mod.rs:130
 #: crates/dc-gui/src/multi_rename.rs:271
+#: crates/dc-gui/src/properties/mod.rs:207
 msgctxt "button"
 msgid "_Close"
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:420
+#: crates/dc-gui/src/addons.rs:441
 msgid "Installing add-ons"
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:538
+#: crates/dc-gui/src/addons.rs:559
 msgid "Administrator password"
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:634
+#: crates/dc-gui/src/addons.rs:657
 msgid "_Install..."
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:635
+#: crates/dc-gui/src/addons.rs:658
 msgid "_Details"
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:717 crates/dc-gui/src/addons.rs:724
+#: crates/dc-gui/src/addons.rs:769 crates/dc-gui/src/addons.rs:776
 #, rust-format
 msgid "Installing add-ons: {packages}  -  {doing}"
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:725
+#: crates/dc-gui/src/addons.rs:777
 msgid "waiting for the administrator password"
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:731
+#: crates/dc-gui/src/addons.rs:783
 #, rust-format
 msgid "Add-ons installed: {packages}"
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:734
+#: crates/dc-gui/src/addons.rs:786
 #, rust-format
 msgid "Installing add-ons failed: {packages}"
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:744
+#: crates/dc-gui/src/addons.rs:796
 #, rust-format
 msgid "{program} ({adds})"
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:749
+#: crates/dc-gui/src/addons.rs:801
 #, rust-format
 msgid "Add-ons would help here: {add_ons}"
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:775
+#: crates/dc-gui/src/addons.rs:827
 msgid "Do not offer these add-ons here"
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:775
+#: crates/dc-gui/src/addons.rs:827
 msgid "Hide"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:214
+#: crates/dc-gui/src/commander.rs:219
 msgid ""
 "No terminal found. Install xdg-terminal-exec or set the TERMINAL variable."
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:217
+#: crates/dc-gui/src/commander.rs:222
 msgid "Cannot run the terminal"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:378
+#: crates/dc-gui/src/commander.rs:385
 msgid "This does not work in a list of items found by a search."
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:545 crates/dc-gui/src/multi_rename.rs:555
+#: crates/dc-gui/src/commander.rs:568 crates/dc-gui/src/multi_rename.rs:555
 #: crates/dc-gui/src/panel_view.rs:517
 #, rust-format
 msgid "Invalid file name: {name}"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:662 crates/dc-gui/src/panel_view.rs:695
+#: crates/dc-gui/src/commander.rs:685 crates/dc-gui/src/panel_view.rs:695
 #, rust-format
 msgid "{path} is not a directory."
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:823
+#: crates/dc-gui/src/commander.rs:846
 #, rust-format
 msgid "Delete selected \"{name}\" into trash can?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:825
+#: crates/dc-gui/src/commander.rs:848
 #, rust-format
 msgid "Delete selected \"{name}\"?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:833
+#: crates/dc-gui/src/commander.rs:856
 #, rust-format
 msgid "Delete {count} selected file/directory into trash can?"
 msgid_plural "Delete {count} selected files/directories into trash can?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: crates/dc-gui/src/commander.rs:838
+#: crates/dc-gui/src/commander.rs:861
 #, rust-format
 msgid "Delete {count} selected file/directory?"
 msgid_plural "Delete {count} selected files/directories?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: crates/dc-gui/src/commander.rs:880
+#: crates/dc-gui/src/commander.rs:903
 #, rust-format
 msgid "Copy selected \"{name}\"?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:880
+#: crates/dc-gui/src/commander.rs:903
 #, rust-format
 msgid "Rename/move selected \"{name}\"?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:886
+#: crates/dc-gui/src/commander.rs:909
 #, rust-format
 msgid "Copy {count} selected file/directory?"
 msgid_plural "Copy {count} selected files/directories?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: crates/dc-gui/src/commander.rs:889
+#: crates/dc-gui/src/commander.rs:912
 #, rust-format
 msgid "Rename/move {count} selected file/directory?"
 msgid_plural "Rename/move {count} selected files/directories?"
@@ -968,6 +1018,11 @@ msgstr ""
 msgid "Copy on write"
 msgstr ""
 
+#: crates/dc-gui/src/date_time.rs:60
+#, rust-format
+msgid "{day}. {month}. {year}"
+msgstr ""
+
 #: crates/dc-gui/src/dialogs.rs:21
 msgid "Create new directory"
 msgstr ""
@@ -1075,104 +1130,99 @@ msgstr ""
 msgid "{page} / {count}"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/advanced.rs:63
-#, rust-format
-msgid "{day}. {month}. {year}"
-msgstr ""
-
-#: crates/dc-gui/src/find_files/advanced.rs:148
+#: crates/dc-gui/src/find_files/advanced.rs:51
 msgid "_Date from:"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/advanced.rs:150
+#: crates/dc-gui/src/find_files/advanced.rs:53
 msgid "_Time from:"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/advanced.rs:152
+#: crates/dc-gui/src/find_files/advanced.rs:55
 msgid "Dat_e to:"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/advanced.rs:154
+#: crates/dc-gui/src/find_files/advanced.rs:57
 msgid "Ti_me to:"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/advanced.rs:156
+#: crates/dc-gui/src/find_files/advanced.rs:59
 msgid "N_ot older than:"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/advanced.rs:160
+#: crates/dc-gui/src/find_files/advanced.rs:63
 msgid "S_ize from:"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/advanced.rs:162
+#: crates/dc-gui/src/find_files/advanced.rs:65
 msgid "Si_ze to:"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/advanced.rs:166
+#: crates/dc-gui/src/find_files/advanced.rs:69
 msgid "Find du_plicate files:"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/advanced.rs:167
+#: crates/dc-gui/src/find_files/advanced.rs:70
 msgid "same name"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/advanced.rs:168
+#: crates/dc-gui/src/find_files/advanced.rs:71
 msgid "same size"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/advanced.rs:169
+#: crates/dc-gui/src/find_files/advanced.rs:72
 msgid "same content (hash)"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/advanced.rs:170
+#: crates/dc-gui/src/find_files/advanced.rs:73
 msgid "same content (byte by byte)"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/advanced.rs:193
+#: crates/dc-gui/src/find_files/advanced.rs:96
 msgid "A date alone is the whole day, a time alone the time of any day."
 msgstr ""
 
-#: crates/dc-gui/src/find_files/advanced.rs:201
+#: crates/dc-gui/src/find_files/advanced.rs:104
 msgid "Directories have no size, with a size given only files are found."
 msgstr ""
 
-#: crates/dc-gui/src/find_files/advanced.rs:205
+#: crates/dc-gui/src/find_files/advanced.rs:108
 msgid "Attri_butes"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/advanced.rs:214
+#: crates/dc-gui/src/find_files/advanced.rs:117
 msgid ""
 "For example d+ directories, r+ux+ executable files, !l+ no links, d+|l+ "
 "directories or links, 644+ octal bits."
 msgstr ""
 
-#: crates/dc-gui/src/find_files/advanced.rs:227
+#: crates/dc-gui/src/find_files/advanced.rs:130
 msgid "Modified"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/advanced.rs:228
+#: crates/dc-gui/src/find_files/advanced.rs:131
 #: crates/dc-gui/src/find_files/results.rs:104
 #: crates/dc-gui/src/panel_view.rs:39
 msgid "Size"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/advanced.rs:229
+#: crates/dc-gui/src/find_files/advanced.rs:132
 msgid "Types and permissions"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/advanced.rs:230
+#: crates/dc-gui/src/find_files/advanced.rs:133
 msgid "Duplicates"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/advanced.rs:242
+#: crates/dc-gui/src/find_files/advanced.rs:145
 msgid "must have"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/advanced.rs:242
+#: crates/dc-gui/src/find_files/advanced.rs:145
 msgid "must not have"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/advanced.rs:259
+#: crates/dc-gui/src/find_files/advanced.rs:162
 msgid "_Add"
 msgstr ""
 
@@ -1265,6 +1315,7 @@ msgid "_Template name:"
 msgstr ""
 
 #: crates/dc-gui/src/find_files/results.rs:101
+#: crates/dc-gui/src/properties/permissions.rs:131
 msgid "Group"
 msgstr ""
 
@@ -1531,33 +1582,33 @@ msgstr ""
 msgid "Earlier texts"
 msgstr ""
 
-#: crates/dc-gui/src/main.rs:101
+#: crates/dc-gui/src/main.rs:103
 msgid "[PATH] | [LEFT RIGHT]"
 msgstr ""
 
-#: crates/dc-gui/src/main.rs:103
+#: crates/dc-gui/src/main.rs:105
 msgid ""
 "A path alone is shown in the active panel (the left one at start), two paths "
 "in the left and the right panel."
 msgstr ""
 
-#: crates/dc-gui/src/main.rs:105
+#: crates/dc-gui/src/main.rs:107
 msgid "PATH"
 msgstr ""
 
-#: crates/dc-gui/src/main.rs:107
+#: crates/dc-gui/src/main.rs:109
 msgid "Path for the left panel"
 msgstr ""
 
-#: crates/dc-gui/src/main.rs:108
+#: crates/dc-gui/src/main.rs:110
 msgid "Path for the right panel"
 msgstr ""
 
-#: crates/dc-gui/src/main.rs:109
+#: crates/dc-gui/src/main.rs:111
 msgid "Active panel: L (left) or R (right)"
 msgstr ""
 
-#: crates/dc-gui/src/main.rs:124
+#: crates/dc-gui/src/main.rs:126
 #, rust-format
 msgid "Not a local path: {path}"
 msgstr ""
@@ -2455,35 +2506,35 @@ msgstr ""
 msgid "Go"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:1136
+#: crates/dc-gui/src/panel_view.rs:1160
 msgid "To browse an archive inside an archive, copy it out first."
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:1140
+#: crates/dc-gui/src/panel_view.rs:1164
 msgid "Reading the archive…"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:1685
+#: crates/dc-gui/src/panel_view.rs:1709
 #, rust-format
 msgid "Search result: {path}"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:1789
+#: crates/dc-gui/src/panel_view.rs:1813
 #, rust-format
 msgid "(SEARCH: {text})"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:1830
+#: crates/dc-gui/src/panel_view.rs:1854
 #, rust-format
 msgid "Cannot open {path}"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:1962
+#: crates/dc-gui/src/panel_view.rs:1986
 #, rust-format
 msgid "You may not create directories in {path}."
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:1968
+#: crates/dc-gui/src/panel_view.rs:1992
 msgid "Archives can only be browsed so far."
 msgstr ""
 
@@ -2555,6 +2606,294 @@ msgstr ""
 #: crates/dc-gui/src/progress_window.rs:315
 #, rust-format
 msgid "Speed {speed}/s"
+msgstr ""
+
+#: crates/dc-gui/src/properties/extended.rs:23
+msgid "Flags of the file system (lsattr)"
+msgstr ""
+
+#: crates/dc-gui/src/properties/extended.rs:32
+#: crates/dc-gui/src/properties/extended.rs:40
+msgid "None."
+msgstr ""
+
+#: crates/dc-gui/src/properties/extended.rs:33
+msgid "This file system keeps no flags for it."
+msgstr ""
+
+#: crates/dc-gui/src/properties/extended.rs:37
+msgid "Extended attributes (xattr)"
+msgstr ""
+
+#: crates/dc-gui/src/properties/extended.rs:49
+msgid "Access control list (ACL)"
+msgstr ""
+
+#: crates/dc-gui/src/properties/extended.rs:53
+msgid "None, the permissions alone decide."
+msgstr ""
+
+#: crates/dc-gui/src/properties/extended.rs:71
+#, rust-format
+msgid "It has one; {program} would show it."
+msgstr ""
+
+#: crates/dc-gui/src/properties/general.rs:20
+#, rust-format
+msgid "{count} byte"
+msgid_plural "{count} bytes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: crates/dc-gui/src/properties/general.rs:22
+#, rust-format
+msgid "{size} ({bytes} bytes)"
+msgstr ""
+
+#: crates/dc-gui/src/properties/general.rs:31
+#, rust-format
+msgid "{count} file"
+msgid_plural "{count} files"
+msgstr[0] ""
+msgstr[1] ""
+
+#: crates/dc-gui/src/properties/general.rs:33
+#, rust-format
+msgid "{count} directory"
+msgid_plural "{count} directories"
+msgstr[0] ""
+msgstr[1] ""
+
+#: crates/dc-gui/src/properties/general.rs:36
+#, rust-format
+msgid "{files}, {dirs}: {size}"
+msgstr ""
+
+#: crates/dc-gui/src/properties/general.rs:48
+#: crates/dc-gui/src/properties/general.rs:110
+#: crates/dc-gui/src/properties/general.rs:139
+msgid "Location:"
+msgstr ""
+
+#: crates/dc-gui/src/properties/general.rs:56
+msgid "Type:"
+msgstr ""
+
+#: crates/dc-gui/src/properties/general.rs:56
+#, rust-format
+msgid "{description} ({mime})"
+msgstr ""
+
+#: crates/dc-gui/src/properties/general.rs:60
+#, rust-format
+msgid "{target} (does not exist)"
+msgstr ""
+
+#: crates/dc-gui/src/properties/general.rs:61
+msgid "Link to:"
+msgstr ""
+
+#: crates/dc-gui/src/properties/general.rs:64
+#: crates/dc-gui/src/properties/general.rs:111
+msgid "Contains:"
+msgstr ""
+
+#: crates/dc-gui/src/properties/general.rs:64
+#: crates/dc-gui/src/properties/general.rs:111
+msgid "counting..."
+msgstr ""
+
+#: crates/dc-gui/src/properties/general.rs:67
+msgid "Size:"
+msgstr ""
+
+#: crates/dc-gui/src/properties/general.rs:68
+#: crates/dc-gui/src/properties/general.rs:132
+msgid "On disk:"
+msgstr ""
+
+#: crates/dc-gui/src/properties/general.rs:73
+msgid "File system:"
+msgstr ""
+
+#: crates/dc-gui/src/properties/general.rs:74
+#, rust-format
+msgid "{point} ({fs_type}, {device})"
+msgstr ""
+
+#: crates/dc-gui/src/properties/general.rs:77
+msgid "Inode:"
+msgstr ""
+
+#: crates/dc-gui/src/properties/general.rs:77
+#, rust-format
+msgid "{inode} on device {major}:{minor}"
+msgstr ""
+
+#: crates/dc-gui/src/properties/general.rs:82
+msgid "Hard links:"
+msgstr ""
+
+#: crates/dc-gui/src/properties/general.rs:84
+msgid "Created:"
+msgstr ""
+
+#: crates/dc-gui/src/properties/general.rs:86
+msgid "Modified:"
+msgstr ""
+
+#: crates/dc-gui/src/properties/general.rs:87
+msgid "Status changed:"
+msgstr ""
+
+#: crates/dc-gui/src/properties/general.rs:88
+msgid "Accessed:"
+msgstr ""
+
+#: crates/dc-gui/src/properties/general.rs:104
+#, rust-format
+msgid "{count} item: {files} files, {dirs} directories"
+msgid_plural "{count} items: {files} files, {dirs} directories"
+msgstr[0] ""
+msgstr[1] ""
+
+#: crates/dc-gui/src/properties/general.rs:107
+msgid "Selected:"
+msgstr ""
+
+#: crates/dc-gui/src/properties/general.rs:109
+msgid "various directories"
+msgstr ""
+
+#: crates/dc-gui/src/properties/general.rs:140
+msgid "Error:"
+msgstr ""
+
+#: crates/dc-gui/src/properties/mod.rs:78
+#, rust-format
+msgid "{count} item"
+msgid_plural "{count} items"
+msgstr[0] ""
+msgstr[1] ""
+
+#: crates/dc-gui/src/properties/mod.rs:93
+#, rust-format
+msgid "Properties of {name}"
+msgstr ""
+
+#: crates/dc-gui/src/properties/mod.rs:94
+msgid "Properties"
+msgstr ""
+
+#: crates/dc-gui/src/properties/mod.rs:110
+msgid "_General"
+msgstr ""
+
+#: crates/dc-gui/src/properties/mod.rs:122
+msgid "_Permissions"
+msgstr ""
+
+#: crates/dc-gui/src/properties/mod.rs:123
+msgid "_Times"
+msgstr ""
+
+#: crates/dc-gui/src/properties/mod.rs:126
+msgid "E_xtended"
+msgstr ""
+
+#: crates/dc-gui/src/properties/mod.rs:203
+msgid "Also the _contents of directories"
+msgstr ""
+
+#: crates/dc-gui/src/properties/mod.rs:208
+msgid "_Apply"
+msgstr ""
+
+#: crates/dc-gui/src/properties/permissions.rs:45
+msgid "(various)"
+msgstr ""
+
+#: crates/dc-gui/src/properties/permissions.rs:47
+#, rust-format
+msgid "{name} ({id})"
+msgstr ""
+
+#: crates/dc-gui/src/properties/permissions.rs:100
+msgid ""
+"In the contents of directories execute only where it is already (as chmod X)"
+msgstr ""
+
+#: crates/dc-gui/src/properties/permissions.rs:116
+msgid "_Owner:"
+msgstr ""
+
+#: crates/dc-gui/src/properties/permissions.rs:116
+msgid "_Group:"
+msgstr ""
+
+#: crates/dc-gui/src/properties/permissions.rs:126
+msgid "Execute / enter"
+msgstr ""
+
+#: crates/dc-gui/src/properties/permissions.rs:126
+msgid "Execute"
+msgstr ""
+
+#: crates/dc-gui/src/properties/permissions.rs:127
+msgid "Read"
+msgstr ""
+
+#: crates/dc-gui/src/properties/permissions.rs:127
+msgid "Write"
+msgstr ""
+
+#: crates/dc-gui/src/properties/permissions.rs:131
+msgid "Owner"
+msgstr ""
+
+#: crates/dc-gui/src/properties/permissions.rs:131
+msgid "Others"
+msgstr ""
+
+#: crates/dc-gui/src/properties/permissions.rs:145
+msgid "A program runs with the rights of its owner"
+msgstr ""
+
+#: crates/dc-gui/src/properties/permissions.rs:146
+msgid ""
+"A program runs with the rights of its group; in a directory new files get "
+"its group"
+msgstr ""
+
+#: crates/dc-gui/src/properties/permissions.rs:147
+msgid ""
+"In a directory only the owner of a file may delete or rename it (as /tmp)"
+msgstr ""
+
+#: crates/dc-gui/src/properties/permissions.rs:161
+msgid "O_ctal:"
+msgstr ""
+
+#: crates/dc-gui/src/properties/permissions.rs:261
+msgid "various"
+msgstr ""
+
+#: crates/dc-gui/src/properties/times.rs:54
+msgid "_Modified:"
+msgstr ""
+
+#: crates/dc-gui/src/properties/times.rs:55
+msgid "_Accessed:"
+msgstr ""
+
+#: crates/dc-gui/src/properties/times.rs:63
+msgid "Now"
+msgstr ""
+
+#: crates/dc-gui/src/properties/times.rs:91
+msgid ""
+"The time of birth and of the last change of metadata are kept by the kernel "
+"and cannot be set."
 msgstr ""
 
 #: crates/dc-gui/src/quick_details.rs:230
@@ -2716,6 +3055,31 @@ msgstr ""
 #, rust-format
 msgctxt "tooltip with shortcut"
 msgid "{hint} ({shortcut})"
+msgstr ""
+
+#: crates/dc-ops/src/attributes.rs:72
+msgid "Cannot read the attributes"
+msgstr ""
+
+#: crates/dc-ops/src/attributes.rs:76
+msgid "Cannot change the owner or the group"
+msgstr ""
+
+#: crates/dc-ops/src/attributes.rs:83
+msgid "Cannot change the permissions"
+msgstr ""
+
+#: crates/dc-ops/src/attributes.rs:93
+msgid "Cannot change the times"
+msgstr ""
+
+#: crates/dc-ops/src/attributes.rs:112
+msgid "Setting property"
+msgstr ""
+
+#: crates/dc-ops/src/attributes.rs:126
+#, rust-format
+msgid "{what}: {path}"
 msgstr ""
 
 #: crates/dc-ops/src/delete.rs:145

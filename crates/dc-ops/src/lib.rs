@@ -11,6 +11,7 @@
 //! [`OperationsManager::operations`] for progress and pending questions and
 //! answers them with [`OperationsManager::answer`].
 
+mod attributes;
 mod delete;
 mod extract;
 mod manager;
@@ -19,6 +20,7 @@ mod rename_many;
 mod target;
 mod transfer;
 
+pub use attributes::{AttributeChanges, SetAttributesOperation};
 pub use delete::{DeleteMode, DeleteOperation};
 pub use extract::ExtractOperation;
 pub use target::{Destination, apply_mask};

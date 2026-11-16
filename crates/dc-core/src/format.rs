@@ -145,7 +145,8 @@ pub fn duration(time: Duration) -> String {
     format!("{:02}:{:02}:{:02}", seconds / 3600, seconds / 60 % 60, seconds % 60)
 }
 
-fn group_thousands(value: u64) -> String {
+#[must_use]
+pub fn group_thousands(value: u64) -> String {
     let digits = value.to_string();
     let mut out = String::with_capacity(digits.len() + digits.len() / 3);
     for (i, digit) in digits.chars().enumerate() {

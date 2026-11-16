@@ -836,6 +836,30 @@ impl PanelView {
         }
     }
 
+    /// Ctrl+L, `cm_CalculateSpace`: the sizes of the marked directories, or
+    /// of the one under the cursor, the same way as Space but without
+    /// marking; on `..` with nothing marked, of every directory listed.
+    pub fn calculate_space(&self) {
+        if self.in_archive() || self.is_found() {
+            return;
+        }
+        let names: Vec<OsString> = {
+            let panel = self.panel.borrow();
+            let on_parent = panel.current_item().is_some_and(dc_core::FileItem::is_parent);
+            let nothing_marked = !panel.items().iter().any(dc_core::FileItem::is_selected);
+            let items: Vec<&dc_core::FileItem> =
+                if on_parent && nothing_marked { panel.items().iter().collect() } else { panel.targets() };
+            items
+                .into_iter()
+                .filter(|item| !item.is_parent() && item.is_directory_like() && item.calculated_size().is_none())
+                .map(|item| item.entry().name.clone())
+                .collect()
+        };
+        for name in names {
+            self.calculate_size(name);
+        }
+    }
+
     /// Queues the size of directory `name` of the current directory.
     fn calculate_size(&self, name: OsString) {
         let dir = self.path();

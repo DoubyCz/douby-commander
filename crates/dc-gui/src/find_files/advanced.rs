@@ -2,109 +2,12 @@
 //! duplicate files.
 
 use dc_core::find::{Age, Attributes, Duplicates, FindQuery, SizeUnit, TimeUnit};
-use dc_i18n::{fill, gettext};
+use dc_i18n::gettext;
 use gtk::prelude::*;
 use gtk::glib;
-use jiff::civil::{Date, Time};
 
 use super::{check, section};
-
-/// A day picked from a calendar under a button.
-struct DateField {
-    button: gtk::MenuButton,
-    calendar: gtk::Calendar,
-}
-
-impl DateField {
-    fn new() -> Self {
-        let calendar = gtk::Calendar::new();
-        let popover = gtk::Popover::builder().child(&calendar).build();
-        let button = gtk::MenuButton::builder().popover(&popover).always_show_arrow(true).valign(gtk::Align::Center).build();
-        let this = Self { button, calendar };
-        this.show_label();
-        let (button, popover_weak) = (this.button.downgrade(), popover.downgrade());
-        this.calendar.connect_day_selected(move |calendar| {
-            if let Some(button) = button.upgrade() {
-                button.set_label(&date_label(calendar_date(calendar)));
-            }
-            if let Some(popover) = popover_weak.upgrade() {
-                popover.popdown();
-            }
-        });
-        this
-    }
-
-    fn show_label(&self) {
-        self.button.set_label(&date_label(calendar_date(&self.calendar)));
-    }
-
-    fn date(&self) -> Date {
-        calendar_date(&self.calendar)
-    }
-
-    fn set_date(&self, date: Date) {
-        // Day 1 first: the 31st does not fit every month on the way.
-        self.calendar.set_day(1);
-        self.calendar.set_year(i32::from(date.year()));
-        self.calendar.set_month(i32::from(date.month()) - 1);
-        self.calendar.set_day(i32::from(date.day()));
-        self.show_label();
-    }
-}
-
-fn calendar_date(calendar: &gtk::Calendar) -> Date {
-    let day = calendar.date();
-    let part = |value: i32| i8::try_from(value).unwrap_or(1);
-    Date::new(i16::try_from(day.year()).unwrap_or(2000), part(day.month()), part(day.day_of_month()))
-        .unwrap_or(jiff::civil::date(2000, 1, 1))
-}
-
-fn date_label(date: Date) -> String {
-    fill(&gettext("{day}. {month}. {year}"), &[("day", &date.day()), ("month", &date.month()), ("year", &date.year())])
-}
-
-/// A time of day typed as `hh:mm` or `hh:mm:ss`.
-struct TimeField {
-    row: gtk::Entry,
-}
-
-impl TimeField {
-    fn new() -> Self {
-        let row = gtk::Entry::builder().width_chars(8).max_width_chars(8).placeholder_text("hh:mm:ss").valign(gtk::Align::Center).build();
-        // A time that cannot be read shows as an error until it can.
-        row.connect_changed(|entry| {
-            if parse_time(&entry.text()).is_some() {
-                entry.remove_css_class("error");
-            } else {
-                entry.add_css_class("error");
-            }
-        });
-        Self { row }
-    }
-
-    /// Midnight for a time that cannot be read (shown as an error).
-    fn time(&self) -> Time {
-        parse_time(&self.row.text()).unwrap_or(Time::midnight())
-    }
-
-    fn set_time(&self, time: Time) {
-        self.row.set_text(&format!("{:02}:{:02}:{:02}", time.hour(), time.minute(), time.second()));
-    }
-
-    fn connect_changed(&self, changed: impl Fn() + 'static) {
-        self.row.connect_changed(move |_| changed());
-    }
-}
-
-/// `h:m` or `h:m:s`, 24 hours.
-fn parse_time(text: &str) -> Option<Time> {
-    let parts: Vec<i8> = text.trim().split(':').map(|part| part.trim().parse().ok()).collect::<Option<_>>()?;
-    match parts.as_slice() {
-        [hour, minute] => Time::new(*hour, *minute, 0, 0).ok(),
-        [hour, minute, second] => Time::new(*hour, *minute, *second, 0).ok(),
-        _ => None,
-    }
-}
+use crate::date_time::{DateField, TimeField};
 
 pub(super) struct Advanced {
     pub page: gtk::Box,

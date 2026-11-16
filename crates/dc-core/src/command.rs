@@ -71,6 +71,12 @@ pub enum Command {
     MultiRename,
     /// Alt+F7: the window to find files.
     Search,
+    /// Ctrl+L: sizes of the marked directories (or the one under the cursor).
+    CalculateSpace,
+    /// Alt+Enter: the properties of the marked items (or the one under the cursor).
+    FileProperties,
+    /// File > Change Attributes: the same window, on its page of permissions.
+    SetFileProperties,
     /// F7: create a directory in the active panel.
     MakeDir,
     /// Shift+F9: the desktop's terminal, in its own window, in the
@@ -157,7 +163,7 @@ impl TrashChoice {
 
 impl Command {
     /// All commands with default parameters, for listings and for parsing.
-    pub const ALL: [Self; 54] = [
+    pub const ALL: [Self; 57] = [
         Self::Open,
         Self::ChangeDirToParent,
         Self::FocusSwap,
@@ -180,6 +186,9 @@ impl Command {
         Self::RenameOnly,
         Self::MultiRename,
         Self::Search,
+        Self::CalculateSpace,
+        Self::FileProperties,
+        Self::SetFileProperties,
         Self::MakeDir,
         Self::RunTerm,
         Self::Delete { trash: TrashChoice::Setting },
@@ -240,6 +249,9 @@ impl Command {
             Self::RenameOnly => "cm_RenameOnly",
             Self::MultiRename => "cm_MultiRename",
             Self::Search => "cm_Search",
+            Self::CalculateSpace => "cm_CalculateSpace",
+            Self::FileProperties => "cm_FileProperties",
+            Self::SetFileProperties => "cm_SetFileProperties",
             Self::MakeDir => "cm_MakeDir",
             Self::RunTerm => "cm_RunTerm",
             Self::Delete { .. } => "cm_Delete",

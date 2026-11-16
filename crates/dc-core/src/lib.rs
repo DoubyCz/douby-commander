@@ -15,6 +15,7 @@ mod panel;
 pub mod path_input;
 pub mod preview;
 pub mod program;
+pub mod properties;
 pub mod quick_search;
 mod sort;
 pub mod startup;

@@ -267,6 +267,8 @@ impl Keymap {
             (Shortcut::plain(Key::F(2)), Command::RenameOnly),
             (Shortcut::plain(Key::F(7)), Command::MakeDir),
             (alt(Key::F(7)), Command::Search),
+            (ctrl(Key::Char('L')), Command::CalculateSpace),
+            (alt(Key::Enter), Command::FileProperties),
             // Deliberately unlike the original (Ctrl+F1, Ctrl+F2 and
             // Ctrl+Shift+F1 there, none of them here): F9 goes through all
             // views of the panel, the terminal included (Jirka's wish).
@@ -352,6 +354,8 @@ mod tests {
             Command::ReverseOrder,
             Command::About,
             Command::Addons,
+            // Menu only, as in the original.
+            Command::SetFileProperties,
             // No shortcut in the original either; a double click on the path.
             Command::EditPath,
             // Menu and toolbar; the keyboard has F9 for all of them.

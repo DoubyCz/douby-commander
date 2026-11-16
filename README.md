@@ -13,7 +13,7 @@ the name and the abbreviation DC.
 It follows the theme of [Omarchy](https://omarchy.org/) live: switch the theme and the
 colors change at once, with no setup.
 
-> **Alpha (0.0.23).** Many features are not done yet. Most menu items and toolbar buttons
+> **Alpha (0.0.24).** Many features are not done yet. Most menu items and toolbar buttons
 > are not connected, and there is no settings dialog. Expect rough edges.
 
 ## What works
@@ -57,6 +57,10 @@ the icons view.*
   or into the panel, to copy, move or delete them as files of a directory
 - Add-ons: Linux tools instead of plugins, see below
 - Ctrl+. shows hidden files, also from the Show menu
+- Alt+Enter shows the properties of files in one window, which also changes them: owner and
+  group, read, write and execute (for many files at once, also inside directories, with
+  execute only where it belongs, as `chmod X`), times; flags of the file system, extended
+  attributes and ACL. Ctrl+L calculates the size of directories
 - F7 new directory, F8 delete (to the trash, or permanently with Shift)
 - F9 switches the panel's view in turn: list, details, icons and a terminal that follows
   the panel's directory (`exit` closes it). Shift+F9 opens your own terminal
