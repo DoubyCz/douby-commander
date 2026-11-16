@@ -1,4 +1,5 @@
 mod about;
+mod addons;
 mod audio_stream;
 mod commander;
 mod copy_dialog;

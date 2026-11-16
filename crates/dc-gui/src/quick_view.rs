@@ -34,6 +34,7 @@ use vte4::prelude::*;
 use crate::document_view::{self, DocumentView};
 use crate::launch;
 use crate::music_view::MusicView;
+use crate::addons::AddonsUi;
 use crate::quick_details::{self, Details, InfoPage};
 use crate::panel_terminal;
 use crate::pixels::Pixels;
@@ -95,7 +96,7 @@ pub struct QuickView {
 }
 
 impl QuickView {
-    pub fn new() -> Rc<Self> {
+    pub fn new(addons: Rc<AddonsUi>) -> Rc<Self> {
         let title = gtk::Label::builder().xalign(0.0).hexpand(true).ellipsize(gtk::pango::EllipsizeMode::Start).build();
         title.add_css_class("dc-path");
         let open_button = gtk::Button::builder()
@@ -120,7 +121,7 @@ impl QuickView {
         let music = MusicView::new();
 
         let document = DocumentView::new();
-        let info = InfoPage::new();
+        let info = InfoPage::new(addons);
 
         let pages = gtk::Stack::builder().vexpand(true).hexpand(true).build();
         pages.add_named(info.widget(), Some("info"));

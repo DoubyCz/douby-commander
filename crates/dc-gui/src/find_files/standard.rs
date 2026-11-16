@@ -1,11 +1,9 @@
 //! The "Standard" page: where to search, which names, which text.
 
 use dc_core::find::{DOCUMENT_TOOLS, ENCODINGS, FindQuery, tool_adds};
-use dc_core::preview::tools::Hint;
-use dc_core::program;
+use dc_core::addons::{self, Hint};
 use dc_i18n::{fill, gettext, ngettext, plural_count};
 use gtk::prelude::*;
-use gtk::{gdk, glib};
 
 use super::{check, section, title};
 use crate::history_entry::HistoryEntry;
@@ -38,7 +36,7 @@ pub(super) struct Standard {
     encoding: gtk::DropDown,
     tools: gtk::Box,
     tools_text: gtk::Label,
-    tools_command: gtk::Label,
+    pub install_addons: gtk::Button,
 }
 
 fn depth_titles() -> Vec<String> {
@@ -82,7 +80,7 @@ impl Standard {
             encoding: drop_down(&encodings),
             tools: gtk::Box::new(gtk::Orientation::Vertical, 4),
             tools_text: gtk::Label::builder().xalign(0.0).wrap(true).build(),
-            tools_command: gtk::Label::builder().xalign(0.0).selectable(true).css_classes(["monospace"]).build(),
+            install_addons: gtk::Button::with_mnemonic(&gettext("Install _add-ons...")),
         };
         this.lay_out();
         this
@@ -148,22 +146,9 @@ impl Standard {
         encoding_row.append(&title(&gettext("Encodin_g:"), &self.encoding));
         encoding_row.append(&self.encoding);
         content.attach(&encoding_row, 0, 3, 2, 1);
-        self.tools.add_css_class("dc-tools-hint");
-        let copy = gtk::Button::builder().icon_name("edit-copy-symbolic").tooltip_text(gettext("Copy")).build();
-        copy.connect_clicked(glib::clone!(
-            #[weak(rename_to = command)]
-            self.tools_command,
-            move |_| {
-                if let Some(display) = gdk::Display::default() {
-                    display.clipboard().set_text(&command.text());
-                }
-            }
-        ));
-        let command_row = gtk::Box::new(gtk::Orientation::Horizontal, 6);
-        command_row.append(&self.tools_command);
-        command_row.append(&copy);
+        self.install_addons.set_halign(gtk::Align::Start);
         self.tools.append(&self.tools_text);
-        self.tools.append(&command_row);
+        self.tools.append(&self.install_addons);
         self.tools.set_visible(false);
         content.attach(&self.tools, 0, 4, 2, 1);
 
@@ -195,17 +180,10 @@ impl Standard {
         self.update_tools(text && self.documents.is_active());
     }
 
-    /// The programs for documents that are not installed, and how to get them.
+    /// The programs for documents that are not installed, with the button
+    /// that offers them.
     fn update_tools(&self, wanted: bool) {
-        let hints: Vec<Hint> = if wanted {
-            DOCUMENT_TOOLS
-                .iter()
-                .filter(|tool| program::find(tool).is_none())
-                .map(|tool| Hint { program: (*tool).to_owned(), adds: tool_adds(tool) })
-                .collect()
-        } else {
-            Vec::new()
-        };
+        let hints = if wanted { missing_tools() } else { Vec::new() };
         self.tools.set_visible(!hints.is_empty());
         if hints.is_empty() {
             return;
@@ -216,9 +194,6 @@ impl Standard {
             &gettext("These documents need programs that are not installed:\n{list}"),
             &[("list", &lines.join("\n"))],
         ));
-        let command = program::install_command(&hints);
-        self.tools_command.set_text(command.as_deref().unwrap_or_default());
-        self.tools_command.parent().inspect(|row| row.set_visible(command.is_some()));
     }
 
     /// Calls `changed` whenever a check that enables others changes.
@@ -303,4 +278,13 @@ impl Standard {
             }
         }
     }
+}
+
+/// The programs for documents that are not installed.
+pub(super) fn missing_tools() -> Vec<Hint> {
+    DOCUMENT_TOOLS
+        .iter()
+        .filter(|tool| !addons::is_installed(tool))
+        .map(|tool| Hint { program: (*tool).to_owned(), adds: tool_adds(tool) })
+        .collect()
 }

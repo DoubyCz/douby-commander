@@ -19,6 +19,7 @@ use dc_vfs::{FileSource, LocalFs};
 use gtk::prelude::*;
 use gtk::{gdk, glib};
 
+use crate::addons::AddonsUi;
 use crate::copy_dialog;
 use crate::find_files::{self, FindWindow};
 use crate::launch::{self, LaunchError};
@@ -35,6 +36,7 @@ pub struct Commander {
     keymap: Keymap,
     settings: Settings,
     operations: Rc<OperationsUi>,
+    addons: Rc<AddonsUi>,
     /// Set by the window once the panels are laid out.
     splitter: OnceCell<Rc<Splitter>>,
     quick_view: Rc<QuickView>,
@@ -79,15 +81,22 @@ impl Default for MarkMemory {
 }
 
 impl Commander {
-    pub fn new(panels: [Rc<PanelView>; 2], keymap: Keymap, settings: Settings, operations: Rc<OperationsUi>) -> Self {
+    pub fn new(
+        panels: [Rc<PanelView>; 2],
+        keymap: Keymap,
+        settings: Settings,
+        operations: Rc<OperationsUi>,
+        addons: Rc<AddonsUi>,
+    ) -> Self {
         Self {
             panels,
             active: Cell::new(0),
             keymap,
             settings,
             operations,
+            quick_view: QuickView::new(Rc::clone(&addons)),
+            addons,
             splitter: OnceCell::new(),
-            quick_view: QuickView::new(),
             quick_view_side: Cell::new(None),
             covers: OnceCell::new(),
             quick_view_pending: Cell::new(false),
@@ -194,6 +203,7 @@ impl Commander {
             Command::RenameOnly => panel.start_rename(),
             Command::MultiRename => self.multi_rename(),
             Command::Search => self.search(),
+            Command::Addons => self.addons.overview(panel.window().as_ref()),
             Command::MakeDir => self.make_dir(),
             Command::RunTerm => {
                 if let Err(err) = launch::open_terminal(&panel.terminal_dir()) {
@@ -490,9 +500,19 @@ impl Commander {
                     }
                 }),
             };
-            FindWindow::new(panel.window().as_ref(), actions)
+            FindWindow::new(panel.window().as_ref(), actions, Rc::clone(&self.addons))
         });
         window.show(dir, selected);
+    }
+
+    /// Add-ons were installed: what uses them looks again.
+    pub fn addons_installed(&self) {
+        if self.quick_view_side.get().is_some() {
+            self.quick_view.show(self.active().quick_view_subject());
+        }
+        if let Some(find) = self.find.get() {
+            find.addons_installed();
+        }
     }
 
     /// "Go to file" of the search: its directory in the active panel, the

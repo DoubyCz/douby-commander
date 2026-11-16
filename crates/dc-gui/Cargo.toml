@@ -21,6 +21,7 @@ gio.workspace = true
 gst.workspace = true
 gtk.workspace = true
 jiff.workspace = true
+rustix = { workspace = true, features = ["process"] }
 tempfile.workspace = true
 vte4.workspace = true
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: doubycmd\n"
 "Report-Msgid-Bugs-To: douby@douby.cz\n"
-"POT-Creation-Date: 2026-11-16 08:23+0100\n"
+"POT-Creation-Date: 2026-11-16 08:45+0100\n"
 "PO-Revision-Date: 2026-10-19 18:45+0200\n"
 "Last-Translator: Jiří Doubravský <douby@douby.cz>\n"
 "Language-Team: Czech\n"
@@ -17,12 +17,62 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: crates/dc-core/src/command.rs:323
+#: crates/dc-core/src/addons.rs:47
+msgid "Quick view (F3)"
+msgstr "Rychlý náhled (F3)"
+
+#: crates/dc-core/src/addons.rs:48
+msgid "Find files: text of documents"
+msgstr "Hledání souborů: text dokumentů"
+
+#: crates/dc-core/src/addons.rs:59
+msgid "text and source code with syntax highlighting"
+msgstr "text a zdrojový kód se zvýrazněním syntaxe"
+
+#: crates/dc-core/src/addons.rs:60
+msgid "PDF documents page by page"
+msgstr "PDF dokumenty po stránkách"
+
+#: crates/dc-core/src/addons.rs:61
+msgid "list of instruments in SoundFont banks"
+msgstr "seznam nástrojů ve zvukových bankách SoundFont"
+
+#: crates/dc-core/src/addons.rs:62
+msgid "beginning of the text of books and documents (EPUB, FB2, DOCX, ODT)"
+msgstr "začátek textu knih a dokumentů (EPUB, FB2, DOCX, ODT)"
+
+#: crates/dc-core/src/addons.rs:63
+msgid "metadata of almost any file: documents, pictures, fonts, programs"
+msgstr ""
+"metadata téměř libovolného souboru: dokumentů, obrázků, písem, programů"
+
+#: crates/dc-core/src/addons.rs:66
+msgid "picture of the first page of PDF and comics"
+msgstr "obrázek první stránky PDF a komiksů"
+
+#: crates/dc-core/src/addons.rs:67
+msgid "picture of office documents"
+msgstr "obrázek kancelářských dokumentů"
+
+#: crates/dc-core/src/addons.rs:68
+msgid "cover of e-books"
+msgstr "obálka elektronických knih"
+
+#: crates/dc-core/src/addons.rs:69
+msgid "sample of fonts"
+msgstr "ukázka písem"
+
+#: crates/dc-core/src/addons.rs:229
+#, rust-format
+msgid "The queue of add-ons in {path} cannot be used"
+msgstr "Frontu doplňků v {path} nejde použít"
+
+#: crates/dc-core/src/command.rs:328
 #, rust-format
 msgid "Unknown command {command}"
 msgstr "Neznámý příkaz {command}"
 
-#: crates/dc-core/src/command.rs:325
+#: crates/dc-core/src/command.rs:330
 #, rust-format
 msgid "Command {command} does not accept parameter {param}"
 msgstr "Příkaz {command} nepřijímá parametr {param}"
@@ -636,43 +686,149 @@ msgstr "Platforma: {platform}"
 msgid "System: {system}"
 msgstr "Systém: {system}"
 
-#: crates/dc-gui/src/commander.rs:203
+#: crates/dc-gui/src/addons.rs:75
+msgid "_Install all"
+msgstr "_Instalovat vše"
+
+#: crates/dc-gui/src/addons.rs:79
+msgid "Clear the queue of add-ons"
+msgstr "Vymazat frontu doplňků"
+
+#: crates/dc-gui/src/addons.rs:108
+#, rust-format
+msgid "Add-on waiting to be installed: {packages}"
+msgid_plural "Add-ons waiting to be installed ({count}): {packages}"
+msgstr[0] "Doplněk čeká na instalaci: {packages}"
+msgstr[1] "Doplňky čekají na instalaci ({count}): {packages}"
+msgstr[2] "Doplňky čekají na instalaci ({count}): {packages}"
+
+#: crates/dc-gui/src/addons.rs:119
+#, rust-format
+msgid "{package} ({program}) - {purpose}, for {feature}"
+msgstr "{package} ({program}) - {purpose}, pro {feature}"
+
+#: crates/dc-gui/src/addons.rs:154
+msgid "Install add-ons"
+msgstr "Instalovat doplňky"
+
+#: crates/dc-gui/src/addons.rs:166
+#, rust-format
+msgid ""
+"Add-ons are programs from the packages of your distribution, {distribution}. "
+"Douby Commander uses them once they are installed; what each adds is next to "
+"it."
+msgstr ""
+"Doplňky jsou programy z balíčků vaší distribuce, {distribution}. Douby "
+"Commander je použije, jakmile jsou nainstalované; co který přidá, je u něj."
+
+#: crates/dc-gui/src/addons.rs:169
+msgid ""
+"Add-ons are programs from the packages of your distribution. The packages of "
+"this distribution are not known here, install the programs with its package "
+"manager."
+msgstr ""
+"Doplňky jsou programy z balíčků vaší distribuce. Balíčky této distribuce tu "
+"neznáme, nainstalujte programy jejím správcem balíčků."
+
+#: crates/dc-gui/src/addons.rs:180
+msgid "Add to _queue"
+msgstr "Přidat do _fronty"
+
+#: crates/dc-gui/src/addons.rs:181
+msgid "Install _now"
+msgstr "Instalovat _hned"
+
+#: crates/dc-gui/src/addons.rs:207
+msgid "Neither sudo, run0 nor pkexec is installed."
+msgstr "Není nainstalované sudo, run0 ani pkexec."
+
+#: crates/dc-gui/src/addons.rs:268
+msgid "Everything is installed."
+msgstr "Vše je nainstalované."
+
+#: crates/dc-gui/src/addons.rs:280
+msgid "installed"
+msgstr "nainstalováno"
+
+#: crates/dc-gui/src/addons.rs:281
+msgid "package not known here"
+msgstr "balíček tu neznáme"
+
+#: crates/dc-gui/src/addons.rs:282
+msgid "in the queue"
+msgstr "ve frontě"
+
+#: crates/dc-gui/src/addons.rs:288
+#, rust-format
+msgid "package {package}"
+msgstr "balíček {package}"
+
+#: crates/dc-gui/src/addons.rs:331
+msgid "Done, the add-ons are installed."
+msgstr "Hotovo, doplňky jsou nainstalované."
+
+#: crates/dc-gui/src/addons.rs:331
+msgid "The installation did not finish, see the terminal above."
+msgstr "Instalace nedoběhla, podrobnosti jsou v terminálu výše."
+
+#: crates/dc-gui/src/addons.rs:404
+msgid "Installing add-ons"
+msgstr "Instalace doplňků"
+
+#: crates/dc-gui/src/addons.rs:407
+#, rust-format
+msgid "Installing: {packages}"
+msgstr "Instaluji: {packages}"
+
+#: crates/dc-gui/src/addons.rs:415
+msgid ""
+"The package manager asks for your password in the terminal (Ctrl+C stops it)."
+msgstr ""
+"Správce balíčků si v terminálu řekne o heslo (Ctrl+C instalaci přeruší)."
+
+#: crates/dc-gui/src/addons.rs:419 crates/dc-gui/src/find_files/mod.rs:129
+#: crates/dc-gui/src/multi_rename.rs:271
+msgctxt "button"
+msgid "_Close"
+msgstr "_Zavřít"
+
+#: crates/dc-gui/src/commander.rs:213
 msgid ""
 "No terminal found. Install xdg-terminal-exec or set the TERMINAL variable."
 msgstr ""
 "Nenalezen žádný terminál. Nainstalujte xdg-terminal-exec nebo nastavte "
 "proměnnou TERMINAL."
 
-#: crates/dc-gui/src/commander.rs:206
+#: crates/dc-gui/src/commander.rs:216
 msgid "Cannot run the terminal"
 msgstr "Nelze spustit terminál"
 
-#: crates/dc-gui/src/commander.rs:367
+#: crates/dc-gui/src/commander.rs:377
 msgid "This does not work in a list of items found by a search."
 msgstr "V seznamu položek nalezených hledáním tohle nejde."
 
-#: crates/dc-gui/src/commander.rs:524 crates/dc-gui/src/multi_rename.rs:555
+#: crates/dc-gui/src/commander.rs:544 crates/dc-gui/src/multi_rename.rs:555
 #: crates/dc-gui/src/panel_view.rs:517
 #, rust-format
 msgid "Invalid file name: {name}"
 msgstr "Neplatný název souboru: {name}"
 
-#: crates/dc-gui/src/commander.rs:641 crates/dc-gui/src/panel_view.rs:695
+#: crates/dc-gui/src/commander.rs:661 crates/dc-gui/src/panel_view.rs:695
 #, rust-format
 msgid "{path} is not a directory."
 msgstr "{path} není složka."
 
-#: crates/dc-gui/src/commander.rs:802
+#: crates/dc-gui/src/commander.rs:822
 #, rust-format
 msgid "Delete selected \"{name}\" into trash can?"
 msgstr "Opravdu přesunout \"{name}\" do koše?"
 
-#: crates/dc-gui/src/commander.rs:804
+#: crates/dc-gui/src/commander.rs:824
 #, rust-format
 msgid "Delete selected \"{name}\"?"
 msgstr "Opravdu smazat \"{name}\"?"
 
-#: crates/dc-gui/src/commander.rs:812
+#: crates/dc-gui/src/commander.rs:832
 #, rust-format
 msgid "Delete {count} selected file/directory into trash can?"
 msgid_plural "Delete {count} selected files/directories into trash can?"
@@ -680,7 +836,7 @@ msgstr[0] "Opravdu přesunout {count} vybranou položku do koše?"
 msgstr[1] "Opravdu přesunout {count} vybrané položky do koše?"
 msgstr[2] "Opravdu přesunout {count} vybraných položek do koše?"
 
-#: crates/dc-gui/src/commander.rs:817
+#: crates/dc-gui/src/commander.rs:837
 #, rust-format
 msgid "Delete {count} selected file/directory?"
 msgid_plural "Delete {count} selected files/directories?"
@@ -688,17 +844,17 @@ msgstr[0] "Opravdu smazat {count} vybranou položku?"
 msgstr[1] "Opravdu smazat {count} vybrané položky?"
 msgstr[2] "Opravdu smazat {count} vybraných položek?"
 
-#: crates/dc-gui/src/commander.rs:859
+#: crates/dc-gui/src/commander.rs:879
 #, rust-format
 msgid "Copy selected \"{name}\"?"
 msgstr "Kopírovat \"{name}\"?"
 
-#: crates/dc-gui/src/commander.rs:859
+#: crates/dc-gui/src/commander.rs:879
 #, rust-format
 msgid "Rename/move selected \"{name}\"?"
 msgstr "Přejmenovat nebo přesunout \"{name}\"?"
 
-#: crates/dc-gui/src/commander.rs:865
+#: crates/dc-gui/src/commander.rs:885
 #, rust-format
 msgid "Copy {count} selected file/directory?"
 msgid_plural "Copy {count} selected files/directories?"
@@ -706,7 +862,7 @@ msgstr[0] "Kopírovat {count} vybranou položku?"
 msgstr[1] "Kopírovat {count} vybrané položky?"
 msgstr[2] "Kopírovat {count} vybraných položek?"
 
-#: crates/dc-gui/src/commander.rs:868
+#: crates/dc-gui/src/commander.rs:888
 #, rust-format
 msgid "Rename/move {count} selected file/directory?"
 msgid_plural "Rename/move {count} selected files/directories?"
@@ -1046,97 +1202,91 @@ msgstr "nesmí mít"
 msgid "_Add"
 msgstr "_Přidat"
 
-#: crates/dc-gui/src/find_files/mod.rs:115
-#: crates/dc-gui/src/find_files/mod.rs:503
+#: crates/dc-gui/src/find_files/mod.rs:118
+#: crates/dc-gui/src/find_files/mod.rs:519
 msgid "Find files"
 msgstr "Hledat soubory"
 
-#: crates/dc-gui/src/find_files/mod.rs:124
+#: crates/dc-gui/src/find_files/mod.rs:127
 msgctxt "button"
 msgid "_Find"
 msgstr "_Hledat"
 
-#: crates/dc-gui/src/find_files/mod.rs:125
+#: crates/dc-gui/src/find_files/mod.rs:128
 msgctxt "button"
 msgid "C_ancel"
 msgstr "Zr_ušit"
 
-#: crates/dc-gui/src/find_files/mod.rs:126
-#: crates/dc-gui/src/multi_rename.rs:271
-msgctxt "button"
-msgid "_Close"
-msgstr "_Zavřít"
-
-#: crates/dc-gui/src/find_files/mod.rs:127
+#: crates/dc-gui/src/find_files/mod.rs:130
 msgid "_New search"
 msgstr "_Nové hledání"
 
-#: crates/dc-gui/src/find_files/mod.rs:128
+#: crates/dc-gui/src/find_files/mod.rs:131
 msgid "_Last search"
 msgstr "_Poslední hledání"
 
-#: crates/dc-gui/src/find_files/mod.rs:145
+#: crates/dc-gui/src/find_files/mod.rs:149
 msgid "_Standard"
 msgstr "_Obecné"
 
-#: crates/dc-gui/src/find_files/mod.rs:146
+#: crates/dc-gui/src/find_files/mod.rs:150
 msgid "Ad_vanced"
 msgstr "Roz_šířené"
 
-#: crates/dc-gui/src/find_files/mod.rs:147
+#: crates/dc-gui/src/find_files/mod.rs:151
 msgid "Load/Sa_ve"
 msgstr "Načíst nebo ulo_žit"
 
-#: crates/dc-gui/src/find_files/mod.rs:148
+#: crates/dc-gui/src/find_files/mod.rs:152
 msgid "_Results"
 msgstr "Vý_sledky"
 
-#: crates/dc-gui/src/find_files/mod.rs:347
+#: crates/dc-gui/src/find_files/mod.rs:358
 #, rust-format
 msgid "Delete the saved search \"{name}\"?"
 msgstr "Smazat uložené hledání \"{name}\"?"
 
-#: crates/dc-gui/src/find_files/mod.rs:440
+#: crates/dc-gui/src/find_files/mod.rs:456
 msgid "Find files - Scanning"
 msgstr "Hledat soubory - hledám"
 
-#: crates/dc-gui/src/find_files/mod.rs:468
+#: crates/dc-gui/src/find_files/mod.rs:484
 msgid "Comparing files for duplicates..."
 msgstr "Porovnávám soubory kvůli duplicitám…"
 
-#: crates/dc-gui/src/find_files/mod.rs:470
+#: crates/dc-gui/src/find_files/mod.rs:486
 #, rust-format
 msgid "Scanning: {path}"
 msgstr "Prohledávám: {path}"
 
-#: crates/dc-gui/src/find_files/mod.rs:478
+#: crates/dc-gui/src/find_files/mod.rs:494
 #, rust-format
 msgid "Cancelled after {seconds} s"
 msgstr "Přerušeno po {seconds} s"
 
-#: crates/dc-gui/src/find_files/mod.rs:480
+#: crates/dc-gui/src/find_files/mod.rs:496
 #, rust-format
 msgid "Finished in {seconds} s"
 msgstr "Hotovo za {seconds} s"
 
-#: crates/dc-gui/src/find_files/mod.rs:485
+#: crates/dc-gui/src/find_files/mod.rs:501
 msgid "Find files - Finished"
 msgstr "Hledat soubory - hotovo"
 
-#: crates/dc-gui/src/find_files/mod.rs:538
+#: crates/dc-gui/src/find_files/mod.rs:554
 msgid "Start in directory"
 msgstr "Spustit ve složce"
 
-#: crates/dc-gui/src/find_files/mod.rs:558
+#: crates/dc-gui/src/find_files/mod.rs:574
 #, rust-format
 msgid "{path} is not there any more."
 msgstr "{path} už neexistuje."
 
-#: crates/dc-gui/src/find_files/mod.rs:591
+#: crates/dc-gui/src/find_files/mod.rs:607
 msgid "Save search template"
 msgstr "Uložit hledání"
 
-#: crates/dc-gui/src/find_files/mod.rs:591
+#: crates/dc-gui/src/find_files/mod.rs:607
 msgid "_Template name:"
 msgstr "_Název hledání:"
 
@@ -1230,15 +1380,15 @@ msgstr "\"{masks}\""
 msgid "\"{masks}\" -> \"{start}\""
 msgstr "\"{masks}\" -> \"{start}\""
 
-#: crates/dc-gui/src/find_files/standard.rs:45
+#: crates/dc-gui/src/find_files/standard.rs:43
 msgid "all (unlimited depth)"
 msgstr "vše (neomezená hloubka)"
 
-#: crates/dc-gui/src/find_files/standard.rs:45
+#: crates/dc-gui/src/find_files/standard.rs:43
 msgid "current directory only"
 msgstr "jen aktuální složka"
 
-#: crates/dc-gui/src/find_files/standard.rs:47
+#: crates/dc-gui/src/find_files/standard.rs:45
 #, rust-format
 msgid "{count} level"
 msgid_plural "{count} levels"
@@ -1246,63 +1396,68 @@ msgstr[0] "{count} úroveň"
 msgstr[1] "{count} úrovně"
 msgstr[2] "{count} úrovní"
 
-#: crates/dc-gui/src/find_files/standard.rs:58
+#: crates/dc-gui/src/find_files/standard.rs:56
 msgid "Automatic (UTF-8, UTF-16 by its mark)"
 msgstr "Automaticky (UTF-8, UTF-16 podle značky)"
 
-#: crates/dc-gui/src/find_files/standard.rs:63
+#: crates/dc-gui/src/find_files/standard.rs:61
 msgid "Choose a directory"
 msgstr "Vybrat složku"
 
-#: crates/dc-gui/src/find_files/standard.rs:64
+#: crates/dc-gui/src/find_files/standard.rs:62
 msgid "Selected directories and _files"
 msgstr "Vybrané složky a sou_bory"
 
-#: crates/dc-gui/src/find_files/standard.rs:65
+#: crates/dc-gui/src/find_files/standard.rs:63
 msgid "Follow s_ymlinks"
 msgstr "Následovat s_ymbolické odkazy"
 
-#: crates/dc-gui/src/find_files/standard.rs:69
+#: crates/dc-gui/src/find_files/standard.rs:67
 msgid "Search in _archives"
 msgstr "Hledat v _archivech"
 
-#: crates/dc-gui/src/find_files/standard.rs:70
+#: crates/dc-gui/src/find_files/standard.rs:68
 msgid "Searc_h for part of file name"
 msgstr "Hledat _části jména souboru"
 
-#: crates/dc-gui/src/find_files/standard.rs:71
+#: crates/dc-gui/src/find_files/standard.rs:69
 msgid "_Regular expression"
 msgstr "_Regulární výrazy"
 
-#: crates/dc-gui/src/find_files/standard.rs:73
+#: crates/dc-gui/src/find_files/standard.rs:71
 msgid "Find _text in file"
 msgstr "Vyhledat _text"
 
-#: crates/dc-gui/src/find_files/standard.rs:75
+#: crates/dc-gui/src/find_files/standard.rs:73
 msgid "Re_place by"
 msgstr "Nahradit _za"
 
-#: crates/dc-gui/src/find_files/standard.rs:77
+#: crates/dc-gui/src/find_files/standard.rs:75
 msgid "Find files N_OT containing the text"
 msgstr "Hledat soubory _NEobsahující text"
 
-#: crates/dc-gui/src/find_files/standard.rs:78
+#: crates/dc-gui/src/find_files/standard.rs:76
 msgid "Case sens_itive"
 msgstr "Rozlišovat ve_likost"
 
-#: crates/dc-gui/src/find_files/standard.rs:79
+#: crates/dc-gui/src/find_files/standard.rs:77
 msgid "Reg_ular expression"
 msgstr "R_egulární výrazy"
 
-#: crates/dc-gui/src/find_files/standard.rs:80
+#: crates/dc-gui/src/find_files/standard.rs:78
 msgid "Hexadeci_mal"
 msgstr "He_xadecimálně"
 
-#: crates/dc-gui/src/find_files/standard.rs:81
+#: crates/dc-gui/src/find_files/standard.rs:79
 msgid "Text of _documents"
 msgstr "Text do_kumentů"
 
-#: crates/dc-gui/src/find_files/standard.rs:93
+#: crates/dc-gui/src/find_files/standard.rs:83
+#: crates/dc-gui/src/quick_details.rs:182
+msgid "Install _add-ons..."
+msgstr "Instalovat _doplňky…"
+
+#: crates/dc-gui/src/find_files/standard.rs:91
 msgid ""
 "Names of directories not to search, separated by \";\": a name "
 "(node_modules), a path under the start directory (build/cache) or a whole "
@@ -1312,19 +1467,19 @@ msgstr ""
 "cesta pod počáteční složkou (build/cache) nebo celá cesta (/proc); masky "
 "jsou povolené."
 
-#: crates/dc-gui/src/find_files/standard.rs:95
+#: crates/dc-gui/src/find_files/standard.rs:93
 msgid "Names separated by \";\", masks with * and ? allowed"
 msgstr "Názvy oddělené \";\", masky s * a ? jsou povolené"
 
-#: crates/dc-gui/src/find_files/standard.rs:96
+#: crates/dc-gui/src/find_files/standard.rs:94
 msgid "Names not to find, separated by \";\""
 msgstr "Názvy, které se nemají najít, oddělené \";\""
 
-#: crates/dc-gui/src/find_files/standard.rs:97
+#: crates/dc-gui/src/find_files/standard.rs:95
 msgid "The text is bytes in hexadecimal, e.g. 4D 5A"
 msgstr "Text jsou bajty šestnáctkově, např. 4D 5A"
 
-#: crates/dc-gui/src/find_files/standard.rs:99
+#: crates/dc-gui/src/find_files/standard.rs:97
 msgid ""
 "Searches the text of documents, not their bytes: OpenDocument and Microsoft "
 "Office files, EPUB and FictionBook by itself; PDF, DjVu, RTF and old Word "
@@ -1334,57 +1489,53 @@ msgstr ""
 "Microsoft Office, EPUB a FictionBook přímo; PDF, DjVu, RTF a staré dokumenty "
 "Wordu přes programy systému."
 
-#: crates/dc-gui/src/find_files/standard.rs:101
+#: crates/dc-gui/src/find_files/standard.rs:99
 msgid "Encoding of the files searched"
 msgstr "Kódování prohledávaných souborů"
 
-#: crates/dc-gui/src/find_files/standard.rs:104
+#: crates/dc-gui/src/find_files/standard.rs:102
 msgid "Start in _directory"
 msgstr "S_pustit ve složce"
 
-#: crates/dc-gui/src/find_files/standard.rs:114
+#: crates/dc-gui/src/find_files/standard.rs:112
 msgid "E_xclude subdirectories"
 msgstr "_Vyloučit podsložky"
 
-#: crates/dc-gui/src/find_files/standard.rs:115
+#: crates/dc-gui/src/find_files/standard.rs:113
 msgid "Search su_bdirectories:"
 msgstr "Prohledat po_dsložky:"
 
-#: crates/dc-gui/src/find_files/standard.rs:120
+#: crates/dc-gui/src/find_files/standard.rs:118
 msgid "File _mask"
 msgstr "_Maska souboru"
 
-#: crates/dc-gui/src/find_files/standard.rs:129
+#: crates/dc-gui/src/find_files/standard.rs:127
 msgid "_Exclude files"
 msgstr "Vyloučit so_ubory"
 
-#: crates/dc-gui/src/find_files/standard.rs:148
+#: crates/dc-gui/src/find_files/standard.rs:146
 msgid "Encodin_g:"
 msgstr "Kódován_í:"
 
-#: crates/dc-gui/src/find_files/standard.rs:152
-msgid "Copy"
-msgstr "Kopírovat"
-
-#: crates/dc-gui/src/find_files/standard.rs:170
+#: crates/dc-gui/src/find_files/standard.rs:155
 msgid "Directories"
 msgstr "Složky"
 
-#: crates/dc-gui/src/find_files/standard.rs:171
+#: crates/dc-gui/src/find_files/standard.rs:156
 msgid "Files"
 msgstr "Soubory"
 
-#: crates/dc-gui/src/find_files/standard.rs:172
+#: crates/dc-gui/src/find_files/standard.rs:157
 msgid "Find in contents"
 msgstr "Hledat v obsahu"
 
-#: crates/dc-gui/src/find_files/standard.rs:214
-#: crates/dc-gui/src/quick_details.rs:174
+#: crates/dc-gui/src/find_files/standard.rs:192
+#: crates/dc-gui/src/quick_details.rs:175
 #, rust-format
 msgid "{program} - {adds}"
 msgstr "{program} - {adds}"
 
-#: crates/dc-gui/src/find_files/standard.rs:216
+#: crates/dc-gui/src/find_files/standard.rs:194
 #, rust-format
 msgid ""
 "These documents need programs that are not installed:\n"
@@ -1437,11 +1588,11 @@ msgstr "Ukončit"
 msgid "Earlier texts"
 msgstr "Dřívější texty"
 
-#: crates/dc-gui/src/main.rs:100
+#: crates/dc-gui/src/main.rs:101
 msgid "[PATH] | [LEFT RIGHT]"
 msgstr "[CESTA] | [LEVÁ PRAVÁ]"
 
-#: crates/dc-gui/src/main.rs:102
+#: crates/dc-gui/src/main.rs:103
 msgid ""
 "A path alone is shown in the active panel (the left one at start), two paths "
 "in the left and the right panel."
@@ -1449,23 +1600,23 @@ msgstr ""
 "Samotná cesta se ukáže v aktivním panelu (při startu levém), dvě cesty v "
 "levém a pravém panelu."
 
-#: crates/dc-gui/src/main.rs:104
+#: crates/dc-gui/src/main.rs:105
 msgid "PATH"
 msgstr "CESTA"
 
-#: crates/dc-gui/src/main.rs:106
+#: crates/dc-gui/src/main.rs:107
 msgid "Path for the left panel"
 msgstr "Cesta levého panelu"
 
-#: crates/dc-gui/src/main.rs:107
+#: crates/dc-gui/src/main.rs:108
 msgid "Path for the right panel"
 msgstr "Cesta pravého panelu"
 
-#: crates/dc-gui/src/main.rs:108
+#: crates/dc-gui/src/main.rs:109
 msgid "Active panel: L (left) or R (right)"
 msgstr "Aktivní panel: L (levý) nebo R (pravý)"
 
-#: crates/dc-gui/src/main.rs:123
+#: crates/dc-gui/src/main.rs:124
 #, rust-format
 msgid "Not a local path: {path}"
 msgstr "Není místní cesta: {path}"
@@ -1850,13 +2001,13 @@ msgctxt "main menu"
 msgid "Load tabs from Favorite Tabs"
 msgstr "Načíst záložky z oblíbených"
 
-#: crates/dc-gui/src/menu.rs:154 crates/dc-gui/src/menu.rs:204
+#: crates/dc-gui/src/menu.rs:154 crates/dc-gui/src/menu.rs:205
 msgctxt "main menu"
 msgid "Configuration of folder tabs"
 msgstr "Nastavení záložek složek"
 
 #: crates/dc-gui/src/menu.rs:155 crates/dc-gui/src/menu.rs:164
-#: crates/dc-gui/src/menu.rs:202
+#: crates/dc-gui/src/menu.rs:203
 msgctxt "main menu"
 msgid "Configuration of Favorite Tabs"
 msgstr "Nastavení oblíbených záložek"
@@ -1971,52 +2122,57 @@ msgctxt "main menu"
 msgid "_Options..."
 msgstr "M_ožnosti..."
 
-#: crates/dc-gui/src/menu.rs:201
+#: crates/dc-gui/src/menu.rs:200
+msgctxt "main menu"
+msgid "A_dd-ons..."
+msgstr "_Doplňky…"
+
+#: crates/dc-gui/src/menu.rs:202
 msgctxt "main menu"
 msgid "Configuration of Directory Hotlist"
 msgstr "Nastavení oblíbených složek"
 
-#: crates/dc-gui/src/menu.rs:203
+#: crates/dc-gui/src/menu.rs:204
 msgctxt "main menu"
 msgid "Configuration of File _Associations"
 msgstr "Nastavení _přidružení souborů"
 
-#: crates/dc-gui/src/menu.rs:205
+#: crates/dc-gui/src/menu.rs:206
 msgctxt "main menu"
 msgid "Configuration of Archivers"
 msgstr "Nastavení archivátorů"
 
-#: crates/dc-gui/src/menu.rs:207
+#: crates/dc-gui/src/menu.rs:208
 msgctxt "main menu"
 msgid "Save Position"
 msgstr "Uložit pozici"
 
-#: crates/dc-gui/src/menu.rs:208
+#: crates/dc-gui/src/menu.rs:209
 msgctxt "main menu"
 msgid "Save Settings"
 msgstr "Uložit nastavení"
 
-#: crates/dc-gui/src/menu.rs:212
+#: crates/dc-gui/src/menu.rs:213
 msgctxt "main menu"
 msgid "_Help"
 msgstr "_Nápověda"
 
-#: crates/dc-gui/src/menu.rs:214
+#: crates/dc-gui/src/menu.rs:215
 msgctxt "main menu"
 msgid "_Contents"
 msgstr "_Obsah"
 
-#: crates/dc-gui/src/menu.rs:215
+#: crates/dc-gui/src/menu.rs:216
 msgctxt "main menu"
 msgid "_Keyboard"
 msgstr "_Klávesnice"
 
-#: crates/dc-gui/src/menu.rs:216
+#: crates/dc-gui/src/menu.rs:217
 msgctxt "main menu"
 msgid "_Visit Douby Commander Website"
 msgstr "Na_vštívit web Douby Commanderu"
 
-#: crates/dc-gui/src/menu.rs:218
+#: crates/dc-gui/src/menu.rs:219
 msgctxt "main menu"
 msgid "_About"
 msgstr "_O programu"
@@ -2463,61 +2619,57 @@ msgstr "Rychlost {speed}/s, zbývá {time}"
 msgid "Speed {speed}/s"
 msgstr "Rychlost {speed}/s"
 
-#: crates/dc-gui/src/quick_details.rs:193
-msgid "Copy the command"
-msgstr "Zkopírovat příkaz"
-
-#: crates/dc-gui/src/quick_details.rs:207
+#: crates/dc-gui/src/quick_details.rs:194
 msgid "For a better preview install"
 msgstr "Pro lepší náhled nainstalujte"
 
-#: crates/dc-gui/src/quick_details.rs:270
+#: crates/dc-gui/src/quick_details.rs:256
 msgid "picture of the file"
 msgstr "obrázek souboru"
 
-#: crates/dc-gui/src/quick_view.rs:102
+#: crates/dc-gui/src/quick_view.rs:103
 msgid "Open in application"
 msgstr "Otevřít v aplikaci"
 
-#: crates/dc-gui/src/quick_view.rs:103
+#: crates/dc-gui/src/quick_view.rs:104
 msgid "Close the quick view and open the file in its application"
 msgstr "Zavřít rychlý náhled a otevřít soubor v jeho aplikaci"
 
-#: crates/dc-gui/src/quick_view.rs:199
+#: crates/dc-gui/src/quick_view.rs:200
 msgid "Folder"
 msgstr "Složka"
 
-#: crates/dc-gui/src/quick_view.rs:205
+#: crates/dc-gui/src/quick_view.rs:206
 msgid "Files inside archives cannot be shown yet."
 msgstr "Soubory uvnitř archivů zatím nejde zobrazit."
 
-#: crates/dc-gui/src/quick_view.rs:253
+#: crates/dc-gui/src/quick_view.rs:254
 msgid "SoundFont, a bank of instruments"
 msgstr "SoundFont, banka nástrojů"
 
-#: crates/dc-gui/src/quick_view.rs:258
+#: crates/dc-gui/src/quick_view.rs:259
 #, rust-format
 msgid "{type}, {size}"
 msgstr "{type}, {size}"
 
-#: crates/dc-gui/src/quick_view.rs:269
+#: crates/dc-gui/src/quick_view.rs:270
 #, rust-format
 msgid "{type}, {width} × {height}, {size}"
 msgstr "{type}, {width} × {height}, {size}"
 
-#: crates/dc-gui/src/quick_view.rs:276
+#: crates/dc-gui/src/quick_view.rs:277
 msgid "The image cannot be read."
 msgstr "Obrázek nejde načíst."
 
-#: crates/dc-gui/src/quick_view.rs:351
+#: crates/dc-gui/src/quick_view.rs:352
 msgid "The file name cannot be passed to the viewer."
 msgstr "Název souboru nejde předat prohlížeči."
 
-#: crates/dc-gui/src/quick_view.rs:357
+#: crates/dc-gui/src/quick_view.rs:358
 msgid "Install Neovim (or Vim) to view text files."
 msgstr "Pro prohlížení textových souborů nainstalujte Neovim (nebo Vim)."
 
-#: crates/dc-gui/src/quick_view.rs:373
+#: crates/dc-gui/src/quick_view.rs:374
 msgid "The text viewer ended."
 msgstr "Prohlížeč textu skončil."
 

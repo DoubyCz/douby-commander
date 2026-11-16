@@ -10,6 +10,7 @@ use dc_vfs::mounts;
 use gtk::glib;
 use gtk::prelude::*;
 
+use crate::addons::AddonsUi;
 use crate::commander::Commander;
 use crate::operations::OperationsUi;
 use crate::panel_view::PanelView;
@@ -23,6 +24,7 @@ use crate::{function_bar, menu, panel_column, texts, toolbar};
 pub fn build(app: &gtk::Application, startup: &Startup<PathBuf>) -> Weak<Commander> {
     let start_dir = glib::home_dir();
     let operations = OperationsUi::new();
+    let addons = AddonsUi::new();
     let commander = Rc::new(Commander::new(
         {
             let source = Arc::new(dc_vfs::Vfs::default());
@@ -31,29 +33,20 @@ pub fn build(app: &gtk::Application, startup: &Startup<PathBuf>) -> Weak<Command
         Keymap::with_defaults(),
         Settings::default(),
         Rc::clone(&operations),
+        Rc::clone(&addons),
     ));
+    let weak = Rc::downgrade(&commander);
+    addons.connect_installed(move || {
+        if let Some(commander) = weak.upgrade() {
+            commander.addons_installed();
+        }
+    });
     if commander.settings().show_hidden {
         for panel in commander.panels() {
             panel.set_show_hidden(true);
         }
     }
-    let weak = Rc::downgrade(&commander);
-    operations.connect_finished(move || {
-        if let Some(commander) = weak.upgrade() {
-            commander.refresh_panels();
-            // The progress window is gone: back to the panel, unless the
-            // user is somewhere else (another dialog has the window).
-            let main = commander.active().window();
-            // Nor while a name or the path is being typed.
-            let typing = commander.panels().iter().any(|panel| panel.is_renaming() || panel.is_editing_path());
-            if main.is_some_and(|window| window.is_active())
-                && !typing
-                && !commander.panels().iter().any(|panel| panel.has_focus())
-            {
-                commander.active().focus();
-            }
-        }
-    });
+    follow_operations(&commander, &operations);
 
     let drives = mounts::mount_points();
     let columns = [panel_column::build(&commander, 0, &drives), panel_column::build(&commander, 1, &drives)];
@@ -96,6 +89,8 @@ pub fn build(app: &gtk::Application, startup: &Startup<PathBuf>) -> Weak<Command
     content.append(&toolbar::build(&commander));
     content.append(splitter.widget());
     content.append(operations.row());
+    // The queue of add-ons right above the function keys.
+    content.append(addons.bar());
     let function_bar = function_bar::build(&commander);
     content.append(function_bar.widget());
     window.set_child(Some(&content));
@@ -141,4 +136,26 @@ pub fn build(app: &gtk::Application, startup: &Startup<PathBuf>) -> Weak<Command
     keys.connect_key_pressed(move |_, key, _, state| commander.handle_key(key, state));
     window.add_controller(keys);
     built
+}
+
+/// After operations: the panels list again, and the keyboard goes back to
+/// the active panel unless the user is elsewhere.
+fn follow_operations(commander: &Rc<Commander>, operations: &OperationsUi) {
+    let weak = Rc::downgrade(commander);
+    operations.connect_finished(move || {
+        if let Some(commander) = weak.upgrade() {
+            commander.refresh_panels();
+            // The progress window is gone: back to the panel, unless the
+            // user is somewhere else (another dialog has the window).
+            let main = commander.active().window();
+            // Nor while a name or the path is being typed.
+            let typing = commander.panels().iter().any(|panel| panel.is_renaming() || panel.is_editing_path());
+            if main.is_some_and(|window| window.is_active())
+                && !typing
+                && !commander.panels().iter().any(|panel| panel.has_focus())
+            {
+                commander.active().focus();
+            }
+        }
+    });
 }

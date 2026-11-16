@@ -19,6 +19,7 @@ use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::{Duration, Instant};
 
+use dc_core::addons::Feature;
 use dc_core::find::templates::Template;
 use dc_core::find::{FindQuery, Finder, Progress, Roots};
 use dc_core::path_input;
@@ -28,6 +29,7 @@ use gtk::glib;
 use jiff::Timestamp;
 use jiff::tz::TimeZone;
 
+use crate::addons::{AddonsUi, Offer};
 use crate::dialogs;
 use advanced::Advanced;
 use results::Results;
@@ -80,6 +82,7 @@ pub struct FindWindow {
     /// Its marked items then.
     selected: RefCell<Vec<PathBuf>>,
     actions: Actions,
+    addons: Rc<AddonsUi>,
 }
 
 /// A check box with a mnemonic.
@@ -111,7 +114,7 @@ fn page(child: &impl IsA<gtk::Widget>) -> gtk::ScrolledWindow {
 }
 
 impl FindWindow {
-    pub fn new(parent: Option<&gtk::Window>, actions: Actions) -> Rc<Self> {
+    pub fn new(parent: Option<&gtk::Window>, actions: Actions, addons: Rc<AddonsUi>) -> Rc<Self> {
         let window = gtk::Window::builder().title(gettext("Find files")).default_width(1000).default_height(760).build();
         window.set_transient_for(parent);
         let this = Rc::new(Self {
@@ -131,6 +134,7 @@ impl FindWindow {
             panel_dir: RefCell::default(),
             selected: RefCell::default(),
             actions,
+            addons,
         });
         this.lay_out();
         this.connect();
@@ -234,6 +238,13 @@ impl FindWindow {
         });
         self.advanced.connect();
 
+        let weak = Rc::downgrade(self);
+        self.standard.install_addons.connect_clicked(move |_| {
+            if let Some(this) = weak.upgrade() {
+                let offer = Offer { feature: Feature::DocumentText.title(), hints: standard::missing_tools() };
+                this.addons.offer(Some(&this.window), offer);
+            }
+        });
         let weak = Rc::downgrade(self);
         self.standard.choose.connect_clicked(move |_| {
             if let Some(this) = weak.upgrade() {
@@ -383,6 +394,11 @@ impl FindWindow {
             self.notebook.set_current_page(Some(STANDARD));
             self.standard.masks.entry().grab_focus();
         }
+    }
+
+    /// Add-ons were installed: the hint about missing ones looks again.
+    pub fn addons_installed(&self) {
+        self.standard.update();
     }
 
     fn hide(self: &Rc<Self>) {

@@ -89,6 +89,9 @@ pub enum Command {
     Exit,
     /// Help > About: who made it, versions, licenses.
     About,
+    /// Configuration > Add-ons: the programs of the distribution the
+    /// functions can use, to install (our own command).
+    Addons,
     /// Ctrl+R: list the active panel again.
     Refresh,
     /// Ctrl+A: mark everything except `..`, directories too.
@@ -154,7 +157,7 @@ impl TrashChoice {
 
 impl Command {
     /// All commands with default parameters, for listings and for parsing.
-    pub const ALL: [Self; 53] = [
+    pub const ALL: [Self; 54] = [
         Self::Open,
         Self::ChangeDirToParent,
         Self::FocusSwap,
@@ -182,6 +185,7 @@ impl Command {
         Self::Delete { trash: TrashChoice::Setting },
         Self::Exit,
         Self::About,
+        Self::Addons,
         Self::Refresh,
         Self::MarkMarkAll,
         Self::MarkUnmarkAll,
@@ -241,6 +245,7 @@ impl Command {
             Self::Delete { .. } => "cm_Delete",
             Self::Exit => "cm_Exit",
             Self::About => "cm_About",
+            Self::Addons => "cm_Addons",
             Self::Refresh => "cm_Refresh",
             Self::MarkMarkAll => "cm_MarkMarkAll",
             Self::MarkUnmarkAll => "cm_MarkUnmarkAll",

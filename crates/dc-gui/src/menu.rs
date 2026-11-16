@@ -197,6 +197,7 @@ const MENU: &[(Caption, &[Entry])] = &[
         NC_("main menu", "C_onfiguration"),
         &[
             Item(NC_("main menu", "_Options..."), "cm_Options"),
+            Item(NC_("main menu", "A_dd-ons..."), "cm_Addons"),
             Separator,
             Item(NC_("main menu", "Configuration of Directory Hotlist"), "cm_ConfigDirHotList"),
             Item(NC_("main menu", "Configuration of Favorite Tabs"), "cm_ConfigFavoriteTabs"),

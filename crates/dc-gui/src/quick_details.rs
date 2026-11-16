@@ -5,18 +5,20 @@
 
 use std::ffi::OsString;
 use std::path::{Path, PathBuf};
+use std::rc::Rc;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Duration;
 
 use dc_core::preview::pages::PageRenderer;
 use dc_core::preview::thumbnailer::Thumbnailer;
-use dc_core::program::install_command;
-use dc_core::preview::tools::{self, Hint, InfoTool, Section};
+use dc_core::addons::{Feature, Hint};
+use dc_core::preview::tools::{self, InfoTool, Section};
 use dc_i18n::{fill, gettext};
 use gtk::gdk_pixbuf::Pixbuf;
 use gtk::prelude::*;
 use gtk::{gio, glib};
 
+use crate::addons::{self, AddonsUi, Offer};
 use crate::launch;
 use crate::pixels::Pixels;
 
@@ -34,8 +36,6 @@ pub struct Details {
     pub picture: Option<Pixels>,
     pub sections: Vec<Section>,
     pub hints: Vec<Hint>,
-    /// The command that installs the missing programs, where it is known.
-    pub install: Option<String>,
 }
 
 /// The page of a file without a viewer: its icon (or picture), name and
@@ -48,10 +48,11 @@ pub struct InfoPage {
     name: gtk::Label,
     text: gtk::Label,
     details: gtk::Box,
+    addons: Rc<AddonsUi>,
 }
 
 impl InfoPage {
-    pub fn new() -> Self {
+    pub fn new(addons: Rc<AddonsUi>) -> Self {
         let icon = gtk::Image::builder().pixel_size(96).build();
         let picture = gtk::Picture::builder()
             .content_fit(gtk::ContentFit::ScaleDown)
@@ -86,7 +87,7 @@ impl InfoPage {
         content.append(&text);
         content.append(&details);
         let root = gtk::ScrolledWindow::builder().hscrollbar_policy(gtk::PolicyType::Never).child(&content).build();
-        Self { root, icon, picture, name, text, details }
+        Self { root, icon, picture, name, text, details, addons }
     }
 
     pub fn widget(&self) -> &gtk::ScrolledWindow {
@@ -118,7 +119,7 @@ impl InfoPage {
             self.details.append(&section_widget(section));
         }
         if !details.hints.is_empty() {
-            self.details.append(&hints_widget(&details.hints, details.install.as_deref()));
+            self.details.append(&hints_widget(details.hints, &self.addons));
         }
     }
 }
@@ -165,11 +166,11 @@ fn section_widget(section: &Section) -> gtk::Box {
     titled(title, &body)
 }
 
-/// Programs that would tell more, with the command that installs them on
-/// this distribution and a button that copies it.
-fn hints_widget(hints: &[Hint], install: Option<&str>) -> gtk::Box {
+/// Programs that would tell more, with what each adds, and the button
+/// that offers to install them (the add-ons of the quick view).
+fn hints_widget(hints: Vec<Hint>, addons: &Rc<AddonsUi>) -> gtk::Box {
     let body = gtk::Box::new(gtk::Orientation::Vertical, 8);
-    for hint in hints {
+    for hint in &hints {
         let line = gtk::Label::builder()
             .label(fill(&gettext("{program} - {adds}"), &[("program", &hint.program), ("adds", &hint.adds)]))
             .xalign(0.0)
@@ -177,33 +178,19 @@ fn hints_widget(hints: &[Hint], install: Option<&str>) -> gtk::Box {
             .build();
         body.append(&line);
     }
-    if let Some(install) = install {
-        let command = gtk::Label::builder()
-            .label(install)
-            .xalign(0.0)
-            .hexpand(true)
-            .selectable(true)
-            .focusable(false)
-            .wrap(true)
-            .wrap_mode(gtk::pango::WrapMode::WordChar)
-            .build();
-        command.add_css_class("monospace");
-        let copy = gtk::Button::builder()
-            .icon_name("edit-copy-symbolic")
-            .tooltip_text(gettext("Copy the command"))
-            .focusable(false)
-            .focus_on_click(false)
-            .valign(gtk::Align::Center)
-            .build();
-        copy.add_css_class("flat");
-        let text = install.to_owned();
-        copy.connect_clicked(move |button| button.clipboard().set_text(&text));
-        let row = gtk::Box::new(gtk::Orientation::Horizontal, 8);
-        row.add_css_class("dc-command");
-        row.append(&command);
-        row.append(&copy);
-        body.append(&row);
-    }
+    let install = gtk::Button::builder()
+        .label(gettext("Install _add-ons..."))
+        .use_underline(true)
+        .focusable(false)
+        .focus_on_click(false)
+        .halign(gtk::Align::Start)
+        .build();
+    let addons = Rc::clone(addons);
+    install.connect_clicked(move |button| {
+        let offer = Offer { feature: Feature::QuickView.title(), hints: hints.clone() };
+        addons.offer(addons::window_of(button).as_ref(), offer);
+    });
+    body.append(&install);
     titled(&gettext("For a better preview install"), &body.upcast())
 }
 
@@ -242,8 +229,7 @@ pub fn find(path: &Path, mime: &str, cancel: &AtomicBool) -> Details {
         let output = run(&program, &args, tool.input(), tool.timeout(), MAX_OUTPUT, cancel);
         sections.extend(output.map(|output| tool.parse(&String::from_utf8_lossy(&output))).unwrap_or_default());
     }
-    let install = install_command(&hints);
-    Details { picture, sections, hints, install }
+    Details { picture, sections, hints }
 }
 
 /// Whether both programs of `renderer` are installed.

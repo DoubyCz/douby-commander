@@ -3,6 +3,7 @@
 //! Everything here can be tested without a display. The GUI only renders
 //! the state kept in [`Panel`] and forwards user actions to it.
 
+pub mod addons;
 pub mod command;
 pub mod find;
 pub mod format;

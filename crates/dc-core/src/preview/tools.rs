@@ -287,88 +287,6 @@ pub fn known_thumbnailer(mime: &str) -> Option<(&'static str, String)> {
     }
 }
 
-/// A program the quick view would use, missing.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Hint {
-    pub program: String,
-    /// What it would add.
-    pub adds: String,
-}
-
-/// The package managers whose package names are known here.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Distribution {
-    /// Arch Linux and derivatives (pacman).
-    Arch,
-    /// Debian, Ubuntu and derivatives (apt).
-    Debian,
-    /// Fedora, RHEL and derivatives (dnf).
-    Fedora,
-    /// openSUSE (zypper).
-    Suse,
-}
-
-impl Distribution {
-    /// From `/etc/os-release`: its `ID`, then the families in `ID_LIKE`.
-    #[must_use]
-    pub fn from_os_release(text: &str) -> Option<Self> {
-        let value = |key: &str| {
-            text.lines()
-                .find_map(|line| line.trim().strip_prefix(key)?.strip_prefix('='))
-                .map(|value| value.trim().trim_matches(['"', '\'']).to_owned())
-                .unwrap_or_default()
-        };
-        let (id, like) = (value("ID"), value("ID_LIKE"));
-        std::iter::once(id.as_str()).chain(like.split_whitespace()).find_map(|id| match id {
-            "arch" => Some(Self::Arch),
-            "debian" | "ubuntu" => Some(Self::Debian),
-            "fedora" | "rhel" | "centos" => Some(Self::Fedora),
-            "opensuse" | "suse" | "sles" => Some(Self::Suse),
-            _ if id.starts_with("opensuse") => Some(Self::Suse),
-            _ => None,
-        })
-    }
-
-    /// The package with `program`; `None` where it is not known.
-    #[must_use]
-    pub fn package(self, program: &str) -> Option<&'static str> {
-        Some(match (program, self) {
-            ("exiftool", Self::Arch) => "perl-image-exiftool",
-            ("exiftool", Self::Debian) => "libimage-exiftool-perl",
-            ("exiftool", Self::Fedora) => "perl-Image-ExifTool",
-            ("exiftool", Self::Suse) => "exiftool",
-            ("fluidsynth", _) => "fluidsynth",
-            ("evince-thumbnailer", Self::Fedora) => "evince-thumbnailer",
-            ("evince-thumbnailer", _) => "evince",
-            ("gsf-office-thumbnailer", Self::Arch | Self::Fedora) => "libgsf",
-            ("gsf-office-thumbnailer", Self::Debian) => "libgsf-bin",
-            ("gnome-thumbnail-font", _) => "gnome-font-viewer",
-            ("gnome-epub-thumbnailer", _) => "gnome-epub-thumbnailer",
-            ("pdftoppm" | "pdfinfo" | "pdftotext", Self::Arch) => "poppler",
-            ("pdftoppm" | "pdfinfo" | "pdftotext", Self::Debian | Self::Fedora) => "poppler-utils",
-            ("pdftoppm" | "pdfinfo" | "pdftotext", Self::Suse) => "poppler-tools",
-            ("djvutxt", Self::Debian) => "djvulibre-bin",
-            ("djvutxt", _) => "djvulibre",
-            ("catdoc", _) => "catdoc",
-            ("pandoc", Self::Arch) => "pandoc-cli",
-            ("pandoc", _) => "pandoc",
-            _ => return None,
-        })
-    }
-
-    /// The command that installs `packages`.
-    #[must_use]
-    pub fn install_command(self, packages: &[&str]) -> String {
-        let manager = match self {
-            Self::Arch => "sudo pacman -S --needed",
-            Self::Debian => "sudo apt install",
-            Self::Fedora => "sudo dnf install",
-            Self::Suse => "sudo zypper install",
-        };
-        format!("{manager} {}", packages.join(" "))
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -457,35 +375,5 @@ mod tests {
         );
         assert_eq!(known_thumbnailer("font/ttf").map(|(program, _)| program), Some("gnome-thumbnail-font"));
         assert_eq!(known_thumbnailer("application/octet-stream"), None);
-    }
-
-    #[test]
-    fn distributions() {
-        assert_eq!(Distribution::from_os_release("NAME=\"Arch Linux\"\nID=arch\n"), Some(Distribution::Arch));
-        assert_eq!(Distribution::from_os_release("ID=linuxmint\nID_LIKE=\"ubuntu debian\"\n"), Some(Distribution::Debian));
-        assert_eq!(Distribution::from_os_release("ID=\"rocky\"\nID_LIKE=\"rhel centos fedora\"\n"), Some(Distribution::Fedora));
-        assert_eq!(Distribution::from_os_release("ID=\"opensuse-tumbleweed\"\nID_LIKE=\"opensuse suse\"\n"), Some(Distribution::Suse));
-        assert_eq!(Distribution::from_os_release("ID=gentoo\n"), None);
-        // ID_LIKE is not ID.
-        assert_eq!(Distribution::from_os_release("ID_LIKE=arch\nID=endeavouros\n"), Some(Distribution::Arch));
-    }
-
-    #[test]
-    fn install_commands() {
-        let arch = Distribution::Arch;
-        let packages: Vec<&str> = ["exiftool", "fluidsynth"].iter().filter_map(|p| arch.package(p)).collect();
-        assert_eq!(arch.install_command(&packages), "sudo pacman -S --needed perl-image-exiftool fluidsynth");
-        assert_eq!(Distribution::Debian.install_command(&["libimage-exiftool-perl"]), "sudo apt install libimage-exiftool-perl");
-        assert_eq!(Distribution::Suse.package("gsf-office-thumbnailer"), None);
-    }
-
-    #[test]
-    fn every_tool_for_documents_has_a_package() {
-        for distribution in [Distribution::Arch, Distribution::Debian, Distribution::Fedora, Distribution::Suse] {
-            for tool in crate::find::DOCUMENT_TOOLS {
-                assert!(distribution.package(tool).is_some(), "{tool} on {distribution:?}");
-            }
-        }
-        assert_eq!(Distribution::Debian.package("djvutxt"), Some("djvulibre-bin"));
     }
 }

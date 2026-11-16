@@ -578,7 +578,7 @@ pub fn cancel_label() -> String {
     pgettext("button", "_Cancel")
 }
 
-fn close_on_escape(window: &gtk::Window) {
+pub fn close_on_escape(window: &gtk::Window) {
     let shortcuts = gtk::ShortcutController::new();
     shortcuts.add_shortcut(gtk::Shortcut::new(
         gtk::ShortcutTrigger::parse_string("Escape"),

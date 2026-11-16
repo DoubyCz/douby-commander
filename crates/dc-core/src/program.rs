@@ -11,7 +11,6 @@ use std::process::{Command, Stdio};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::{Duration, Instant};
 
-use crate::preview::tools::{Distribution, Hint};
 
 /// `program` on `$PATH` (or a path), if it is an executable file.
 #[must_use]
@@ -75,23 +74,6 @@ pub fn run(
     };
     let output = reader.join().ok()?.ok()?;
     told.then_some(output)
-}
-
-/// The distribution this runs on, from `/etc/os-release`.
-#[must_use]
-pub fn distribution() -> Option<Distribution> {
-    let os_release = std::fs::read_to_string("/etc/os-release").or_else(|_| std::fs::read_to_string("/usr/lib/os-release"));
-    Distribution::from_os_release(&os_release.ok()?)
-}
-
-/// One command for all the missing programs whose packages are known on
-/// this distribution.
-#[must_use]
-pub fn install_command(hints: &[Hint]) -> Option<String> {
-    let distribution = distribution()?;
-    let mut packages: Vec<&str> = hints.iter().filter_map(|hint| distribution.package(&hint.program)).collect();
-    packages.dedup();
-    (!packages.is_empty()).then(|| distribution.install_command(&packages))
 }
 
 #[cfg(test)]
