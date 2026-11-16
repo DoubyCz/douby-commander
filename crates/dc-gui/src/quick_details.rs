@@ -13,12 +13,12 @@ use dc_core::preview::pages::PageRenderer;
 use dc_core::preview::thumbnailer::Thumbnailer;
 use dc_core::addons::{Feature, Hint};
 use dc_core::preview::tools::{self, InfoTool, Section};
-use dc_i18n::{fill, gettext};
+use dc_i18n::gettext;
 use gtk::gdk_pixbuf::Pixbuf;
 use gtk::prelude::*;
 use gtk::{gio, glib};
 
-use crate::addons::{self, AddonsUi, Offer};
+use crate::addons::Strip;
 use crate::launch;
 use crate::pixels::Pixels;
 
@@ -48,11 +48,12 @@ pub struct InfoPage {
     name: gtk::Label,
     text: gtk::Label,
     details: gtk::Box,
-    addons: Rc<AddonsUi>,
+    /// The add-ons strip of the window: missing programs are offered there.
+    strip: Rc<Strip>,
 }
 
 impl InfoPage {
-    pub fn new(addons: Rc<AddonsUi>) -> Self {
+    pub fn new(strip: Rc<Strip>) -> Self {
         let icon = gtk::Image::builder().pixel_size(96).build();
         let picture = gtk::Picture::builder()
             .content_fit(gtk::ContentFit::ScaleDown)
@@ -87,7 +88,7 @@ impl InfoPage {
         content.append(&text);
         content.append(&details);
         let root = gtk::ScrolledWindow::builder().hscrollbar_policy(gtk::PolicyType::Never).child(&content).build();
-        Self { root, icon, picture, name, text, details, addons }
+        Self { root, icon, picture, name, text, details, strip }
     }
 
     pub fn widget(&self) -> &gtk::ScrolledWindow {
@@ -119,7 +120,8 @@ impl InfoPage {
             self.details.append(&section_widget(section));
         }
         if !details.hints.is_empty() {
-            self.details.append(&hints_widget(details.hints, &self.addons));
+            // Offered on the strip of the window, not here.
+            self.strip.request(&Feature::QuickView.title(), &details.hints);
         }
     }
 }
@@ -164,34 +166,6 @@ fn section_widget(section: &Section) -> gtk::Box {
         }
     };
     titled(title, &body)
-}
-
-/// Programs that would tell more, with what each adds, and the button
-/// that offers to install them (the add-ons of the quick view).
-fn hints_widget(hints: Vec<Hint>, addons: &Rc<AddonsUi>) -> gtk::Box {
-    let body = gtk::Box::new(gtk::Orientation::Vertical, 8);
-    for hint in &hints {
-        let line = gtk::Label::builder()
-            .label(fill(&gettext("{program} - {adds}"), &[("program", &hint.program), ("adds", &hint.adds)]))
-            .xalign(0.0)
-            .wrap(true)
-            .build();
-        body.append(&line);
-    }
-    let install = gtk::Button::builder()
-        .label(gettext("Install _add-ons..."))
-        .use_underline(true)
-        .focusable(false)
-        .focus_on_click(false)
-        .halign(gtk::Align::Start)
-        .build();
-    let addons = Rc::clone(addons);
-    install.connect_clicked(move |button| {
-        let offer = Offer { feature: Feature::QuickView.title(), hints: hints.clone() };
-        addons.offer(addons::window_of(button).as_ref(), offer);
-    });
-    body.append(&install);
-    titled(&gettext("For a better preview install"), &body.upcast())
 }
 
 fn titled(title: &str, body: &gtk::Widget) -> gtk::Box {

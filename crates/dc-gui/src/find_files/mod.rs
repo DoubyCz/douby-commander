@@ -29,7 +29,7 @@ use gtk::glib;
 use jiff::Timestamp;
 use jiff::tz::TimeZone;
 
-use crate::addons::{AddonsUi, Offer};
+use crate::addons::{AddonsUi, Strip};
 use crate::dialogs;
 use advanced::Advanced;
 use results::Results;
@@ -82,7 +82,8 @@ pub struct FindWindow {
     /// Its marked items then.
     selected: RefCell<Vec<PathBuf>>,
     actions: Actions,
-    addons: Rc<AddonsUi>,
+    /// Add-ons the window would like, and installations, at its bottom.
+    strip: Rc<Strip>,
 }
 
 /// A check box with a mnemonic.
@@ -114,7 +115,7 @@ fn page(child: &impl IsA<gtk::Widget>) -> gtk::ScrolledWindow {
 }
 
 impl FindWindow {
-    pub fn new(parent: Option<&gtk::Window>, actions: Actions, addons: Rc<AddonsUi>) -> Rc<Self> {
+    pub fn new(parent: Option<&gtk::Window>, actions: Actions, addons: &AddonsUi) -> Rc<Self> {
         let window = gtk::Window::builder().title(gettext("Find files")).default_width(1000).default_height(760).build();
         window.set_transient_for(parent);
         let this = Rc::new(Self {
@@ -134,7 +135,7 @@ impl FindWindow {
             panel_dir: RefCell::default(),
             selected: RefCell::default(),
             actions,
-            addons,
+            strip: addons.strip(),
         });
         this.lay_out();
         this.connect();
@@ -175,7 +176,11 @@ impl FindWindow {
             .build();
         content.append(&self.notebook);
         content.append(&buttons);
-        self.window.set_child(Some(&content));
+        content.set_vexpand(true);
+        let window_content = gtk::Box::new(gtk::Orientation::Vertical, 0);
+        window_content.append(&content);
+        window_content.append(self.strip.widget());
+        self.window.set_child(Some(&window_content));
         self.window.set_default_widget(Some(&self.start));
     }
 
@@ -233,18 +238,11 @@ impl FindWindow {
         let weak = Rc::downgrade(self);
         self.standard.connect_changed(move || {
             if let Some(this) = weak.upgrade() {
-                this.standard.update();
+                this.standard_changed();
             }
         });
         self.advanced.connect();
 
-        let weak = Rc::downgrade(self);
-        self.standard.install_addons.connect_clicked(move |_| {
-            if let Some(this) = weak.upgrade() {
-                let offer = Offer { feature: Feature::DocumentText.title(), hints: standard::missing_tools() };
-                this.addons.offer(Some(&this.window), offer);
-            }
-        });
         let weak = Rc::downgrade(self);
         self.standard.choose.connect_clicked(move |_| {
             if let Some(this) = weak.upgrade() {
@@ -398,7 +396,16 @@ impl FindWindow {
 
     /// Add-ons were installed: the hint about missing ones looks again.
     pub fn addons_installed(&self) {
+        self.standard_changed();
+    }
+
+    /// A check of the Standard page changed: fields enabled as it says, the
+    /// programs for documents offered on the strip when they matter.
+    fn standard_changed(&self) {
         self.standard.update();
+        if self.standard.wants_document_tools() {
+            self.strip.request(&Feature::DocumentText.title(), &standard::missing_tools());
+        }
     }
 
     fn hide(self: &Rc<Self>) {

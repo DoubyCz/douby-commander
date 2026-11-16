@@ -19,7 +19,7 @@ use dc_vfs::{FileSource, LocalFs};
 use gtk::prelude::*;
 use gtk::{gdk, glib};
 
-use crate::addons::AddonsUi;
+use crate::addons::{AddonsUi, Strip};
 use crate::copy_dialog;
 use crate::find_files::{self, FindWindow};
 use crate::launch::{self, LaunchError};
@@ -87,6 +87,7 @@ impl Commander {
         settings: Settings,
         operations: Rc<OperationsUi>,
         addons: Rc<AddonsUi>,
+        strip: Rc<Strip>,
     ) -> Self {
         Self {
             panels,
@@ -94,7 +95,7 @@ impl Commander {
             keymap,
             settings,
             operations,
-            quick_view: QuickView::new(Rc::clone(&addons)),
+            quick_view: QuickView::new(strip),
             addons,
             splitter: OnceCell::new(),
             quick_view_side: Cell::new(None),
@@ -500,7 +501,7 @@ impl Commander {
                     }
                 }),
             };
-            FindWindow::new(panel.window().as_ref(), actions, Rc::clone(&self.addons))
+            FindWindow::new(panel.window().as_ref(), actions, &self.addons)
         });
         window.show(dir, selected);
     }

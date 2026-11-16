@@ -5,16 +5,12 @@
 //!
 //! [`Feature`] lists what each function can use and why, [`Distribution`]
 //! knows the packages and the command of its package manager, and
-//! [`InstallQueue`] keeps what the user chose to install later, in
-//! `~/.config/doubycmd/addons.toml`.
+//! [`InstallQueue`] holds what the user chose until it is installed (one
+//! installation after another, while the application runs).
 
-use std::fmt;
 use std::fs;
-use std::io;
-use std::path::{Path, PathBuf};
 
-use dc_i18n::{fill, gettext};
-use serde::{Deserialize, Serialize};
+use dc_i18n::gettext;
 
 use crate::find::{DOCUMENT_TOOLS, tool_adds};
 use crate::preview::pages::PageRenderer;
@@ -187,7 +183,7 @@ pub fn is_installed(program: &str) -> bool {
 }
 
 /// An add-on chosen for installing.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Request {
     pub program: String,
     pub package: String,
@@ -211,61 +207,12 @@ impl Request {
 }
 
 /// Add-ons waiting to be installed, for the whole application.
-#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct InstallQueue {
-    #[serde(default, rename = "addon")]
     items: Vec<Request>,
 }
 
-/// The queue file cannot be read or written.
-#[derive(Debug)]
-pub struct QueueError {
-    pub path: PathBuf,
-    pub reason: String,
-}
-
-impl fmt::Display for QueueError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.write_str(&fill(&gettext("The queue of add-ons in {path} cannot be used"), &[("path", &self.path.display())]))
-    }
-}
-
-impl std::error::Error for QueueError {}
-
 impl InstallQueue {
-    /// The queue kept in `path`, empty when there is no such file.
-    ///
-    /// # Errors
-    /// When the file is there but cannot be read or understood.
-    pub fn load(path: &Path) -> Result<Self, QueueError> {
-        let error = |reason: String| QueueError { path: path.to_owned(), reason };
-        match fs::read_to_string(path) {
-            Ok(text) => toml::from_str(&text).map_err(|err| error(err.to_string())),
-            Err(err) if err.kind() == io::ErrorKind::NotFound => Ok(Self::default()),
-            Err(err) => Err(error(err.to_string())),
-        }
-    }
-
-    /// Writes the queue to `path` (an empty one removes the file).
-    ///
-    /// # Errors
-    /// When the file cannot be written.
-    pub fn save(&self, path: &Path) -> Result<(), QueueError> {
-        let error = |reason: String| QueueError { path: path.to_owned(), reason };
-        if self.items.is_empty() {
-            return match fs::remove_file(path) {
-                Err(err) if err.kind() != io::ErrorKind::NotFound => Err(error(err.to_string())),
-                _ => Ok(()),
-            };
-        }
-        let text = toml::to_string_pretty(self).map_err(|err| error(err.to_string()))?;
-        if let Some(dir) = path.parent() {
-            fs::create_dir_all(dir).map_err(|err| error(err.to_string()))?;
-        }
-        let new = path.with_extension("toml.new");
-        fs::write(&new, text).and_then(|()| fs::rename(&new, path)).map_err(|err| error(err.to_string()))
-    }
-
     #[must_use]
     pub fn items(&self) -> &[Request] {
         &self.items
@@ -290,8 +237,9 @@ impl InstallQueue {
         }
     }
 
-    pub fn clear(&mut self) {
-        self.items.clear();
+    /// Everything queued, for the next installation; the queue is empty then.
+    pub fn take_all(&mut self) -> Vec<Request> {
+        std::mem::take(&mut self.items)
     }
 
     /// Leaves out what `installed` says is there now.
@@ -369,15 +317,8 @@ mod tests {
         queue.retain_missing(|program| program == "catdoc");
         assert_eq!(queue.packages(), ["poppler"]);
         assert!(queue.contains("pdftoppm") && !queue.contains("catdoc"));
-
-        let tmp = tempfile::tempdir().unwrap();
-        let path = tmp.path().join("doubycmd/addons.toml");
-        assert_eq!(InstallQueue::load(&path).unwrap(), InstallQueue::default());
-        queue.save(&path).unwrap();
-        assert_eq!(InstallQueue::load(&path).unwrap(), queue);
-        queue.clear();
-        queue.save(&path).unwrap();
-        assert!(!path.exists());
+        assert_eq!(queue.take_all().len(), 2);
+        assert!(queue.is_empty());
     }
 
     #[test]

@@ -13,7 +13,7 @@ the name and the abbreviation DC.
 It follows the theme of [Omarchy](https://omarchy.org/) live: switch the theme and the
 colors change at once, with no setup.
 
-> **Alpha (0.0.19).** Many features are not done yet. Most menu items and toolbar buttons
+> **Alpha (0.0.20).** Many features are not done yet. Most menu items and toolbar buttons
 > are not connected, and there is no settings dialog. Expect rough edges.
 
 ## What works
@@ -35,7 +35,7 @@ the icons view.*
   highlighting (Neovim, read only), images, video, and music with its tags, cover and a wave
   that moves with what plays, PDF as pages to scroll through. Other files show what the
   programs installed on the system tell (exiftool, pandoc, fluidsynth, thumbnailers of the
-  desktop), with a button that installs the missing ones.
+  desktop); missing ones are offered on the strip at the bottom
   Esc closes it, Tab closes it and goes to the other panel
 - Enter and F4 open a file in its default application, Shift+F4 offers the applications
   that can open it
@@ -52,15 +52,14 @@ the icons view.*
   excluded files and directories, depth, inside archives, text in files (any case,
   regular expressions, hexadecimal bytes, other encodings, files *not* containing it,
   replacing it), in the text of documents (OpenDocument, Office, EPUB by itself; PDF,
-  DjVu, RTF and old Word files through the tools of your system, which it offers to
-  install), modification time, size, file types and permissions,
+  DjVu, RTF and old Word files through the tools of your system, offered to install), modification time, size, file types and permissions,
   duplicate files. Searches can be saved under a name. The results go to the file
   or into the panel, to copy, move or delete them as files of a directory
 - Add-ons instead of plugins: where a function can do more with a program of your
-  distribution (the quick view, the text of documents in a search), a button offers it with
-  what it is good for. Install it at once, through your package manager with `sudo` in a
-  terminal window, or add it to a queue shown above the function keys. Configuration >
-  Add-ons lists everything there is (pacman, apt, dnf and zypper)
+  distribution (the quick view, the text of documents in a search), a strip at the bottom
+  of the window offers it with what it is good for. Choose what to install, give the
+  administrator password and watch the strip: your package manager (pacman, apt, dnf or
+  zypper) installs it right away. Configuration > Add-ons lists everything there is
 - Ctrl+. shows hidden files, also from the Show menu
 - F7 new directory, F8 delete (to the trash, or permanently with Shift)
 - F9 switches the panel's view in turn: list, details, icons and a terminal that follows

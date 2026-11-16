@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: doubycmd\n"
 "Report-Msgid-Bugs-To: douby@douby.cz\n"
-"POT-Creation-Date: 2026-11-16 08:45+0100\n"
+"POT-Creation-Date: 2026-11-16 09:02+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,53 +18,48 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: crates/dc-core/src/addons.rs:47
+#: crates/dc-core/src/addons.rs:43
 msgid "Quick view (F3)"
 msgstr ""
 
-#: crates/dc-core/src/addons.rs:48
+#: crates/dc-core/src/addons.rs:44
 msgid "Find files: text of documents"
 msgstr ""
 
-#: crates/dc-core/src/addons.rs:59
+#: crates/dc-core/src/addons.rs:55
 msgid "text and source code with syntax highlighting"
 msgstr ""
 
-#: crates/dc-core/src/addons.rs:60
+#: crates/dc-core/src/addons.rs:56
 msgid "PDF documents page by page"
 msgstr ""
 
-#: crates/dc-core/src/addons.rs:61
+#: crates/dc-core/src/addons.rs:57
 msgid "list of instruments in SoundFont banks"
 msgstr ""
 
-#: crates/dc-core/src/addons.rs:62
+#: crates/dc-core/src/addons.rs:58
 msgid "beginning of the text of books and documents (EPUB, FB2, DOCX, ODT)"
 msgstr ""
 
-#: crates/dc-core/src/addons.rs:63
+#: crates/dc-core/src/addons.rs:59
 msgid "metadata of almost any file: documents, pictures, fonts, programs"
 msgstr ""
 
-#: crates/dc-core/src/addons.rs:66
+#: crates/dc-core/src/addons.rs:62
 msgid "picture of the first page of PDF and comics"
 msgstr ""
 
-#: crates/dc-core/src/addons.rs:67
+#: crates/dc-core/src/addons.rs:63
 msgid "picture of office documents"
 msgstr ""
 
-#: crates/dc-core/src/addons.rs:68
+#: crates/dc-core/src/addons.rs:64
 msgid "cover of e-books"
 msgstr ""
 
-#: crates/dc-core/src/addons.rs:69
+#: crates/dc-core/src/addons.rs:65
 msgid "sample of fonts"
-msgstr ""
-
-#: crates/dc-core/src/addons.rs:229
-#, rust-format
-msgid "The queue of add-ons in {path} cannot be used"
 msgstr ""
 
 #: crates/dc-core/src/command.rs:328
@@ -662,31 +657,11 @@ msgstr ""
 msgid "System: {system}"
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:75
-msgid "_Install all"
-msgstr ""
-
-#: crates/dc-gui/src/addons.rs:79
-msgid "Clear the queue of add-ons"
-msgstr ""
-
-#: crates/dc-gui/src/addons.rs:108
-#, rust-format
-msgid "Add-on waiting to be installed: {packages}"
-msgid_plural "Add-ons waiting to be installed ({count}): {packages}"
-msgstr[0] ""
-msgstr[1] ""
-
-#: crates/dc-gui/src/addons.rs:119
-#, rust-format
-msgid "{package} ({program}) - {purpose}, for {feature}"
-msgstr ""
-
-#: crates/dc-gui/src/addons.rs:154
+#: crates/dc-gui/src/addons.rs:129
 msgid "Install add-ons"
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:166
+#: crates/dc-gui/src/addons.rs:141
 #, rust-format
 msgid ""
 "Add-ons are programs from the packages of your distribution, {distribution}. "
@@ -694,140 +669,178 @@ msgid ""
 "it."
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:169
+#: crates/dc-gui/src/addons.rs:144
 msgid ""
 "Add-ons are programs from the packages of your distribution. The packages of "
 "this distribution are not known here, install the programs with its package "
 "manager."
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:180
-msgid "Add to _queue"
+#: crates/dc-gui/src/addons.rs:154
+msgid "_Install"
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:181
-msgid "Install _now"
-msgstr ""
-
-#: crates/dc-gui/src/addons.rs:207
+#: crates/dc-gui/src/addons.rs:175
 msgid "Neither sudo, run0 nor pkexec is installed."
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:268
+#: crates/dc-gui/src/addons.rs:222
 msgid "Everything is installed."
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:280
+#: crates/dc-gui/src/addons.rs:234
 msgid "installed"
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:281
+#: crates/dc-gui/src/addons.rs:235
 msgid "package not known here"
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:282
-msgid "in the queue"
+#: crates/dc-gui/src/addons.rs:236
+msgid "being installed"
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:288
+#: crates/dc-gui/src/addons.rs:242
 #, rust-format
 msgid "package {package}"
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:331
-msgid "Done, the add-ons are installed."
-msgstr ""
-
-#: crates/dc-gui/src/addons.rs:331
-msgid "The installation did not finish, see the terminal above."
-msgstr ""
-
-#: crates/dc-gui/src/addons.rs:404
-msgid "Installing add-ons"
-msgstr ""
-
-#: crates/dc-gui/src/addons.rs:407
+#: crates/dc-gui/src/addons.rs:306
 #, rust-format
-msgid "Installing: {packages}"
-msgstr ""
-
-#: crates/dc-gui/src/addons.rs:415
 msgid ""
-"The package manager asks for your password in the terminal (Ctrl+C stops it)."
+"Installing add-ons ({packages}) needs the rights of the administrator. "
+"Password for sudo:"
 msgstr ""
 
-#: crates/dc-gui/src/addons.rs:419 crates/dc-gui/src/find_files/mod.rs:129
+#: crates/dc-gui/src/addons.rs:309
+msgid "Wrong password, try again."
+msgstr ""
+
+#: crates/dc-gui/src/addons.rs:406 crates/dc-gui/src/find_files/mod.rs:130
 #: crates/dc-gui/src/multi_rename.rs:271
 msgctxt "button"
 msgid "_Close"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:213
+#: crates/dc-gui/src/addons.rs:420
+msgid "Installing add-ons"
+msgstr ""
+
+#: crates/dc-gui/src/addons.rs:538
+msgid "Administrator password"
+msgstr ""
+
+#: crates/dc-gui/src/addons.rs:634
+msgid "_Install..."
+msgstr ""
+
+#: crates/dc-gui/src/addons.rs:635
+msgid "_Details"
+msgstr ""
+
+#: crates/dc-gui/src/addons.rs:717 crates/dc-gui/src/addons.rs:724
+#, rust-format
+msgid "Installing add-ons: {packages}  -  {doing}"
+msgstr ""
+
+#: crates/dc-gui/src/addons.rs:725
+msgid "waiting for the administrator password"
+msgstr ""
+
+#: crates/dc-gui/src/addons.rs:731
+#, rust-format
+msgid "Add-ons installed: {packages}"
+msgstr ""
+
+#: crates/dc-gui/src/addons.rs:734
+#, rust-format
+msgid "Installing add-ons failed: {packages}"
+msgstr ""
+
+#: crates/dc-gui/src/addons.rs:744
+#, rust-format
+msgid "{program} ({adds})"
+msgstr ""
+
+#: crates/dc-gui/src/addons.rs:749
+#, rust-format
+msgid "Add-ons would help here: {add_ons}"
+msgstr ""
+
+#: crates/dc-gui/src/addons.rs:775
+msgid "Do not offer these add-ons here"
+msgstr ""
+
+#: crates/dc-gui/src/addons.rs:775
+msgid "Hide"
+msgstr ""
+
+#: crates/dc-gui/src/commander.rs:214
 msgid ""
 "No terminal found. Install xdg-terminal-exec or set the TERMINAL variable."
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:216
+#: crates/dc-gui/src/commander.rs:217
 msgid "Cannot run the terminal"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:377
+#: crates/dc-gui/src/commander.rs:378
 msgid "This does not work in a list of items found by a search."
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:544 crates/dc-gui/src/multi_rename.rs:555
+#: crates/dc-gui/src/commander.rs:545 crates/dc-gui/src/multi_rename.rs:555
 #: crates/dc-gui/src/panel_view.rs:517
 #, rust-format
 msgid "Invalid file name: {name}"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:661 crates/dc-gui/src/panel_view.rs:695
+#: crates/dc-gui/src/commander.rs:662 crates/dc-gui/src/panel_view.rs:695
 #, rust-format
 msgid "{path} is not a directory."
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:822
+#: crates/dc-gui/src/commander.rs:823
 #, rust-format
 msgid "Delete selected \"{name}\" into trash can?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:824
+#: crates/dc-gui/src/commander.rs:825
 #, rust-format
 msgid "Delete selected \"{name}\"?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:832
+#: crates/dc-gui/src/commander.rs:833
 #, rust-format
 msgid "Delete {count} selected file/directory into trash can?"
 msgid_plural "Delete {count} selected files/directories into trash can?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: crates/dc-gui/src/commander.rs:837
+#: crates/dc-gui/src/commander.rs:838
 #, rust-format
 msgid "Delete {count} selected file/directory?"
 msgid_plural "Delete {count} selected files/directories?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: crates/dc-gui/src/commander.rs:879
+#: crates/dc-gui/src/commander.rs:880
 #, rust-format
 msgid "Copy selected \"{name}\"?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:879
+#: crates/dc-gui/src/commander.rs:880
 #, rust-format
 msgid "Rename/move selected \"{name}\"?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:885
+#: crates/dc-gui/src/commander.rs:886
 #, rust-format
 msgid "Copy {count} selected file/directory?"
 msgid_plural "Copy {count} selected files/directories?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: crates/dc-gui/src/commander.rs:888
+#: crates/dc-gui/src/commander.rs:889
 #, rust-format
 msgid "Rename/move {count} selected file/directory?"
 msgid_plural "Rename/move {count} selected files/directories?"
@@ -1163,91 +1176,91 @@ msgstr ""
 msgid "_Add"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/mod.rs:118
-#: crates/dc-gui/src/find_files/mod.rs:519
+#: crates/dc-gui/src/find_files/mod.rs:119
+#: crates/dc-gui/src/find_files/mod.rs:526
 msgid "Find files"
-msgstr ""
-
-#: crates/dc-gui/src/find_files/mod.rs:127
-msgctxt "button"
-msgid "_Find"
 msgstr ""
 
 #: crates/dc-gui/src/find_files/mod.rs:128
 msgctxt "button"
+msgid "_Find"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/mod.rs:129
+msgctxt "button"
 msgid "C_ancel"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/mod.rs:130
+#: crates/dc-gui/src/find_files/mod.rs:131
 msgid "_New search"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/mod.rs:131
+#: crates/dc-gui/src/find_files/mod.rs:132
 msgid "_Last search"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/mod.rs:149
+#: crates/dc-gui/src/find_files/mod.rs:150
 msgid "_Standard"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/mod.rs:150
+#: crates/dc-gui/src/find_files/mod.rs:151
 msgid "Ad_vanced"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/mod.rs:151
+#: crates/dc-gui/src/find_files/mod.rs:152
 msgid "Load/Sa_ve"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/mod.rs:152
+#: crates/dc-gui/src/find_files/mod.rs:153
 msgid "_Results"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/mod.rs:358
+#: crates/dc-gui/src/find_files/mod.rs:356
 #, rust-format
 msgid "Delete the saved search \"{name}\"?"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/mod.rs:456
+#: crates/dc-gui/src/find_files/mod.rs:463
 msgid "Find files - Scanning"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/mod.rs:484
+#: crates/dc-gui/src/find_files/mod.rs:491
 msgid "Comparing files for duplicates..."
 msgstr ""
 
-#: crates/dc-gui/src/find_files/mod.rs:486
+#: crates/dc-gui/src/find_files/mod.rs:493
 #, rust-format
 msgid "Scanning: {path}"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/mod.rs:494
+#: crates/dc-gui/src/find_files/mod.rs:501
 #, rust-format
 msgid "Cancelled after {seconds} s"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/mod.rs:496
+#: crates/dc-gui/src/find_files/mod.rs:503
 #, rust-format
 msgid "Finished in {seconds} s"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/mod.rs:501
+#: crates/dc-gui/src/find_files/mod.rs:508
 msgid "Find files - Finished"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/mod.rs:554
+#: crates/dc-gui/src/find_files/mod.rs:561
 msgid "Start in directory"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/mod.rs:574
+#: crates/dc-gui/src/find_files/mod.rs:581
 #, rust-format
 msgid "{path} is not there any more."
 msgstr ""
 
-#: crates/dc-gui/src/find_files/mod.rs:607
+#: crates/dc-gui/src/find_files/mod.rs:614
 msgid "Save search template"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/mod.rs:607
+#: crates/dc-gui/src/find_files/mod.rs:614
 msgid "_Template name:"
 msgstr ""
 
@@ -1337,159 +1350,141 @@ msgstr ""
 msgid "\"{masks}\" -> \"{start}\""
 msgstr ""
 
-#: crates/dc-gui/src/find_files/standard.rs:43
+#: crates/dc-gui/src/find_files/standard.rs:40
 msgid "all (unlimited depth)"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/standard.rs:43
+#: crates/dc-gui/src/find_files/standard.rs:40
 msgid "current directory only"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/standard.rs:45
+#: crates/dc-gui/src/find_files/standard.rs:42
 #, rust-format
 msgid "{count} level"
 msgid_plural "{count} levels"
 msgstr[0] ""
 msgstr[1] ""
 
-#: crates/dc-gui/src/find_files/standard.rs:56
+#: crates/dc-gui/src/find_files/standard.rs:53
 msgid "Automatic (UTF-8, UTF-16 by its mark)"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/standard.rs:61
+#: crates/dc-gui/src/find_files/standard.rs:58
 msgid "Choose a directory"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/standard.rs:62
+#: crates/dc-gui/src/find_files/standard.rs:59
 msgid "Selected directories and _files"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/standard.rs:63
+#: crates/dc-gui/src/find_files/standard.rs:60
 msgid "Follow s_ymlinks"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/standard.rs:67
+#: crates/dc-gui/src/find_files/standard.rs:64
 msgid "Search in _archives"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/standard.rs:68
+#: crates/dc-gui/src/find_files/standard.rs:65
 msgid "Searc_h for part of file name"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/standard.rs:69
+#: crates/dc-gui/src/find_files/standard.rs:66
 msgid "_Regular expression"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/standard.rs:71
+#: crates/dc-gui/src/find_files/standard.rs:68
 msgid "Find _text in file"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/standard.rs:73
+#: crates/dc-gui/src/find_files/standard.rs:70
 msgid "Re_place by"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/standard.rs:75
+#: crates/dc-gui/src/find_files/standard.rs:72
 msgid "Find files N_OT containing the text"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/standard.rs:76
+#: crates/dc-gui/src/find_files/standard.rs:73
 msgid "Case sens_itive"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/standard.rs:77
+#: crates/dc-gui/src/find_files/standard.rs:74
 msgid "Reg_ular expression"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/standard.rs:78
+#: crates/dc-gui/src/find_files/standard.rs:75
 msgid "Hexadeci_mal"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/standard.rs:79
+#: crates/dc-gui/src/find_files/standard.rs:76
 msgid "Text of _documents"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/standard.rs:83
-#: crates/dc-gui/src/quick_details.rs:182
-msgid "Install _add-ons..."
-msgstr ""
-
-#: crates/dc-gui/src/find_files/standard.rs:91
+#: crates/dc-gui/src/find_files/standard.rs:85
 msgid ""
 "Names of directories not to search, separated by \";\": a name "
 "(node_modules), a path under the start directory (build/cache) or a whole "
 "path (/proc); masks allowed."
 msgstr ""
 
-#: crates/dc-gui/src/find_files/standard.rs:93
+#: crates/dc-gui/src/find_files/standard.rs:87
 msgid "Names separated by \";\", masks with * and ? allowed"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/standard.rs:94
+#: crates/dc-gui/src/find_files/standard.rs:88
 msgid "Names not to find, separated by \";\""
 msgstr ""
 
-#: crates/dc-gui/src/find_files/standard.rs:95
+#: crates/dc-gui/src/find_files/standard.rs:89
 msgid "The text is bytes in hexadecimal, e.g. 4D 5A"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/standard.rs:97
+#: crates/dc-gui/src/find_files/standard.rs:91
 msgid ""
 "Searches the text of documents, not their bytes: OpenDocument and Microsoft "
 "Office files, EPUB and FictionBook by itself; PDF, DjVu, RTF and old Word "
 "documents through programs of the system."
 msgstr ""
 
-#: crates/dc-gui/src/find_files/standard.rs:99
+#: crates/dc-gui/src/find_files/standard.rs:93
 msgid "Encoding of the files searched"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/standard.rs:102
+#: crates/dc-gui/src/find_files/standard.rs:96
 msgid "Start in _directory"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/standard.rs:112
+#: crates/dc-gui/src/find_files/standard.rs:106
 msgid "E_xclude subdirectories"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/standard.rs:113
+#: crates/dc-gui/src/find_files/standard.rs:107
 msgid "Search su_bdirectories:"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/standard.rs:118
+#: crates/dc-gui/src/find_files/standard.rs:112
 msgid "File _mask"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/standard.rs:127
+#: crates/dc-gui/src/find_files/standard.rs:121
 msgid "_Exclude files"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/standard.rs:146
+#: crates/dc-gui/src/find_files/standard.rs:140
 msgid "Encodin_g:"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/standard.rs:155
+#: crates/dc-gui/src/find_files/standard.rs:144
 msgid "Directories"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/standard.rs:156
+#: crates/dc-gui/src/find_files/standard.rs:145
 msgid "Files"
 msgstr ""
 
-#: crates/dc-gui/src/find_files/standard.rs:157
+#: crates/dc-gui/src/find_files/standard.rs:146
 msgid "Find in contents"
-msgstr ""
-
-#: crates/dc-gui/src/find_files/standard.rs:192
-#: crates/dc-gui/src/quick_details.rs:175
-#, rust-format
-msgid "{program} - {adds}"
-msgstr ""
-
-#: crates/dc-gui/src/find_files/standard.rs:194
-#, rust-format
-msgid ""
-"These documents need programs that are not installed:\n"
-"{list}"
 msgstr ""
 
 #: crates/dc-gui/src/function_bar.rs:19
@@ -2562,11 +2557,7 @@ msgstr ""
 msgid "Speed {speed}/s"
 msgstr ""
 
-#: crates/dc-gui/src/quick_details.rs:194
-msgid "For a better preview install"
-msgstr ""
-
-#: crates/dc-gui/src/quick_details.rs:256
+#: crates/dc-gui/src/quick_details.rs:230
 msgid "picture of the file"
 msgstr ""
 

@@ -34,9 +34,6 @@ pub(super) struct Standard {
     hex: gtk::CheckButton,
     documents: gtk::CheckButton,
     encoding: gtk::DropDown,
-    tools: gtk::Box,
-    tools_text: gtk::Label,
-    pub install_addons: gtk::Button,
 }
 
 fn depth_titles() -> Vec<String> {
@@ -78,9 +75,6 @@ impl Standard {
             hex: check(&gettext("Hexadeci_mal")),
             documents: check(&gettext("Text of _documents")),
             encoding: drop_down(&encodings),
-            tools: gtk::Box::new(gtk::Orientation::Vertical, 4),
-            tools_text: gtk::Label::builder().xalign(0.0).wrap(true).build(),
-            install_addons: gtk::Button::with_mnemonic(&gettext("Install _add-ons...")),
         };
         this.lay_out();
         this
@@ -146,11 +140,6 @@ impl Standard {
         encoding_row.append(&title(&gettext("Encodin_g:"), &self.encoding));
         encoding_row.append(&self.encoding);
         content.attach(&encoding_row, 0, 3, 2, 1);
-        self.install_addons.set_halign(gtk::Align::Start);
-        self.tools.append(&self.tools_text);
-        self.tools.append(&self.install_addons);
-        self.tools.set_visible(false);
-        content.attach(&self.tools, 0, 4, 2, 1);
 
         self.page.append(&section(&gettext("Directories"), &directories));
         self.page.append(&section(&gettext("Files"), &files));
@@ -177,23 +166,11 @@ impl Standard {
         self.replace_check.set_sensitive(replace);
         self.replace.widget().set_sensitive(replace && self.replace_check.is_active());
         self.partial_names.set_sensitive(!self.name_regex.is_active());
-        self.update_tools(text && self.documents.is_active());
     }
 
-    /// The programs for documents that are not installed, with the button
-    /// that offers them.
-    fn update_tools(&self, wanted: bool) {
-        let hints = if wanted { missing_tools() } else { Vec::new() };
-        self.tools.set_visible(!hints.is_empty());
-        if hints.is_empty() {
-            return;
-        }
-        let lines: Vec<String> =
-            hints.iter().map(|hint| fill(&gettext("{program} - {adds}"), &[("program", &hint.program), ("adds", &hint.adds)])).collect();
-        self.tools_text.set_text(&fill(
-            &gettext("These documents need programs that are not installed:\n{list}"),
-            &[("list", &lines.join("\n"))],
-        ));
+    /// Whether the text of documents is searched (its programs matter).
+    pub fn wants_document_tools(&self) -> bool {
+        self.find_text.is_active() && self.documents.is_active()
     }
 
     /// Calls `changed` whenever a check that enables others changes.

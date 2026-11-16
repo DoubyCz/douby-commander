@@ -25,6 +25,7 @@ pub fn build(app: &gtk::Application, startup: &Startup<PathBuf>) -> Weak<Command
     let start_dir = glib::home_dir();
     let operations = OperationsUi::new();
     let addons = AddonsUi::new();
+    let strip = addons.strip();
     let commander = Rc::new(Commander::new(
         {
             let source = Arc::new(dc_vfs::Vfs::default());
@@ -34,6 +35,7 @@ pub fn build(app: &gtk::Application, startup: &Startup<PathBuf>) -> Weak<Command
         Settings::default(),
         Rc::clone(&operations),
         Rc::clone(&addons),
+        Rc::clone(&strip),
     ));
     let weak = Rc::downgrade(&commander);
     addons.connect_installed(move || {
@@ -89,8 +91,8 @@ pub fn build(app: &gtk::Application, startup: &Startup<PathBuf>) -> Weak<Command
     content.append(&toolbar::build(&commander));
     content.append(splitter.widget());
     content.append(operations.row());
-    // The queue of add-ons right above the function keys.
-    content.append(addons.bar());
+    // Add-ons the panels would like, and installations, above the function keys.
+    content.append(strip.widget());
     let function_bar = function_bar::build(&commander);
     content.append(function_bar.widget());
     window.set_child(Some(&content));
