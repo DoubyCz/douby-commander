@@ -112,7 +112,7 @@ fn page(child: &impl IsA<gtk::Widget>) -> gtk::ScrolledWindow {
 
 impl FindWindow {
     pub fn new(parent: Option<&gtk::Window>, actions: Actions) -> Rc<Self> {
-        let window = gtk::Window::builder().title(gettext("Find files")).default_width(1000).default_height(660).build();
+        let window = gtk::Window::builder().title(gettext("Find files")).default_width(1000).default_height(760).build();
         window.set_transient_for(parent);
         let this = Rc::new(Self {
             window,

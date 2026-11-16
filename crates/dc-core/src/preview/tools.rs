@@ -344,9 +344,12 @@ impl Distribution {
             ("gsf-office-thumbnailer", Self::Debian) => "libgsf-bin",
             ("gnome-thumbnail-font", _) => "gnome-font-viewer",
             ("gnome-epub-thumbnailer", _) => "gnome-epub-thumbnailer",
-            ("pdftoppm" | "pdfinfo", Self::Arch) => "poppler",
-            ("pdftoppm" | "pdfinfo", Self::Debian | Self::Fedora) => "poppler-utils",
-            ("pdftoppm" | "pdfinfo", Self::Suse) => "poppler-tools",
+            ("pdftoppm" | "pdfinfo" | "pdftotext", Self::Arch) => "poppler",
+            ("pdftoppm" | "pdfinfo" | "pdftotext", Self::Debian | Self::Fedora) => "poppler-utils",
+            ("pdftoppm" | "pdfinfo" | "pdftotext", Self::Suse) => "poppler-tools",
+            ("djvutxt", Self::Debian) => "djvulibre-bin",
+            ("djvutxt", _) => "djvulibre",
+            ("catdoc", _) => "catdoc",
             ("pandoc", Self::Arch) => "pandoc-cli",
             ("pandoc", _) => "pandoc",
             _ => return None,
@@ -474,5 +477,15 @@ mod tests {
         assert_eq!(arch.install_command(&packages), "sudo pacman -S --needed perl-image-exiftool fluidsynth");
         assert_eq!(Distribution::Debian.install_command(&["libimage-exiftool-perl"]), "sudo apt install libimage-exiftool-perl");
         assert_eq!(Distribution::Suse.package("gsf-office-thumbnailer"), None);
+    }
+
+    #[test]
+    fn every_tool_for_documents_has_a_package() {
+        for distribution in [Distribution::Arch, Distribution::Debian, Distribution::Fedora, Distribution::Suse] {
+            for tool in crate::find::DOCUMENT_TOOLS {
+                assert!(distribution.package(tool).is_some(), "{tool} on {distribution:?}");
+            }
+        }
+        assert_eq!(Distribution::Debian.package("djvutxt"), Some("djvulibre-bin"));
     }
 }
