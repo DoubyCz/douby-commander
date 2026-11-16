@@ -304,7 +304,9 @@ impl AddonsUi {
             let mut argv = vec![elevation.to_owned()];
             argv.extend(job.install.iter().cloned());
             self.run(job, argv, None);
-        } else if sudo_ok(&["-n", "-v"], None) {
+        } else if sudo_ok(&["-n", "true"], None) {
+            // Not `-v`: it asks for the password whenever some rule needs
+            // one, also with NOPASSWD for everything else.
             let mut argv = vec!["sudo".to_owned(), "-n".to_owned()];
             argv.extend(job.install.iter().cloned());
             self.run(job, argv, None);
