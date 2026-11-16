@@ -825,10 +825,12 @@ impl PanelView {
         self.panel.borrow_mut().toggle_selection_at_cursor();
         self.after_marking();
         let marked = self.panel.borrow().current_item().is_some_and(dc_core::FileItem::is_selected);
-        // Inside an archive the sizes of its directories are not calculated (yet).
+        // Inside an archive the sizes of its directories are not calculated
+        // (yet), nor in a listing of items found (of many directories).
         if let Some(name) = directory
             && marked
             && !self.in_archive()
+            && !self.is_found()
         {
             self.calculate_size(name);
         }
@@ -1379,6 +1381,10 @@ impl PanelView {
 
     /// Queues a preview of the image `name` of the current directory.
     fn request_thumbnail(&self, name: OsString) {
+        // Items found by a search are of many directories; icons only.
+        if self.is_found() {
+            return;
+        }
         let dir = self.path();
         let mut thumbnails = self.thumbnails.borrow_mut();
         if thumbnails.dir != dir {
@@ -1675,7 +1681,12 @@ impl PanelView {
         self.store.splice(0, self.store.n_items(), &rows);
         self.syncing.set(false);
 
-        self.path_edit.label.set_text(&panel.path().display().to_string());
+        let shown = if panel.is_found() {
+            fill(&gettext("Search result: {path}"), &[("path", &panel.path().display())])
+        } else {
+            panel.path().display().to_string()
+        };
+        self.path_edit.label.set_text(&shown);
         let path = panel.path().to_owned();
         drop(panel);
         self.update_status();
@@ -1714,10 +1725,13 @@ impl PanelView {
         let panel = self.panel.borrow();
         let item = panel.current_item()?;
         if item.is_parent() {
-            return Some(Subject::Directory(panel.path().parent()?.to_owned()));
+            // Out of the items found, `..` goes to the directory they are under.
+            let up = if panel.is_found() { panel.path() } else { panel.path().parent()? };
+            return Some(Subject::Directory(up.to_owned()));
         }
-        let path = panel.path().join(&item.entry().name);
-        Some(if self.source.archive_of(panel.path()).is_some() {
+        let path = panel.item_path(item);
+        let dir = item.dir().unwrap_or(panel.path());
+        Some(if self.source.archive_of(dir).is_some() {
             Subject::InArchive(path)
         } else if item.entry().kind == EntryKind::Directory || matches!(item.entry().kind, EntryKind::Symlink { to_directory: true }) {
             Subject::Directory(path)
@@ -1794,7 +1808,7 @@ impl PanelView {
     pub fn current_path(&self) -> Option<PathBuf> {
         let panel = self.panel.borrow();
         let item = panel.current_item().filter(|item| !item.is_parent())?;
-        Some(panel.path().join(&item.entry().name))
+        Some(panel.item_path(item))
     }
 
     /// In the application for its type, as the desktop decides (Enter, F4).
@@ -1839,6 +1853,19 @@ impl PanelView {
     }
 
     /// Whether the panel shows the inside of an archive.
+    /// Whether the panel shows items found by a search ("Feed to panel").
+    pub fn is_found(&self) -> bool {
+        self.panel.borrow().is_found()
+    }
+
+    /// "Feed to panel": the items at `paths` found by a search, shown
+    /// under `base`, where `..` goes back to.
+    pub fn show_found(&self, paths: Vec<PathBuf>, base: PathBuf) {
+        let left = self.leaving();
+        self.panel.borrow_mut().show_found(&*self.source, base, paths);
+        self.arrived(left);
+    }
+
     pub fn in_archive(&self) -> bool {
         self.archive_file().is_some()
     }
@@ -1861,6 +1888,16 @@ impl PanelView {
             Ok(()) => self.refresh(),
             Err(err) => self.show_error(&err),
         }
+    }
+
+    /// Hidden items (names starting with a dot) listed or not, the
+    /// directory listed again with the cursor kept.
+    pub fn set_show_hidden(&self, show: bool) {
+        if self.panel.borrow().shows_hidden() == show {
+            return;
+        }
+        self.panel.borrow_mut().set_show_hidden(show);
+        self.reload_or_leave();
     }
 
     /// Lists the directory again with the cursor on `name`.

@@ -18,17 +18,18 @@ use gtk::{gio, glib};
 /// selected as a whole, so typing replaces it. `on_ok` gets the text as
 /// typed; an empty text means nothing to do and is up to the caller.
 pub fn ask_new_directory(parent: Option<&gtk::Window>, suggestion: &str, on_ok: impl FnOnce(String) + 'static) {
-    let dialog = gtk::Window::builder()
-        .title(gettext("Create new directory"))
-        .modal(true)
-        .resizable(false)
-        .default_width(420)
-        .build();
+    ask_text(parent, &gettext("Create new directory"), &gettext("_Input new directory name:"), suggestion, on_ok);
+}
+
+/// Asks for a text: `title` of the window, `prompt` above the entry
+/// (with a mnemonic), `text` prefilled and selected. `on_ok` gets the text
+/// as typed.
+pub fn ask_text(parent: Option<&gtk::Window>, title: &str, prompt: &str, text: &str, on_ok: impl FnOnce(String) + 'static) {
+    let dialog = gtk::Window::builder().title(title).modal(true).resizable(false).default_width(420).build();
     dialog.set_transient_for(parent);
 
-    let label =
-        gtk::Label::builder().label(gettext("_Input new directory name:")).use_underline(true).xalign(0.0).build();
-    let entry = gtk::Entry::builder().text(suggestion).activates_default(true).hexpand(true).build();
+    let label = gtk::Label::builder().label(prompt).use_underline(true).xalign(0.0).build();
+    let entry = gtk::Entry::builder().text(text).activates_default(true).hexpand(true).build();
     label.set_mnemonic_widget(Some(&entry));
 
     let cancel = gtk::Button::with_mnemonic(&cancel_label());

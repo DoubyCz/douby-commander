@@ -32,6 +32,11 @@ pub fn build(app: &gtk::Application, startup: &Startup<PathBuf>) -> Weak<Command
         Settings::default(),
         Rc::clone(&operations),
     ));
+    if commander.settings().show_hidden {
+        for panel in commander.panels() {
+            panel.set_show_hidden(true);
+        }
+    }
     let weak = Rc::downgrade(&commander);
     operations.connect_finished(move || {
         if let Some(commander) = weak.upgrade() {

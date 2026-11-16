@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: doubycmd\n"
 "Report-Msgid-Bugs-To: douby@douby.cz\n"
-"POT-Creation-Date: 2026-11-14 06:13+0100\n"
+"POT-Creation-Date: 2026-11-16 08:23+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,14 +18,220 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: crates/dc-core/src/command.rs:314
+#: crates/dc-core/src/command.rs:323
 #, rust-format
 msgid "Unknown command {command}"
 msgstr ""
 
-#: crates/dc-core/src/command.rs:316
+#: crates/dc-core/src/command.rs:325
 #, rust-format
 msgid "Command {command} does not accept parameter {param}"
+msgstr ""
+
+#: crates/dc-core/src/find/attributes.rs:127
+msgid "owner can read"
+msgstr ""
+
+#: crates/dc-core/src/find/attributes.rs:128
+msgid "owner can write"
+msgstr ""
+
+#: crates/dc-core/src/find/attributes.rs:129
+msgid "owner can execute"
+msgstr ""
+
+#: crates/dc-core/src/find/attributes.rs:130
+msgid "group can read"
+msgstr ""
+
+#: crates/dc-core/src/find/attributes.rs:131
+msgid "group can write"
+msgstr ""
+
+#: crates/dc-core/src/find/attributes.rs:132
+msgid "group can execute"
+msgstr ""
+
+#: crates/dc-core/src/find/attributes.rs:133
+msgid "others can read"
+msgstr ""
+
+#: crates/dc-core/src/find/attributes.rs:134
+msgid "others can write"
+msgstr ""
+
+#: crates/dc-core/src/find/attributes.rs:135
+msgid "others can execute"
+msgstr ""
+
+#: crates/dc-core/src/find/attributes.rs:136
+msgid "set user ID"
+msgstr ""
+
+#: crates/dc-core/src/find/attributes.rs:137
+msgid "set group ID"
+msgstr ""
+
+#: crates/dc-core/src/find/attributes.rs:138
+msgid "sticky bit"
+msgstr ""
+
+#: crates/dc-core/src/find/attributes.rs:139
+msgid "regular file"
+msgstr ""
+
+#: crates/dc-core/src/find/attributes.rs:140
+msgid "directory"
+msgstr ""
+
+#: crates/dc-core/src/find/attributes.rs:141
+msgid "symbolic link"
+msgstr ""
+
+#: crates/dc-core/src/find/attributes.rs:142
+msgid "named pipe (FIFO)"
+msgstr ""
+
+#: crates/dc-core/src/find/attributes.rs:143
+msgid "character device"
+msgstr ""
+
+#: crates/dc-core/src/find/attributes.rs:144
+msgid "block device"
+msgstr ""
+
+#: crates/dc-core/src/find/attributes.rs:145
+msgid "socket"
+msgstr ""
+
+#: crates/dc-core/src/find/mod.rs:133
+msgid "second"
+msgid_plural "seconds"
+msgstr[0] ""
+msgstr[1] ""
+
+#: crates/dc-core/src/find/mod.rs:134
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: crates/dc-core/src/find/mod.rs:135
+msgid "hour"
+msgid_plural "hours"
+msgstr[0] ""
+msgstr[1] ""
+
+#: crates/dc-core/src/find/mod.rs:136
+msgid "day"
+msgid_plural "days"
+msgstr[0] ""
+msgstr[1] ""
+
+#: crates/dc-core/src/find/mod.rs:137
+msgid "week"
+msgid_plural "weeks"
+msgstr[0] ""
+msgstr[1] ""
+
+#: crates/dc-core/src/find/mod.rs:138
+msgid "month"
+msgid_plural "months"
+msgstr[0] ""
+msgstr[1] ""
+
+#: crates/dc-core/src/find/mod.rs:139
+msgid "year"
+msgid_plural "years"
+msgstr[0] ""
+msgstr[1] ""
+
+#: crates/dc-core/src/find/mod.rs:173
+msgid "bytes"
+msgstr ""
+
+#: crates/dc-core/src/find/mod.rs:174
+msgid "KiB"
+msgstr ""
+
+#: crates/dc-core/src/find/mod.rs:175
+msgid "MiB"
+msgstr ""
+
+#: crates/dc-core/src/find/mod.rs:176
+msgid "GiB"
+msgstr ""
+
+#: crates/dc-core/src/find/mod.rs:177
+msgid "TiB"
+msgstr ""
+
+#: crates/dc-core/src/find/mod.rs:233
+#, rust-format
+msgid "Directory {path} does not exist!"
+msgstr ""
+
+#: crates/dc-core/src/find/mod.rs:236
+#, rust-format
+msgid ""
+"Invalid regular expression in the file mask:\n"
+"{message}"
+msgstr ""
+
+#: crates/dc-core/src/find/mod.rs:237
+#, rust-format
+msgid ""
+"Invalid regular expression in the excluded files:\n"
+"{message}"
+msgstr ""
+
+#: crates/dc-core/src/find/mod.rs:238
+#, rust-format
+msgid ""
+"Invalid regular expression in the text to find:\n"
+"{message}"
+msgstr ""
+
+#: crates/dc-core/src/find/mod.rs:243
+#, rust-format
+msgid ""
+"\"{text}\" is not a hexadecimal string: pairs of digits 0-9 and letters A-F, "
+"spaces between them allowed."
+msgstr ""
+
+#: crates/dc-core/src/find/mod.rs:246
+#, rust-format
+msgid "Unknown encoding: {name}"
+msgstr ""
+
+#: crates/dc-core/src/find/mod.rs:247
+#, rust-format
+msgid "Unknown attribute: {part}"
+msgstr ""
+
+#: crates/dc-core/src/find/mod.rs:248
+msgid "Duplicate files are found by the same name, the same size or both."
+msgstr ""
+
+#: crates/dc-core/src/find/templates.rs:39
+#, rust-format
+msgid "Saved searches in {path} cannot be used"
+msgstr ""
+
+#: crates/dc-core/src/find/text.rs:84
+msgid "text of PDF documents"
+msgstr ""
+
+#: crates/dc-core/src/find/text.rs:85
+msgid "text of DjVu documents"
+msgstr ""
+
+#: crates/dc-core/src/find/text.rs:86
+msgid "text of RTF documents"
+msgstr ""
+
+#: crates/dc-core/src/find/text.rs:87
+msgid "text of old Word documents (.doc)"
 msgstr ""
 
 #: crates/dc-core/src/format.rs:30
@@ -48,7 +254,7 @@ msgctxt "size unit, kilo"
 msgid "K"
 msgstr ""
 
-#: crates/dc-core/src/format.rs:45
+#: crates/dc-core/src/format.rs:45 crates/dc-gui/src/find_files/results.rs:60
 msgctxt "size column"
 msgid "<DIR>"
 msgstr ""
@@ -323,6 +529,7 @@ msgid "Publisher"
 msgstr ""
 
 #: crates/dc-core/src/preview/tools.rs:174
+#: crates/dc-gui/src/find_files/results.rs:105
 #: crates/dc-gui/src/multi_rename.rs:338 crates/dc-gui/src/panel_view.rs:40
 msgid "Date"
 msgstr ""
@@ -406,68 +613,72 @@ msgstr ""
 msgid "System: {system}"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:181
+#: crates/dc-gui/src/commander.rs:203
 msgid ""
 "No terminal found. Install xdg-terminal-exec or set the TERMINAL variable."
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:184
+#: crates/dc-gui/src/commander.rs:206
 msgid "Cannot run the terminal"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:417 crates/dc-gui/src/multi_rename.rs:555
+#: crates/dc-gui/src/commander.rs:367
+msgid "This does not work in a list of items found by a search."
+msgstr ""
+
+#: crates/dc-gui/src/commander.rs:524 crates/dc-gui/src/multi_rename.rs:555
 #: crates/dc-gui/src/panel_view.rs:517
 #, rust-format
 msgid "Invalid file name: {name}"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:532 crates/dc-gui/src/panel_view.rs:695
+#: crates/dc-gui/src/commander.rs:641 crates/dc-gui/src/panel_view.rs:695
 #, rust-format
 msgid "{path} is not a directory."
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:693
+#: crates/dc-gui/src/commander.rs:802
 #, rust-format
 msgid "Delete selected \"{name}\" into trash can?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:695
+#: crates/dc-gui/src/commander.rs:804
 #, rust-format
 msgid "Delete selected \"{name}\"?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:703
+#: crates/dc-gui/src/commander.rs:812
 #, rust-format
 msgid "Delete {count} selected file/directory into trash can?"
 msgid_plural "Delete {count} selected files/directories into trash can?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: crates/dc-gui/src/commander.rs:708
+#: crates/dc-gui/src/commander.rs:817
 #, rust-format
 msgid "Delete {count} selected file/directory?"
 msgid_plural "Delete {count} selected files/directories?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: crates/dc-gui/src/commander.rs:750
+#: crates/dc-gui/src/commander.rs:859
 #, rust-format
 msgid "Copy selected \"{name}\"?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:750
+#: crates/dc-gui/src/commander.rs:859
 #, rust-format
 msgid "Rename/move selected \"{name}\"?"
 msgstr ""
 
-#: crates/dc-gui/src/commander.rs:756
+#: crates/dc-gui/src/commander.rs:865
 #, rust-format
 msgid "Copy {count} selected file/directory?"
 msgid_plural "Copy {count} selected files/directories?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: crates/dc-gui/src/commander.rs:759
+#: crates/dc-gui/src/commander.rs:868
 #, rust-format
 msgid "Rename/move {count} selected file/directory?"
 msgid_plural "Rename/move {count} selected files/directories?"
@@ -547,7 +758,7 @@ msgctxt "button"
 msgid "_Start"
 msgstr ""
 
-#: crates/dc-gui/src/copy_dialog.rs:141 crates/dc-gui/src/dialogs.rs:259
+#: crates/dc-gui/src/copy_dialog.rs:141 crates/dc-gui/src/dialogs.rs:260
 msgid "New queue"
 msgstr ""
 
@@ -595,88 +806,88 @@ msgstr ""
 msgid "Copy on write"
 msgstr ""
 
-#: crates/dc-gui/src/dialogs.rs:22
+#: crates/dc-gui/src/dialogs.rs:21
 msgid "Create new directory"
 msgstr ""
 
-#: crates/dc-gui/src/dialogs.rs:30
+#: crates/dc-gui/src/dialogs.rs:21
 msgid "_Input new directory name:"
 msgstr ""
 
-#: crates/dc-gui/src/dialogs.rs:92
+#: crates/dc-gui/src/dialogs.rs:93
 msgid "Select mask"
 msgstr ""
 
-#: crates/dc-gui/src/dialogs.rs:92
+#: crates/dc-gui/src/dialogs.rs:93
 msgid "Unselect mask"
 msgstr ""
 
-#: crates/dc-gui/src/dialogs.rs:96
+#: crates/dc-gui/src/dialogs.rs:97
 msgid "_Input mask:"
 msgstr ""
 
-#: crates/dc-gui/src/dialogs.rs:125
+#: crates/dc-gui/src/dialogs.rs:126
 msgid "Previous masks"
 msgstr ""
 
-#: crates/dc-gui/src/dialogs.rs:133
+#: crates/dc-gui/src/dialogs.rs:134
 msgid "_Case sensitive"
 msgstr ""
 
-#: crates/dc-gui/src/dialogs.rs:135
+#: crates/dc-gui/src/dialogs.rs:136
 msgid "Ignore _accents"
 msgstr ""
 
-#: crates/dc-gui/src/dialogs.rs:210
+#: crates/dc-gui/src/dialogs.rs:211
 #, rust-format
 msgid "A_dd To Queue #{number}"
 msgstr ""
 
-#: crates/dc-gui/src/dialogs.rs:297
+#: crates/dc-gui/src/dialogs.rs:298
 msgid "Create directories"
 msgstr ""
 
-#: crates/dc-gui/src/dialogs.rs:300
+#: crates/dc-gui/src/dialogs.rs:301
 #, rust-format
 msgid "Directory {path} does not exist."
 msgstr ""
 
-#: crates/dc-gui/src/dialogs.rs:305
+#: crates/dc-gui/src/dialogs.rs:306
 #, rust-format
 msgid "Create {count} directory and go there?"
 msgid_plural "Create {count} directories and go there?"
 msgstr[0] ""
 msgstr[1] ""
 
-#: crates/dc-gui/src/dialogs.rs:317
+#: crates/dc-gui/src/dialogs.rs:318
 msgid "C_reate and go"
 msgstr ""
 
-#: crates/dc-gui/src/dialogs.rs:403
+#: crates/dc-gui/src/dialogs.rs:404
 msgid "new"
 msgstr ""
 
-#: crates/dc-gui/src/dialogs.rs:428 crates/dc-ops/src/operation.rs:86
+#: crates/dc-gui/src/dialogs.rs:429 crates/dc-ops/src/operation.rs:86
 msgctxt "button"
 msgid "_No"
 msgstr ""
 
-#: crates/dc-gui/src/dialogs.rs:428 crates/dc-ops/src/operation.rs:85
+#: crates/dc-gui/src/dialogs.rs:429 crates/dc-ops/src/operation.rs:85
 msgctxt "button"
 msgid "_Yes"
 msgstr ""
 
-#: crates/dc-gui/src/dialogs.rs:526
+#: crates/dc-gui/src/dialogs.rs:527
 msgctxt "button"
 msgid "Ot_her"
 msgstr ""
 
-#: crates/dc-gui/src/dialogs.rs:573
+#: crates/dc-gui/src/dialogs.rs:574
 msgctxt "button"
 msgid "_OK"
 msgstr ""
 
-#: crates/dc-gui/src/dialogs.rs:577 crates/dc-ops/src/operation.rs:92
+#: crates/dc-gui/src/dialogs.rs:578 crates/dc-ops/src/operation.rs:92
 msgctxt "button"
 msgid "_Cancel"
 msgstr ""
@@ -700,6 +911,441 @@ msgstr ""
 #: crates/dc-gui/src/document_view.rs:270
 #, rust-format
 msgid "{page} / {count}"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/advanced.rs:63
+#, rust-format
+msgid "{day}. {month}. {year}"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/advanced.rs:148
+msgid "_Date from:"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/advanced.rs:150
+msgid "_Time from:"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/advanced.rs:152
+msgid "Dat_e to:"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/advanced.rs:154
+msgid "Ti_me to:"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/advanced.rs:156
+msgid "N_ot older than:"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/advanced.rs:160
+msgid "S_ize from:"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/advanced.rs:162
+msgid "Si_ze to:"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/advanced.rs:166
+msgid "Find du_plicate files:"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/advanced.rs:167
+msgid "same name"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/advanced.rs:168
+msgid "same size"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/advanced.rs:169
+msgid "same content (hash)"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/advanced.rs:170
+msgid "same content (byte by byte)"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/advanced.rs:193
+msgid "A date alone is the whole day, a time alone the time of any day."
+msgstr ""
+
+#: crates/dc-gui/src/find_files/advanced.rs:201
+msgid "Directories have no size, with a size given only files are found."
+msgstr ""
+
+#: crates/dc-gui/src/find_files/advanced.rs:205
+msgid "Attri_butes"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/advanced.rs:214
+msgid ""
+"For example d+ directories, r+ux+ executable files, !l+ no links, d+|l+ "
+"directories or links, 644+ octal bits."
+msgstr ""
+
+#: crates/dc-gui/src/find_files/advanced.rs:227
+msgid "Modified"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/advanced.rs:228
+#: crates/dc-gui/src/find_files/results.rs:104
+#: crates/dc-gui/src/panel_view.rs:39
+msgid "Size"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/advanced.rs:229
+msgid "Types and permissions"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/advanced.rs:230
+msgid "Duplicates"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/advanced.rs:242
+msgid "must have"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/advanced.rs:242
+msgid "must not have"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/advanced.rs:259
+msgid "_Add"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/mod.rs:115
+#: crates/dc-gui/src/find_files/mod.rs:503
+msgid "Find files"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/mod.rs:124
+msgctxt "button"
+msgid "_Find"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/mod.rs:125
+msgctxt "button"
+msgid "C_ancel"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/mod.rs:126
+#: crates/dc-gui/src/multi_rename.rs:271
+msgctxt "button"
+msgid "_Close"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/mod.rs:127
+msgid "_New search"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/mod.rs:128
+msgid "_Last search"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/mod.rs:145
+msgid "_Standard"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/mod.rs:146
+msgid "Ad_vanced"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/mod.rs:147
+msgid "Load/Sa_ve"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/mod.rs:148
+msgid "_Results"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/mod.rs:347
+#, rust-format
+msgid "Delete the saved search \"{name}\"?"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/mod.rs:440
+msgid "Find files - Scanning"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/mod.rs:468
+msgid "Comparing files for duplicates..."
+msgstr ""
+
+#: crates/dc-gui/src/find_files/mod.rs:470
+#, rust-format
+msgid "Scanning: {path}"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/mod.rs:478
+#, rust-format
+msgid "Cancelled after {seconds} s"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/mod.rs:480
+#, rust-format
+msgid "Finished in {seconds} s"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/mod.rs:485
+msgid "Find files - Finished"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/mod.rs:538
+msgid "Start in directory"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/mod.rs:558
+#, rust-format
+msgid "{path} is not there any more."
+msgstr ""
+
+#: crates/dc-gui/src/find_files/mod.rs:591
+msgid "Save search template"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/mod.rs:591
+msgid "_Template name:"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/results.rs:101
+msgid "Group"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/results.rs:102
+#: crates/dc-gui/src/multi_rename.rs:298 crates/dc-gui/src/multi_rename.rs:309
+#: crates/dc-gui/src/panel_view.rs:37
+msgid "Name"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/results.rs:103
+msgid "Directory"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/results.rs:132
+msgid "Feed to _panel"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/results.rs:133
+msgid "_Go to file"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/results.rs:134
+msgid "_Open"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/results.rs:135
+msgid "_Remove from list"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/results.rs:138
+msgid ""
+"The items found in the active panel, to work with them as with files of a "
+"directory"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/results.rs:139
+msgid "Enter (Space keeps this window open)"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/results.rs:175
+#, rust-format
+msgid "Scanned: {scanned}    Found: {found}"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/saved.rs:31
+msgid "L_oad"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/saved.rs:32
+msgid "S_ave"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/saved.rs:33
+msgid "Sa_ve with \"Start in directory\""
+msgstr ""
+
+#: crates/dc-gui/src/find_files/saved.rs:34
+msgid "_Delete"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/saved.rs:39
+msgid ""
+"If saved then \"Start in directory\" will be restored when loading template. "
+"Use it if you want to fix searching to a certain directory"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/saved.rs:42
+msgid "_Previous searches:"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/saved.rs:53
+#, rust-format
+msgid "Saved in {path}"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/saved.rs:101
+#, rust-format
+msgid "\"{masks}\""
+msgstr ""
+
+#: crates/dc-gui/src/find_files/saved.rs:103
+#, rust-format
+msgid "\"{masks}\" -> \"{start}\""
+msgstr ""
+
+#: crates/dc-gui/src/find_files/standard.rs:45
+msgid "all (unlimited depth)"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/standard.rs:45
+msgid "current directory only"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/standard.rs:47
+#, rust-format
+msgid "{count} level"
+msgid_plural "{count} levels"
+msgstr[0] ""
+msgstr[1] ""
+
+#: crates/dc-gui/src/find_files/standard.rs:58
+msgid "Automatic (UTF-8, UTF-16 by its mark)"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/standard.rs:63
+msgid "Choose a directory"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/standard.rs:64
+msgid "Selected directories and _files"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/standard.rs:65
+msgid "Follow s_ymlinks"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/standard.rs:69
+msgid "Search in _archives"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/standard.rs:70
+msgid "Searc_h for part of file name"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/standard.rs:71
+msgid "_Regular expression"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/standard.rs:73
+msgid "Find _text in file"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/standard.rs:75
+msgid "Re_place by"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/standard.rs:77
+msgid "Find files N_OT containing the text"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/standard.rs:78
+msgid "Case sens_itive"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/standard.rs:79
+msgid "Reg_ular expression"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/standard.rs:80
+msgid "Hexadeci_mal"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/standard.rs:81
+msgid "Text of _documents"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/standard.rs:93
+msgid ""
+"Names of directories not to search, separated by \";\": a name "
+"(node_modules), a path under the start directory (build/cache) or a whole "
+"path (/proc); masks allowed."
+msgstr ""
+
+#: crates/dc-gui/src/find_files/standard.rs:95
+msgid "Names separated by \";\", masks with * and ? allowed"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/standard.rs:96
+msgid "Names not to find, separated by \";\""
+msgstr ""
+
+#: crates/dc-gui/src/find_files/standard.rs:97
+msgid "The text is bytes in hexadecimal, e.g. 4D 5A"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/standard.rs:99
+msgid ""
+"Searches the text of documents, not their bytes: OpenDocument and Microsoft "
+"Office files, EPUB and FictionBook by itself; PDF, DjVu, RTF and old Word "
+"documents through programs of the system."
+msgstr ""
+
+#: crates/dc-gui/src/find_files/standard.rs:101
+msgid "Encoding of the files searched"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/standard.rs:104
+msgid "Start in _directory"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/standard.rs:114
+msgid "E_xclude subdirectories"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/standard.rs:115
+msgid "Search su_bdirectories:"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/standard.rs:120
+msgid "File _mask"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/standard.rs:129
+msgid "_Exclude files"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/standard.rs:148
+msgid "Encodin_g:"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/standard.rs:152
+msgid "Copy"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/standard.rs:170
+msgid "Directories"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/standard.rs:171
+msgid "Files"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/standard.rs:172
+msgid "Find in contents"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/standard.rs:214
+#: crates/dc-gui/src/quick_details.rs:174
+#, rust-format
+msgid "{program} - {adds}"
+msgstr ""
+
+#: crates/dc-gui/src/find_files/standard.rs:216
+#, rust-format
+msgid ""
+"These documents need programs that are not installed:\n"
+"{list}"
 msgstr ""
 
 #: crates/dc-gui/src/function_bar.rs:19
@@ -742,584 +1388,588 @@ msgctxt "function key"
 msgid "Exit"
 msgstr ""
 
-#: crates/dc-gui/src/main.rs:94
+#: crates/dc-gui/src/history_entry.rs:38
+msgid "Earlier texts"
+msgstr ""
+
+#: crates/dc-gui/src/main.rs:100
 msgid "[PATH] | [LEFT RIGHT]"
 msgstr ""
 
-#: crates/dc-gui/src/main.rs:96
+#: crates/dc-gui/src/main.rs:102
 msgid ""
 "A path alone is shown in the active panel (the left one at start), two paths "
 "in the left and the right panel."
 msgstr ""
 
-#: crates/dc-gui/src/main.rs:98
+#: crates/dc-gui/src/main.rs:104
 msgid "PATH"
 msgstr ""
 
-#: crates/dc-gui/src/main.rs:104
+#: crates/dc-gui/src/main.rs:106
 msgid "Path for the left panel"
 msgstr ""
 
-#: crates/dc-gui/src/main.rs:112
+#: crates/dc-gui/src/main.rs:107
 msgid "Path for the right panel"
 msgstr ""
 
-#: crates/dc-gui/src/main.rs:120
+#: crates/dc-gui/src/main.rs:108
 msgid "Active panel: L (left) or R (right)"
 msgstr ""
 
-#: crates/dc-gui/src/main.rs:133
+#: crates/dc-gui/src/main.rs:123
 #, rust-format
 msgid "Not a local path: {path}"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:37
+#: crates/dc-gui/src/menu.rs:40
 msgctxt "main menu"
 msgid "_Files"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:39
+#: crates/dc-gui/src/menu.rs:42
 msgctxt "main menu"
 msgid "Create Symbolic _Link..."
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:40
+#: crates/dc-gui/src/menu.rs:43
 msgctxt "main menu"
 msgid "Create _Hard Link..."
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:41
+#: crates/dc-gui/src/menu.rs:44
 msgctxt "main menu"
 msgid "Create _Directory"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:43
+#: crates/dc-gui/src/menu.rs:46
 msgctxt "main menu"
 msgid "Change _Attributes..."
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:44
+#: crates/dc-gui/src/menu.rs:47
 msgctxt "main menu"
 msgid "Show _File Properties"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:45
+#: crates/dc-gui/src/menu.rs:48
 msgctxt "main menu"
 msgid "Edit Co_mment..."
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:46
+#: crates/dc-gui/src/menu.rs:49
 msgctxt "main menu"
 msgid "Calculate _Occupied Space"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:47
+#: crates/dc-gui/src/menu.rs:50
 msgctxt "main menu"
 msgid "Compare by _Contents"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:48
+#: crates/dc-gui/src/menu.rs:51
 msgctxt "main menu"
 msgid "Multi-_Rename Tool"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:50
+#: crates/dc-gui/src/menu.rs:53
 msgctxt "main menu"
 msgid "_Pack Files..."
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:51
+#: crates/dc-gui/src/menu.rs:54
 msgctxt "main menu"
 msgid "_Extract Files..."
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:52
+#: crates/dc-gui/src/menu.rs:55
 msgctxt "main menu"
 msgid "_Test Archive(s)"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:53
+#: crates/dc-gui/src/menu.rs:56
 msgctxt "main menu"
 msgid "Spl_it File..."
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:54
+#: crates/dc-gui/src/menu.rs:57
 msgctxt "main menu"
 msgid "Com_bine Files..."
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:55
+#: crates/dc-gui/src/menu.rs:58
 msgctxt "main menu"
 msgid "Calculate Check_sum..."
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:56
+#: crates/dc-gui/src/menu.rs:59
 msgctxt "main menu"
 msgid "_Verify Checksum..."
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:58
+#: crates/dc-gui/src/menu.rs:61
 msgctxt "main menu"
 msgid "Wipe"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:59
+#: crates/dc-gui/src/menu.rs:62
 msgctxt "main menu"
 msgid "Delete"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:61
+#: crates/dc-gui/src/menu.rs:64
 msgctxt "main menu"
 msgid "E_xit"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:65
+#: crates/dc-gui/src/menu.rs:68
 msgctxt "main menu"
 msgid "_Mark"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:67
+#: crates/dc-gui/src/menu.rs:70
 msgctxt "main menu"
 msgid "Select a _Group..."
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:68
+#: crates/dc-gui/src/menu.rs:71
 msgctxt "main menu"
 msgid "Unselect a Gro_up..."
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:69
+#: crates/dc-gui/src/menu.rs:72
 msgctxt "main menu"
 msgid "_Select All"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:70
+#: crates/dc-gui/src/menu.rs:73
 msgctxt "main menu"
 msgid "_Unselect All"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:71
+#: crates/dc-gui/src/menu.rs:74
 msgctxt "main menu"
 msgid "_Invert Selection"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:72
+#: crates/dc-gui/src/menu.rs:75
 msgctxt "main menu"
 msgid "Select All with the Same E_xtension"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:73
+#: crates/dc-gui/src/menu.rs:76
 msgctxt "main menu"
 msgid "Unselect All with the Same Ex_tension"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:75
+#: crates/dc-gui/src/menu.rs:78
 msgctxt "main menu"
 msgid "Sa_ve Selection"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:76
+#: crates/dc-gui/src/menu.rs:79
 msgctxt "main menu"
 msgid "_Restore Selection"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:77
+#: crates/dc-gui/src/menu.rs:80
 msgctxt "main menu"
 msgid "Save S_election to File..."
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:78
+#: crates/dc-gui/src/menu.rs:81
 msgctxt "main menu"
 msgid "_Load Selection from File..."
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:79
+#: crates/dc-gui/src/menu.rs:82
 msgctxt "main menu"
 msgid "Load Selection from Clip_board"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:81
+#: crates/dc-gui/src/menu.rs:84
 msgctxt "main menu"
 msgid "Copy _Filename(s) to Clipboard"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:82
+#: crates/dc-gui/src/menu.rs:85
 msgctxt "main menu"
 msgid "Copy Filename(s) with Full _Path"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:83
+#: crates/dc-gui/src/menu.rs:86
 msgctxt "main menu"
 msgid "Copy all shown _columns"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:85
+#: crates/dc-gui/src/menu.rs:88
 msgctxt "main menu"
 msgid "Compare Directories"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:89
+#: crates/dc-gui/src/menu.rs:92
 msgctxt "main menu"
 msgid "_Commands"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:91
+#: crates/dc-gui/src/menu.rs:94
 msgctxt "main menu"
 msgid "_Search..."
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:92
+#: crates/dc-gui/src/menu.rs:95
 msgctxt "main menu"
 msgid "New search instance..."
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:93
+#: crates/dc-gui/src/menu.rs:96
 msgctxt "main menu"
 msgid "View current search instances"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:94
+#: crates/dc-gui/src/menu.rs:97
 msgctxt "main menu"
 msgid "Directory _Hotlist"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:95
+#: crates/dc-gui/src/menu.rs:98
 msgctxt "main menu"
 msgid "Syn_chronize dirs..."
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:97
+#: crates/dc-gui/src/menu.rs:100
 msgctxt "main menu"
 msgid "Run _Terminal"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:98
+#: crates/dc-gui/src/menu.rs:101
 msgctxt "main menu"
 msgid "Execute _internal command..."
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:100
+#: crates/dc-gui/src/menu.rs:103
 msgctxt "main menu"
 msgid "_Flat view"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:101
+#: crates/dc-gui/src/menu.rs:104
 msgctxt "main menu"
 msgid "Open _VFS List"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:103
+#: crates/dc-gui/src/menu.rs:106
 msgctxt "main menu"
 msgid "Open Stash"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:104
+#: crates/dc-gui/src/menu.rs:107
 msgctxt "main menu"
 msgid "Swap _Panels"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:105
+#: crates/dc-gui/src/menu.rs:108
 msgctxt "main menu"
 msgid "Target _= Source"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:107
+#: crates/dc-gui/src/menu.rs:110
 msgctxt "main menu"
 msgid "Sho_w Occupied Space"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:111
+#: crates/dc-gui/src/menu.rs:114
 msgctxt "main menu"
 msgid "_Network"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:113
+#: crates/dc-gui/src/menu.rs:116
 msgctxt "main menu"
 msgid "Network _Connect..."
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:114
+#: crates/dc-gui/src/menu.rs:117
 msgctxt "main menu"
 msgid "Network _Disconnect"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:118
+#: crates/dc-gui/src/menu.rs:121
 msgctxt "main menu"
 msgid "_Tabs"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:120
+#: crates/dc-gui/src/menu.rs:123
 msgctxt "main menu"
 msgid "_New Tab"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:121
+#: crates/dc-gui/src/menu.rs:124
 msgctxt "main menu"
 msgid "_Rename Tab"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:122
+#: crates/dc-gui/src/menu.rs:125
 msgctxt "main menu"
 msgid "Open _Folder in a New Tab"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:124
+#: crates/dc-gui/src/menu.rs:127
 msgctxt "main menu"
 msgid "_Close Tab"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:125
+#: crates/dc-gui/src/menu.rs:128
 msgctxt "main menu"
 msgid "Close _All Tabs"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:126
+#: crates/dc-gui/src/menu.rs:129
 msgctxt "main menu"
 msgid "Close Duplicate Tabs"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:129
+#: crates/dc-gui/src/menu.rs:132
 msgctxt "main menu"
 msgid "Tab _Options"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:131
+#: crates/dc-gui/src/menu.rs:134
 msgctxt "main menu"
 msgid "_Normal"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:132
+#: crates/dc-gui/src/menu.rs:135
 msgctxt "main menu"
 msgid "_Locked"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:133
+#: crates/dc-gui/src/menu.rs:136
 msgctxt "main menu"
 msgid "Locked with _Directory Changes Allowed"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:134
+#: crates/dc-gui/src/menu.rs:137
 msgctxt "main menu"
 msgid "Locked with Directories Opened in New _Tabs"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:136
+#: crates/dc-gui/src/menu.rs:139
 msgctxt "main menu"
 msgid "Set all tabs to Normal"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:137
+#: crates/dc-gui/src/menu.rs:140
 msgctxt "main menu"
 msgid "Set all tabs to Locked"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:138
+#: crates/dc-gui/src/menu.rs:141
 msgctxt "main menu"
 msgid "All tabs Locked with Dir Changes Allowed"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:139
+#: crates/dc-gui/src/menu.rs:142
 msgctxt "main menu"
 msgid "All tabs Locked with Dir Opened in New Tabs"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:143
+#: crates/dc-gui/src/menu.rs:146
 msgctxt "main menu"
 msgid "Switch to Nex_t Tab"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:144
+#: crates/dc-gui/src/menu.rs:147
 msgctxt "main menu"
 msgid "Switch to _Previous Tab"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:146
+#: crates/dc-gui/src/menu.rs:149
 msgctxt "main menu"
 msgid "_Save Tabs to File"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:147
+#: crates/dc-gui/src/menu.rs:150
 msgctxt "main menu"
 msgid "_Load Tabs from File"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:148 crates/dc-gui/src/menu.rs:158
+#: crates/dc-gui/src/menu.rs:151 crates/dc-gui/src/menu.rs:161
 msgctxt "main menu"
 msgid "Save current tabs to a New Favorite Tabs"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:149
+#: crates/dc-gui/src/menu.rs:152
 msgctxt "main menu"
 msgid "Load tabs from Favorite Tabs"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:151 crates/dc-gui/src/menu.rs:201
+#: crates/dc-gui/src/menu.rs:154 crates/dc-gui/src/menu.rs:204
 msgctxt "main menu"
 msgid "Configuration of folder tabs"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:152 crates/dc-gui/src/menu.rs:161
-#: crates/dc-gui/src/menu.rs:199
+#: crates/dc-gui/src/menu.rs:155 crates/dc-gui/src/menu.rs:164
+#: crates/dc-gui/src/menu.rs:202
 msgctxt "main menu"
 msgid "Configuration of Favorite Tabs"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:156
+#: crates/dc-gui/src/menu.rs:159
 msgctxt "main menu"
 msgid "F_avorites"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:159
+#: crates/dc-gui/src/menu.rs:162
 msgctxt "main menu"
 msgid "Resave on the last Favorite Tabs loaded"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:160
+#: crates/dc-gui/src/menu.rs:163
 msgctxt "main menu"
 msgid "Reload the last Favorite Tabs loaded"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:166
+#: crates/dc-gui/src/menu.rs:169
 msgctxt "main menu"
 msgid "_Show"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:169
+#: crates/dc-gui/src/menu.rs:172
 msgctxt "main menu"
 msgid "_List"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:170
+#: crates/dc-gui/src/menu.rs:173
 msgctxt "main menu"
 msgid "_Details"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:171
+#: crates/dc-gui/src/menu.rs:174
 msgctxt "main menu"
 msgid "_Icons"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:172
+#: crates/dc-gui/src/menu.rs:175
 msgctxt "main menu"
 msgid "Ter_minal"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:174
+#: crates/dc-gui/src/menu.rs:177
 msgctxt "main menu"
 msgid "_Quick View Panel"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:175
+#: crates/dc-gui/src/menu.rs:178
 msgctxt "main menu"
 msgid "_Tree View Panel"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:177
+#: crates/dc-gui/src/menu.rs:180
 msgctxt "main menu"
 msgid "Sort by _Name"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:178
+#: crates/dc-gui/src/menu.rs:181
 msgctxt "main menu"
 msgid "Sort by _Extension"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:179
+#: crates/dc-gui/src/menu.rs:182
 msgctxt "main menu"
 msgid "Sort by _Size"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:180
+#: crates/dc-gui/src/menu.rs:183
 msgctxt "main menu"
 msgid "Sort by _Date"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:181
+#: crates/dc-gui/src/menu.rs:184
 msgctxt "main menu"
 msgid "Sort by _Attributes"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:183
+#: crates/dc-gui/src/menu.rs:186
 msgctxt "main menu"
 msgid "Re_verse Order"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:184
+#: crates/dc-gui/src/menu.rs:187
 msgctxt "main menu"
 msgid "_Refresh"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:186
+#: crates/dc-gui/src/menu.rs:189
 msgctxt "main menu"
 msgid "Show _Hidden/System Files"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:188
+#: crates/dc-gui/src/menu.rs:191
 msgctxt "main menu"
 msgid "_Horizontal Panels Mode"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:190
+#: crates/dc-gui/src/menu.rs:193
 msgctxt "main menu"
 msgid "Operations _Viewer"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:194
+#: crates/dc-gui/src/menu.rs:197
 msgctxt "main menu"
 msgid "C_onfiguration"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:196
+#: crates/dc-gui/src/menu.rs:199
 msgctxt "main menu"
 msgid "_Options..."
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:198
+#: crates/dc-gui/src/menu.rs:201
 msgctxt "main menu"
 msgid "Configuration of Directory Hotlist"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:200
+#: crates/dc-gui/src/menu.rs:203
 msgctxt "main menu"
 msgid "Configuration of File _Associations"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:202
+#: crates/dc-gui/src/menu.rs:205
 msgctxt "main menu"
 msgid "Configuration of Archivers"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:204
+#: crates/dc-gui/src/menu.rs:207
 msgctxt "main menu"
 msgid "Save Position"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:205
+#: crates/dc-gui/src/menu.rs:208
 msgctxt "main menu"
 msgid "Save Settings"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:209
+#: crates/dc-gui/src/menu.rs:212
 msgctxt "main menu"
 msgid "_Help"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:211
+#: crates/dc-gui/src/menu.rs:214
 msgctxt "main menu"
 msgid "_Contents"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:212
+#: crates/dc-gui/src/menu.rs:215
 msgctxt "main menu"
 msgid "_Keyboard"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:213
+#: crates/dc-gui/src/menu.rs:216
 msgctxt "main menu"
 msgid "_Visit Douby Commander Website"
 msgstr ""
 
-#: crates/dc-gui/src/menu.rs:215
+#: crates/dc-gui/src/menu.rs:218
 msgctxt "main menu"
 msgid "_About"
 msgstr ""
@@ -1408,16 +2058,6 @@ msgstr ""
 
 #: crates/dc-gui/src/multi_rename.rs:261
 msgid "Reset _All"
-msgstr ""
-
-#: crates/dc-gui/src/multi_rename.rs:271
-msgctxt "button"
-msgid "_Close"
-msgstr ""
-
-#: crates/dc-gui/src/multi_rename.rs:298 crates/dc-gui/src/multi_rename.rs:309
-#: crates/dc-gui/src/panel_view.rs:37
-msgid "Name"
 msgstr ""
 
 #: crates/dc-gui/src/multi_rename.rs:299 crates/dc-gui/src/multi_rename.rs:313
@@ -1577,51 +2217,55 @@ msgid ""
 "{operation} - {percent}"
 msgstr ""
 
-#: crates/dc-gui/src/panel_column.rs:76
+#: crates/dc-gui/src/panel_column.rs:50
+msgid "Search result"
+msgstr ""
+
+#: crates/dc-gui/src/panel_column.rs:78
 #, rust-format
 msgctxt "drive tooltip"
 msgid "{path} ({type})"
 msgstr ""
 
-#: crates/dc-gui/src/panel_column.rs:117
+#: crates/dc-gui/src/panel_column.rs:119
 #, rust-format
 msgid "{free} free"
 msgstr ""
 
-#: crates/dc-gui/src/panel_column.rs:119
+#: crates/dc-gui/src/panel_column.rs:121
 #, rust-format
 msgid "{free} of {total} free"
 msgstr ""
 
-#: crates/dc-gui/src/panel_column.rs:149
+#: crates/dc-gui/src/panel_column.rs:151
 msgid "Open drive list"
 msgstr ""
 
-#: crates/dc-gui/src/panel_column.rs:159
+#: crates/dc-gui/src/panel_column.rs:161
 msgid "Show current directory of the right panel in the left panel"
 msgstr ""
 
-#: crates/dc-gui/src/panel_column.rs:161
+#: crates/dc-gui/src/panel_column.rs:163
 msgid "Show current directory of the left panel in the right panel"
 msgstr ""
 
-#: crates/dc-gui/src/panel_column.rs:164
+#: crates/dc-gui/src/panel_column.rs:166
 msgid "Directory Hotlist"
 msgstr ""
 
-#: crates/dc-gui/src/panel_column.rs:165
+#: crates/dc-gui/src/panel_column.rs:167
 msgid "Go to root directory"
 msgstr ""
 
-#: crates/dc-gui/src/panel_column.rs:166
+#: crates/dc-gui/src/panel_column.rs:168
 msgid "Go to parent directory"
 msgstr ""
 
-#: crates/dc-gui/src/panel_column.rs:167
+#: crates/dc-gui/src/panel_column.rs:169
 msgid "Go to home directory"
 msgstr ""
 
-#: crates/dc-gui/src/panel_column.rs:184 crates/dc-gui/src/toolbar.rs:79
+#: crates/dc-gui/src/panel_column.rs:186 crates/dc-gui/src/toolbar.rs:79
 #, rust-format
 msgctxt "tooltip of a disabled button"
 msgid "{hint} - {reason}"
@@ -1629,10 +2273,6 @@ msgstr ""
 
 #: crates/dc-gui/src/panel_view.rs:38
 msgid "Ext"
-msgstr ""
-
-#: crates/dc-gui/src/panel_view.rs:39
-msgid "Size"
 msgstr ""
 
 #: crates/dc-gui/src/panel_view.rs:41
@@ -1671,30 +2311,35 @@ msgstr ""
 msgid "Go"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:1134
+#: crates/dc-gui/src/panel_view.rs:1136
 msgid "To browse an archive inside an archive, copy it out first."
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:1138
+#: crates/dc-gui/src/panel_view.rs:1140
 msgid "Reading the archive…"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:1775
+#: crates/dc-gui/src/panel_view.rs:1685
+#, rust-format
+msgid "Search result: {path}"
+msgstr ""
+
+#: crates/dc-gui/src/panel_view.rs:1789
 #, rust-format
 msgid "(SEARCH: {text})"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:1816
+#: crates/dc-gui/src/panel_view.rs:1830
 #, rust-format
 msgid "Cannot open {path}"
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:1925
+#: crates/dc-gui/src/panel_view.rs:1962
 #, rust-format
 msgid "You may not create directories in {path}."
 msgstr ""
 
-#: crates/dc-gui/src/panel_view.rs:1931
+#: crates/dc-gui/src/panel_view.rs:1968
 msgid "Archives can only be browsed so far."
 msgstr ""
 
@@ -1768,20 +2413,15 @@ msgstr ""
 msgid "Speed {speed}/s"
 msgstr ""
 
-#: crates/dc-gui/src/quick_details.rs:175
-#, rust-format
-msgid "{program} - {adds}"
-msgstr ""
-
-#: crates/dc-gui/src/quick_details.rs:194
+#: crates/dc-gui/src/quick_details.rs:193
 msgid "Copy the command"
 msgstr ""
 
-#: crates/dc-gui/src/quick_details.rs:208
+#: crates/dc-gui/src/quick_details.rs:207
 msgid "For a better preview install"
 msgstr ""
 
-#: crates/dc-gui/src/quick_details.rs:271
+#: crates/dc-gui/src/quick_details.rs:270
 msgid "picture of the file"
 msgstr ""
 

@@ -3,7 +3,7 @@ resolver = "3"
 members = ["crates/*"]
 
 [workspace.package]
-version = "0.0.16"
+version = "0.0.17"
 edition = "2024"
 rust-version = "1.92"
 license = "GPL-2.0-or-later"
@@ -43,6 +43,12 @@ thiserror = "2.0.21"
 # Only moving to trash is used, listing and restoring (which need chrono) are not.
 trash = { version = "5.2.9", default-features = false }
 unicode-normalization = "0.1.26"
+blake3 = "1.8.7"
+grep-matcher = "0.1.9"
+grep-regex = "0.1.14"
+grep-searcher = "0.1.17"
+serde = { version = "1.0.229", features = ["derive"] }
+toml = "1.2.1"
 
 # Strict on purpose: the compiler and clippy should say what not to do.
 # Every warning is fixed before a step counts as done (see check.sh).

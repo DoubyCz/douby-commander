@@ -163,6 +163,11 @@ impl ArchiveSource {
         Ok(entry)
     }
 
+    /// Every item of the archive with its path within it, the root left
+    /// out, in no particular order (for searching).
+    pub fn items(&self) -> impl Iterator<Item = (&Path, &Entry)> {
+        self.entries.iter().filter(|(path, _)| !path.as_os_str().is_empty()).map(|(path, entry)| (path.as_path(), entry))
+    }
 }
 
 fn missing(path: &Path) -> Error {
@@ -181,6 +186,38 @@ impl ArchiveSource {
             .map(|(_, entry)| entry.size)
             .sum()
     }
+}
+
+/// The contents of the files of `archive` whose path within it `wanted`
+/// accepts, one after another (for searching text in documents that are
+/// zips of XML, as `.odt` or `.docx`). At most `limit` bytes.
+///
+/// # Errors
+/// [`Error::Archive`] when the archive cannot be read.
+pub fn read_members(archive: &Path, wanted: impl Fn(&str) -> bool + 'static, limit: usize) -> Result<Vec<u8>> {
+    let error = |message: String| Error::Archive { path: archive.to_owned(), message };
+    let source = File::open(archive).map_err(|err| error(err.to_string()))?;
+    let iterator = ArchiveIteratorBuilder::new(source)
+        .filter(move |name, _| wanted(name))
+        .build()
+        .map_err(|err| error(err.to_string()))?;
+    let mut data = Vec::new();
+    for content in iterator {
+        match content {
+            ArchiveContents::DataChunk(bytes) => {
+                data.extend_from_slice(&bytes);
+                if data.len() >= limit {
+                    data.truncate(limit);
+                    break;
+                }
+            }
+            // Members apart, a word never runs from one into the next.
+            ArchiveContents::EndOfEntry => data.push(b'\n'),
+            ArchiveContents::Err(err) => return Err(error(err.to_string())),
+            ArchiveContents::StartOfEntry(..) => {}
+        }
+    }
+    Ok(data)
 }
 
 /// Progress of [`extract`].

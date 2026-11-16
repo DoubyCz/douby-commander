@@ -69,6 +69,8 @@ pub enum Command {
     RenameOnly,
     /// Ctrl+M: the multi-rename tool for marked items, or the one under the cursor.
     MultiRename,
+    /// Alt+F7: the window to find files.
+    Search,
     /// F7: create a directory in the active panel.
     MakeDir,
     /// Shift+F9: the desktop's terminal, in its own window, in the
@@ -102,6 +104,9 @@ pub enum Command {
     /// The path above the active panel's list becomes an entry, to type
     /// where to go (a double click on the path does the same).
     EditPath,
+    /// Ctrl+.: hidden files (names starting with a dot) shown or not, in
+    /// both panels; the menu item is checked while they are.
+    ShowSysFiles,
     /// The active panel shows names only, in columns ("List").
     BriefView,
     /// The active panel shows all columns ("Details").
@@ -149,7 +154,7 @@ impl TrashChoice {
 
 impl Command {
     /// All commands with default parameters, for listings and for parsing.
-    pub const ALL: [Self; 51] = [
+    pub const ALL: [Self; 53] = [
         Self::Open,
         Self::ChangeDirToParent,
         Self::FocusSwap,
@@ -171,6 +176,7 @@ impl Command {
         Self::Rename,
         Self::RenameOnly,
         Self::MultiRename,
+        Self::Search,
         Self::MakeDir,
         Self::RunTerm,
         Self::Delete { trash: TrashChoice::Setting },
@@ -185,6 +191,7 @@ impl Command {
         Self::ChangeDirToRoot,
         Self::ChangeDirToHome,
         Self::EditPath,
+        Self::ShowSysFiles,
         Self::BriefView,
         Self::ColumnsView,
         Self::ThumbnailsView,
@@ -228,6 +235,7 @@ impl Command {
             Self::Rename => "cm_Rename",
             Self::RenameOnly => "cm_RenameOnly",
             Self::MultiRename => "cm_MultiRename",
+            Self::Search => "cm_Search",
             Self::MakeDir => "cm_MakeDir",
             Self::RunTerm => "cm_RunTerm",
             Self::Delete { .. } => "cm_Delete",
@@ -242,6 +250,7 @@ impl Command {
             Self::ChangeDirToRoot => "cm_ChangeDirToRoot",
             Self::ChangeDirToHome => "cm_ChangeDirToHome",
             Self::EditPath => "cm_EditPath",
+            Self::ShowSysFiles => "cm_ShowSysFiles",
             Self::BriefView => "cm_BriefView",
             Self::ColumnsView => "cm_ColumnsView",
             Self::ThumbnailsView => "cm_ThumbnailsView",

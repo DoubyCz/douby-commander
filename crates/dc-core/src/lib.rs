@@ -4,6 +4,7 @@
 //! the state kept in [`Panel`] and forwards user actions to it.
 
 pub mod command;
+pub mod find;
 pub mod format;
 mod item;
 pub mod keymap;
@@ -12,6 +13,7 @@ pub mod multi_rename;
 mod panel;
 pub mod path_input;
 pub mod preview;
+pub mod program;
 pub mod quick_search;
 mod sort;
 pub mod startup;

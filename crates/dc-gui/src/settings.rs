@@ -13,10 +13,14 @@ pub struct Settings {
     /// when the application starts, to point them out. Skipped anyway when
     /// the system turns animations off.
     pub startup_wave: bool,
+    /// "Show hidden/system files" of the original (`gShowSystemFiles`, off
+    /// by default): names starting with a dot listed too, in both panels.
+    /// Ctrl+. switches it while running.
+    pub show_hidden: bool,
 }
 
 impl Default for Settings {
     fn default() -> Self {
-        Self { use_trash: true, startup_wave: true }
+        Self { use_trash: true, startup_wave: true, show_hidden: false }
     }
 }

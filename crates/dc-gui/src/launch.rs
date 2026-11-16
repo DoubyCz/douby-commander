@@ -6,7 +6,7 @@
 
 use std::ffi::OsString;
 use std::io;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 use std::process::{Command, Stdio};
 
 /// Terminals tried without a default terminal; all take `-e command args`.
@@ -42,25 +42,4 @@ pub fn open_terminal(dir: &Path) -> Result<(), LaunchError> {
     Ok(())
 }
 
-/// `program` on `$PATH` (or a path), if it is an executable file.
-pub fn find_program(program: impl AsRef<std::ffi::OsStr>) -> Option<PathBuf> {
-    use std::os::unix::fs::PermissionsExt;
-    let program = Path::new(program.as_ref());
-    let executable = |path: &Path| path.metadata().is_ok_and(|m| m.is_file() && m.permissions().mode() & 0o111 != 0);
-    if program.components().count() > 1 {
-        return executable(program).then(|| program.to_owned());
-    }
-    let paths = std::env::var_os("PATH")?;
-    std::env::split_paths(&paths).map(|dir| dir.join(program)).find(|path| executable(path))
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn finds_programs_on_the_path() {
-        assert!(find_program("sh").is_some());
-        assert!(find_program("surely-no-such-program-here").is_none());
-    }
-}
+pub use dc_core::program::find as find_program;

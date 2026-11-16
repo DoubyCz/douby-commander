@@ -266,6 +266,7 @@ impl Keymap {
             (shift(Key::F(6)), Command::RenameOnly),
             (Shortcut::plain(Key::F(2)), Command::RenameOnly),
             (Shortcut::plain(Key::F(7)), Command::MakeDir),
+            (alt(Key::F(7)), Command::Search),
             // Deliberately unlike the original (Ctrl+F1, Ctrl+F2 and
             // Ctrl+Shift+F1 there, none of them here): F9 goes through all
             // views of the panel, the terminal included (Jirka's wish).
@@ -289,6 +290,7 @@ impl Keymap {
             (Shortcut::plain(Key::NumMinus), Command::MarkMinus),
             (Shortcut::plain(Key::NumMultiply), Command::MarkInvert),
             (ctrl(Key::Char('\\')), Command::ChangeDirToRoot),
+            (ctrl(Key::Char('.')), Command::ShowSysFiles),
             (Shortcut::new(Modifiers { ctrl: true, shift: true, ..Modifiers::NONE }, Key::Home), Command::ChangeDirToHome),
         ];
         let mut keymap = Self::default();
@@ -376,5 +378,6 @@ mod tests {
             Some(Command::Delete { trash: TrashChoice::ReverseSetting })
         );
         assert_eq!(keymap.command(&parse("Alt+X")), Some(Command::Exit));
+        assert_eq!(keymap.command(&parse("Alt+F7")), Some(Command::Search));
     }
 }

@@ -1,5 +1,5 @@
 use std::collections::HashSet;
-use std::ffi::{OsStr, OsString};
+use std::ffi::OsStr;
 use std::path::{Path, PathBuf};
 
 use dc_vfs::{EntryKind, FileSource};
@@ -20,6 +20,10 @@ pub struct Panel {
     /// While Shift is held, Shift+arrows only mark or only unmark, as the
     /// first item decided; `None` until then and after Shift is released.
     held_mark: Option<bool>,
+    /// Items found by a search shown instead of a directory ("Feed to
+    /// panel"): their paths; `path` is then the directory they are shown
+    /// under, where `..` goes back to.
+    found: Option<Vec<PathBuf>>,
 }
 
 /// Running Shift+PgUp/PgDn/Home/End or Shift+click selection.
@@ -71,6 +75,7 @@ impl Panel {
             show_hidden: false,
             range: None,
             held_mark: None,
+            found: None,
         }
     }
 
@@ -123,9 +128,39 @@ impl Panel {
 
         self.path = path;
         self.items = items;
+        self.found = None;
         self.sort_items();
         self.set_cursor(focus.and_then(|name| self.position_of(name)).unwrap_or(0));
         Ok(())
+    }
+
+    /// Shows the items found by a search at `paths` instead of a directory,
+    /// each by its path below `base` (whole when outside it); `..` goes
+    /// back to `base`. Items no longer there are left out.
+    pub fn show_found(&mut self, source: &dyn FileSource, base: PathBuf, paths: Vec<PathBuf>) {
+        let mut items = vec![FileItem::parent()];
+        for path in &paths {
+            let (Some(dir), Ok(entry)) = (path.parent(), source.entry(path)) else { continue };
+            let shown = path.strip_prefix(&base).ok().filter(|relative| !relative.as_os_str().is_empty()).unwrap_or(path);
+            items.push(FileItem::found(entry, dir.to_owned(), shown.to_string_lossy().into_owned()));
+        }
+        self.path = base;
+        self.items = items;
+        self.found = Some(paths);
+        self.sort_items();
+        self.set_cursor(0);
+    }
+
+    /// Whether the panel shows items found by a search.
+    #[must_use]
+    pub fn is_found(&self) -> bool {
+        self.found.is_some()
+    }
+
+    /// Where `item` (one of this panel's) is on disk.
+    #[must_use]
+    pub fn item_path(&self, item: &FileItem) -> PathBuf {
+        item.dir().unwrap_or(&self.path).join(&item.entry().name)
     }
 
     /// Lists the current directory again, keeping the cursor and selection by name.
@@ -146,12 +181,18 @@ impl Panel {
     /// When the directory cannot be listed.
     pub fn reload_focusing(&mut self, source: &dyn FileSource, focus: Option<&OsStr>) -> dc_vfs::Result<()> {
         let old_cursor = self.cursor;
-        let selected: HashSet<OsString> =
-            self.items.iter().filter(|item| item.selected).map(|item| item.entry().name.clone()).collect();
+        let selected: HashSet<PathBuf> =
+            self.items.iter().filter(|item| item.selected).map(|item| self.item_path(item)).collect();
 
-        self.load(source, self.path.clone(), focus)?;
-        for item in &mut self.items {
-            item.selected = selected.contains(&item.entry().name);
+        if let Some(paths) = self.found.clone() {
+            self.show_found(source, self.path.clone(), paths);
+            self.set_cursor(focus.and_then(|name| self.position_of(name)).unwrap_or(old_cursor));
+        } else {
+            self.load(source, self.path.clone(), focus)?;
+        }
+        let marks: Vec<bool> = self.items.iter().map(|item| selected.contains(&self.item_path(item))).collect();
+        for (item, marked) in self.items.iter_mut().zip(marks) {
+            item.selected = marked && !item.is_parent();
         }
         if focus.is_some_and(|name| self.position_of(name).is_none()) {
             self.set_cursor(old_cursor);
@@ -173,6 +214,19 @@ impl Panel {
             }
         }
         Err(err)
+    }
+
+    /// Whether hidden items (names starting with a dot) are listed.
+    #[must_use]
+    pub fn shows_hidden(&self) -> bool {
+        self.show_hidden
+    }
+
+    /// Hidden items listed or not from the next listing on: reload to see
+    /// it. The cursor stays on its item; when that one is hidden now, on
+    /// the item that followed it.
+    pub fn set_show_hidden(&mut self, show: bool) {
+        self.show_hidden = show;
     }
 
     /// What file operations work on: the marked items, or the item under
@@ -208,7 +262,7 @@ impl Panel {
         if item.is_parent() {
             return Ok(self.go_up(source)?.then_some(Activation::Navigated));
         }
-        let target = self.path.join(&item.entry().name);
+        let target = self.item_path(item);
         if item.is_directory_like() {
             self.load(source, target, None)?;
             Ok(Some(Activation::Navigated))
@@ -226,6 +280,11 @@ impl Panel {
     /// # Errors
     /// When the parent directory cannot be listed.
     pub fn go_up(&mut self, source: &dyn FileSource) -> dc_vfs::Result<bool> {
+        // From the items found back to the directory they are shown under.
+        if self.is_found() {
+            self.load(source, self.path.clone(), None)?;
+            return Ok(true);
+        }
         let (Some(parent), Some(came_from)) = (self.path.parent(), self.path.file_name()) else {
             return Ok(false);
         };
@@ -480,6 +539,56 @@ mod tests {
         let mut panel = Panel::new(PathBuf::new());
         panel.load(&LocalFs, tmp.path().to_owned(), None).unwrap();
         assert_eq!(names(&panel), ["..", "docs", "big.bin", "small.txt"]);
+    }
+
+    #[test]
+    fn shows_items_found_and_goes_back() {
+        let tmp = fixture();
+        let root = tmp.path();
+        let mut panel = Panel::new(PathBuf::new());
+        let found = vec![root.join("docs/readme.md"), root.join("docs"), root.join(".hidden"), root.join("gone.txt")];
+        panel.show_found(&LocalFs, root.to_owned(), found);
+        assert!(panel.is_found());
+        // By their paths below the directory, hidden ones too, gone ones not.
+        assert_eq!(names(&panel), ["..", "docs", ".hidden", "docs/readme.md"]);
+        let readme = &panel.items()[3];
+        assert_eq!(readme.entry().name, "readme.md");
+        assert_eq!(panel.item_path(readme), root.join("docs/readme.md"));
+
+        panel.set_cursor(3);
+        panel.toggle_selection_at_cursor();
+        fs::remove_file(root.join(".hidden")).unwrap();
+        panel.reload(&LocalFs).unwrap();
+        assert_eq!(names(&panel), ["..", "docs", "docs/readme.md"]);
+        assert_eq!(marked_names(&panel), ["docs/readme.md"]);
+        assert_eq!(panel.activate(&LocalFs).unwrap(), Some(Activation::OpenFile(root.join("docs/readme.md"))));
+
+        panel.set_cursor(0);
+        assert_eq!(panel.activate(&LocalFs).unwrap(), Some(Activation::Navigated));
+        assert!(!panel.is_found());
+        assert_eq!(panel.path(), root);
+        assert_eq!(names(&panel), ["..", "docs", "big.bin", "small.txt"]);
+    }
+
+    #[test]
+    fn shows_hidden_items_when_asked() {
+        let tmp = fixture();
+        let mut panel = Panel::new(PathBuf::new());
+        panel.load(&LocalFs, tmp.path().to_owned(), None).unwrap();
+        panel.set_cursor(2);
+
+        panel.set_show_hidden(true);
+        panel.reload(&LocalFs).unwrap();
+        // A hidden file is a file like the others (directories first).
+        assert_eq!(names(&panel), ["..", "docs", ".hidden", "big.bin", "small.txt"]);
+        assert_eq!(panel.current_item().map(FileItem::display_name), Some("big.bin"));
+
+        panel.set_cursor(2);
+        panel.set_show_hidden(false);
+        panel.reload(&LocalFs).unwrap();
+        assert_eq!(names(&panel), ["..", "docs", "big.bin", "small.txt"]);
+        // The hidden item is gone: the cursor is on the one that followed.
+        assert_eq!(panel.current_item().map(FileItem::display_name), Some("big.bin"));
     }
 
     #[test]

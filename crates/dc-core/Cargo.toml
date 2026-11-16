@@ -9,9 +9,15 @@ license.workspace = true
 [dependencies]
 dc-i18n.workspace = true
 dc-vfs.workspace = true
-jiff.workspace = true
+blake3.workspace = true
+grep-matcher.workspace = true
+grep-regex.workspace = true
+grep-searcher.workspace = true
+jiff = { workspace = true, features = ["serde"] }
 regex.workspace = true
 rustix.workspace = true
+serde.workspace = true
+toml.workspace = true
 unicode-normalization.workspace = true
 
 [dev-dependencies]

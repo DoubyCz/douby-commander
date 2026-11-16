@@ -35,6 +35,7 @@ pub fn build(commander: &Rc<Commander>, side: usize, drives: &[MountPoint]) -> g
     column.append(panel.widget());
 
     let drives = drives.to_vec();
+    let view = Rc::downgrade(&panel);
     panel.connect_path_changed(move |path| {
         let current = current_drive(&drives, path);
         for (index, button) in drive_buttons.iter().enumerate() {
@@ -45,7 +46,8 @@ pub fn build(commander: &Rc<Commander>, side: usize, drives: &[MountPoint]) -> g
             }
         }
         header.show_free_space(path);
-        tab_label.set_text(&tab_title(path));
+        let found = view.upgrade().is_some_and(|view| view.is_found());
+        tab_label.set_text(&if found { gettext("Search result") } else { tab_title(path) });
     });
     column
 }

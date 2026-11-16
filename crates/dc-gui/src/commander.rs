@@ -20,13 +20,14 @@ use gtk::prelude::*;
 use gtk::{gdk, glib};
 
 use crate::copy_dialog;
+use crate::find_files::{self, FindWindow};
 use crate::launch::{self, LaunchError};
 use crate::operations::{OperationsUi, QueueMemory};
 use crate::panel_view::{PanelView, ViewMode, not_in_archives};
 use crate::quick_view::QuickView;
 use crate::splitter::Splitter;
 use crate::settings::Settings;
-use crate::{about, dialogs, keys, multi_rename};
+use crate::{about, dialogs, keys, menu, multi_rename};
 
 pub struct Commander {
     panels: [Rc<PanelView>; 2],
@@ -45,6 +46,8 @@ pub struct Commander {
     /// The quick view follows the cursor once the current event is over.
     quick_view_pending: Cell<bool>,
     mark_memory: RefCell<MarkMemory>,
+    /// The window to find files, made at the first Alt+F7.
+    find: OnceCell<Rc<FindWindow>>,
 }
 
 /// What the mask dialog of Num+ / Num- offers next time.
@@ -89,6 +92,24 @@ impl Commander {
             covers: OnceCell::new(),
             quick_view_pending: Cell::new(false),
             mark_memory: RefCell::default(),
+            find: OnceCell::new(),
+        }
+    }
+
+    /// Whether hidden files are listed now (Ctrl+.), in both panels.
+    pub fn shows_hidden(&self) -> bool {
+        self.panels[0].panel().shows_hidden()
+    }
+
+    /// `cm_ShowSysFiles`: hidden files shown or not, in both panels as in
+    /// the original; the menu item follows.
+    fn toggle_hidden(&self) {
+        let show = !self.shows_hidden();
+        for panel in &self.panels {
+            panel.set_show_hidden(show);
+        }
+        if let Some(window) = self.active().window() {
+            menu::show_hidden_checked(&window, show);
         }
     }
 
@@ -172,6 +193,7 @@ impl Commander {
             Command::Rename => self.transfer(TransferMode::Move, false),
             Command::RenameOnly => panel.start_rename(),
             Command::MultiRename => self.multi_rename(),
+            Command::Search => self.search(),
             Command::MakeDir => self.make_dir(),
             Command::RunTerm => {
                 if let Err(err) = launch::open_terminal(&panel.terminal_dir()) {
@@ -200,6 +222,7 @@ impl Commander {
             Command::ChangeDirToRoot => panel.change_dir(PathBuf::from("/")),
             Command::ChangeDirToHome => panel.change_dir(glib::home_dir()),
             Command::EditPath => panel.start_path_edit(),
+            Command::ShowSysFiles => self.toggle_hidden(),
             Command::BriefView => panel.set_view_mode(ViewMode::List),
             Command::ColumnsView => panel.set_view_mode(ViewMode::Details),
             Command::ThumbnailsView => panel.set_view_mode(ViewMode::Icons),
@@ -328,6 +351,33 @@ impl Commander {
         if refused {
             dialogs::show_error(self.active().window().as_ref(), &not_in_archives(), "");
         }
+        refused || self.refused_in_found(command)
+    }
+
+    /// Commands that need one directory: refused in a list of items found
+    /// by a search (the active panel's, or the other one's as a target).
+    fn refused_in_found(&self, command: Command) -> bool {
+        let other = &self.panels[1 - self.active.get()];
+        let refused = match command {
+            Command::MakeDir | Command::RenameOnly | Command::CopySamePanel => self.active().is_found(),
+            Command::Copy | Command::Rename => other.is_found(),
+            _ => false,
+        };
+        if refused {
+            let message = gettext("This does not work in a list of items found by a search.");
+            dialogs::show_error(self.active().window().as_ref(), &message, "");
+        }
+        refused
+    }
+
+    /// Items found inside archives cannot be copied, moved or deleted from
+    /// a list of items found (only browsed in the archive itself).
+    fn refused_found_in_archive(&self, paths: &[PathBuf]) -> bool {
+        let refused = self.active().is_found()
+            && paths.iter().any(|path| path.parent().is_some_and(|dir| self.active().is_archive_path(dir)));
+        if refused {
+            dialogs::show_error(self.active().window().as_ref(), &not_in_archives(), "");
+        }
         refused
     }
 
@@ -404,6 +454,63 @@ impl Commander {
         });
     }
 
+    /// Alt+F7, `cm_Search`: the window to find files, starting in the
+    /// active panel's directory (in an archive: the archive's), its marked
+    /// items offered as "selected directories and files".
+    fn search(self: &Rc<Self>) {
+        let panel = self.active();
+        let (dir, selected) = if let Some(archive) = panel.archive_file() {
+            (archive.parent().map_or_else(|| PathBuf::from("/"), Path::to_owned), Vec::new())
+        } else {
+            let state = panel.panel();
+            let marked = state.items().iter().filter(|item| item.is_selected()).map(|item| state.item_path(item)).collect();
+            (state.path().to_owned(), marked)
+        };
+        let window = self.find.get_or_init(|| {
+            let (go_to, open, feed) = (Rc::downgrade(self), Rc::downgrade(self), Rc::downgrade(self));
+            let actions = find_files::Actions {
+                go_to: Box::new(move |path| {
+                    if let Some(this) = go_to.upgrade() {
+                        this.go_to_found(path);
+                    }
+                }),
+                open: Box::new(move |path| {
+                    if let Some(this) = open.upgrade() {
+                        this.active().open_file(path);
+                    }
+                }),
+                feed: Box::new(move |paths, base| {
+                    if let Some(this) = feed.upgrade() {
+                        let panel = this.active();
+                        panel.show_found(paths, base);
+                        panel.focus();
+                        if let Some(window) = panel.window() {
+                            window.present();
+                        }
+                    }
+                }),
+            };
+            FindWindow::new(panel.window().as_ref(), actions)
+        });
+        window.show(dir, selected);
+    }
+
+    /// "Go to file" of the search: its directory in the active panel, the
+    /// cursor on it (inside an archive too), the main window up.
+    fn go_to_found(&self, path: &Path) {
+        let panel = self.active();
+        let shown = match (path.parent(), path.file_name()) {
+            (Some(dir), Some(name)) => panel.change_dir_focusing(dir.to_owned(), Some(name)),
+            _ => panel.change_dir_focusing(path.to_owned(), None),
+        };
+        if shown {
+            panel.focus();
+        }
+        if let Some(window) = panel.window() {
+            window.present();
+        }
+    }
+
     /// Ctrl+M, `cm_MultiRename`: marked items or the one under the cursor.
     fn multi_rename(self: &Rc<Self>) {
         let panel = self.active();
@@ -419,7 +526,7 @@ impl Commander {
                     return;
                 };
                 files.push(RenameFile {
-                    dir: state.path().to_owned(),
+                    dir: item.dir().unwrap_or(state.path()).to_owned(),
                     name: name.to_owned(),
                     is_dir: item.is_directory_like(),
                     modified: entry.modified.and_then(|time| jiff::Timestamp::try_from(time).ok()),
@@ -447,14 +554,16 @@ impl Commander {
             let state = self.active().panel();
             let dir = state.path().to_owned();
             match state.current_item() {
+                // Out of the items found: the directory they are shown under.
+                Some(item) if item.is_parent() && state.is_found() => (dir, None),
                 // As if the target panel went up itself: the cursor on the
                 // directory we come from.
                 Some(item) if item.is_parent() => match dir.parent() {
                     Some(parent) => (parent.to_owned(), dir.file_name().map(OsStr::to_owned)),
                     None => (dir, None),
                 },
-                Some(item) if item.is_directory_like() => (dir.join(&item.entry().name), None),
-                Some(item) => (dir, Some(item.entry().name.clone())),
+                Some(item) if item.is_directory_like() => (state.item_path(item), None),
+                Some(item) => (item.dir().map_or(dir, Path::to_owned), Some(item.entry().name.clone())),
                 None => (dir, None),
             }
         };
@@ -605,11 +714,11 @@ impl Commander {
     /// F8, Del, `cm_Delete`: marked items or the one under the cursor.
     fn delete(self: &Rc<Self>, trash: TrashChoice) {
         let panel = Rc::clone(self.active());
-        let (dir, names): (PathBuf, Vec<OsString>) = {
+        let (names, paths): (Vec<OsString>, Vec<PathBuf>) = {
             let state = panel.panel();
-            (state.path().to_owned(), state.targets().iter().map(|item| item.entry().name.clone()).collect())
+            state.targets().iter().map(|item| (item.entry().name.clone(), state.item_path(item))).unzip()
         };
-        if names.is_empty() {
+        if names.is_empty() || self.refused_found_in_archive(&paths) {
             return;
         }
         let mode = if trash.use_trash(self.settings.use_trash) { DeleteMode::Trash } else { DeleteMode::Permanently };
@@ -618,7 +727,6 @@ impl Commander {
         let operations = Rc::clone(&self.operations);
         let (last_queue, new_queue) = (operations.last_queue(QueueMemory::Delete), operations.new_queue());
         dialogs::confirm_operation(panel.window().as_ref(), &question, last_queue, new_queue, move |queue| {
-            let paths: Vec<PathBuf> = names.iter().map(|name| dir.join(name)).collect();
             operations.start(Box::new(DeleteOperation::new(LocalFs, paths, mode)), queue, QueueMemory::Delete);
         });
     }
@@ -628,12 +736,14 @@ impl Commander {
     /// or (same panel) under another name next to them.
     fn transfer(self: &Rc<Self>, mode: TransferMode, same_panel: bool) {
         let panel = Rc::clone(self.active());
-        let (dir, items): (PathBuf, Vec<(OsString, bool)>) = {
+        let (dir, items, paths): (PathBuf, Vec<(OsString, bool)>, Vec<PathBuf>) = {
             let state = panel.panel();
-            let items = state.targets().iter().map(|item| (item.entry().name.clone(), item.is_directory_like())).collect();
-            (state.path().to_owned(), items)
+            let targets = state.targets();
+            let items = targets.iter().map(|item| (item.entry().name.clone(), item.is_directory_like())).collect();
+            let paths = targets.iter().map(|item| state.item_path(item)).collect();
+            (state.path().to_owned(), items, paths)
         };
-        if items.is_empty() {
+        if items.is_empty() || self.refused_found_in_archive(&paths) {
             return;
         }
         let target = initial_target(&items, (!same_panel).then(|| self.panels[1 - self.active.get()].path()).as_deref());
@@ -650,7 +760,6 @@ impl Commander {
         // Out of an archive: extracting, a relative target is relative to
         // the archive's directory (as in the original).
         let archive = panel.archive_file();
-        let paths: Vec<PathBuf> = names.iter().map(|name| dir.join(name)).collect();
         let extract_bytes: u64 = if archive.is_some() { paths.iter().map(|path| panel.archive_bytes(path)).sum() } else { 0 };
         let source_panel = Rc::clone(&panel);
         copy_dialog::show(panel.window().as_ref(), &request, move |confirmed| {

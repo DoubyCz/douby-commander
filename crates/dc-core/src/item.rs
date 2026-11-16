@@ -1,4 +1,5 @@
 use std::ffi::OsString;
+use std::path::{Path, PathBuf};
 
 use dc_vfs::{Entry, EntryKind};
 
@@ -20,6 +21,9 @@ pub struct FileItem {
     /// Size of a directory's contents once calculated (Space), forgotten
     /// with the listing.
     pub(crate) calculated_size: Option<u64>,
+    /// In a listing of items found by a search: the directory the item is
+    /// in (otherwise it is the panel's).
+    dir: Option<PathBuf>,
 }
 
 impl FileItem {
@@ -34,8 +38,20 @@ impl FileItem {
         Self::build(entry, true)
     }
 
+    /// An item found by a search, in `dir`, shown as `shown` (its path
+    /// below the directory of the listing).
+    pub(crate) fn found(entry: Entry, dir: PathBuf, shown: String) -> Self {
+        let mut item = Self::build_named(entry, false, shown);
+        item.dir = Some(dir);
+        item
+    }
+
     fn build(entry: Entry, is_parent: bool) -> Self {
         let display_name = entry.name.to_string_lossy().into_owned();
+        Self::build_named(entry, is_parent, display_name)
+    }
+
+    fn build_named(entry: Entry, is_parent: bool, display_name: String) -> Self {
         let (name_no_ext, extension) = if entry.is_directory_like() {
             (display_name.clone(), String::new())
         } else {
@@ -53,7 +69,15 @@ impl FileItem {
             extension,
             selected: false,
             calculated_size: None,
+            dir: None,
         }
+    }
+
+    /// The directory of an item found by a search; `None` for an item of
+    /// the panel's own directory.
+    #[must_use]
+    pub fn dir(&self) -> Option<&Path> {
+        self.dir.as_deref()
     }
 
     #[must_use]

@@ -31,6 +31,9 @@ use Entry::{Item, Separator, Submenu};
 const RUN_ACTION: &str = "run-command";
 /// Disabled window action of items whose command does not exist yet.
 const NOT_YET_ACTION: &str = "not-implemented";
+/// Window action of "Show Hidden/System Files": a state, so that GTK draws
+/// the item checked while hidden files are shown.
+const SHOW_HIDDEN_ACTION: &str = "show-sys-files";
 
 const MENU: &[(Caption, &[Entry])] = &[
     (
@@ -281,7 +284,11 @@ fn menu_item(caption: &str, command_text: &str, commander: &Commander) -> gio::M
     let item = gio::MenuItem::new(Some(caption), None);
     match command_text.parse::<Command>() {
         Ok(command) => {
-            item.set_action_and_target_value(Some(&format!("win.{RUN_ACTION}")), Some(&command_text.to_variant()));
+            if command == Command::ShowSysFiles {
+                item.set_detailed_action(&format!("win.{SHOW_HIDDEN_ACTION}"));
+            } else {
+                item.set_action_and_target_value(Some(&format!("win.{RUN_ACTION}")), Some(&command_text.to_variant()));
+            }
             if let Some(accel) = commander.keymap().shortcuts(command).iter().find_map(keys::accelerator) {
                 item.set_attribute_value("accel", Some(&accel.to_variant()));
             }
@@ -303,7 +310,26 @@ fn install_actions(window: &gtk::ApplicationWindow, commander: &Rc<Commander>) {
     });
     window.add_action(&run);
 
+    let show_hidden = gio::SimpleAction::new_stateful(SHOW_HIDDEN_ACTION, None, &commander.shows_hidden().to_variant());
+    let weak = Rc::downgrade(commander);
+    show_hidden.connect_activate(move |_, _| {
+        if let Some(commander) = weak.upgrade() {
+            // The commander sets the new state, Ctrl+. goes the same way.
+            commander.execute(Command::ShowSysFiles);
+            commander.active().focus();
+        }
+    });
+    window.add_action(&show_hidden);
+
     let not_yet = gio::SimpleAction::new(NOT_YET_ACTION, None);
     not_yet.set_enabled(false);
     window.add_action(&not_yet);
+}
+
+/// The item "Show Hidden/System Files" checked or not, as `shown`.
+pub fn show_hidden_checked(window: &gtk::Window, shown: bool) {
+    let action = window.downcast_ref::<gtk::ApplicationWindow>().and_then(|window| window.lookup_action(SHOW_HIDDEN_ACTION));
+    if let Some(action) = action.and_downcast::<gio::SimpleAction>() {
+        action.set_state(&shown.to_variant());
+    }
 }

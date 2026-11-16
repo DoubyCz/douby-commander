@@ -4,15 +4,14 @@
 //! that installs them. With nothing installed it stays the type and size.
 
 use std::ffi::OsString;
-use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
-use std::process::{Command, Stdio};
 use std::sync::atomic::{AtomicBool, Ordering};
-use std::time::{Duration, Instant};
+use std::time::Duration;
 
 use dc_core::preview::pages::PageRenderer;
 use dc_core::preview::thumbnailer::Thumbnailer;
-use dc_core::preview::tools::{self, Distribution, Hint, InfoTool, Section};
+use dc_core::program::install_command;
+use dc_core::preview::tools::{self, Hint, InfoTool, Section};
 use dc_i18n::{fill, gettext};
 use gtk::gdk_pixbuf::Pixbuf;
 use gtk::prelude::*;
@@ -310,62 +309,4 @@ fn load(picture: &Path) -> Option<Pixels> {
     Pixels::new(&Pixbuf::from_file_at_scale(picture, side, side, true).ok()?)
 }
 
-/// Runs `program` without a shell, `input` on its standard input; its
-/// standard output (at most `max_output` bytes), unless it did not start,
-/// ran out of `timeout` or was cancelled.
-pub fn run(
-    program: &Path,
-    args: &[OsString],
-    input: Option<&[u8]>,
-    timeout: Duration,
-    max_output: usize,
-    cancel: &AtomicBool,
-) -> Option<Vec<u8>> {
-    let mut child = Command::new(program)
-        .args(args)
-        .stdin(if input.is_some() { Stdio::piped() } else { Stdio::null() })
-        .stdout(Stdio::piped())
-        .stderr(Stdio::null())
-        .spawn()
-        .ok()?;
-    if let (Some(input), Some(mut stdin)) = (input, child.stdin.take()) {
-        // Small, it fits the pipe; a program that does not read it fails.
-        stdin.write_all(input).ok();
-    }
-    let mut stdout = child.stdout.take()?;
-    let reader = std::thread::spawn(move || {
-        let mut output = Vec::new();
-        stdout.by_ref().take(max_output as u64).read_to_end(&mut output).map(|_| output)
-    });
-    let deadline = Instant::now() + timeout;
-    let told = loop {
-        match child.try_wait() {
-            Ok(Some(_)) => break true,
-            // All that is read is read: the rest is not needed.
-            Ok(None) if reader.is_finished() => {
-                child.kill().ok();
-                child.wait().ok();
-                break true;
-            }
-            Ok(None) if Instant::now() < deadline && !cancel.load(Ordering::Relaxed) => {
-                std::thread::sleep(Duration::from_millis(10));
-            }
-            _ => {
-                child.kill().ok();
-                child.wait().ok();
-                break false;
-            }
-        }
-    };
-    let output = reader.join().ok()?.ok()?;
-    told.then_some(output)
-}
-
-/// One command for all the missing programs whose packages are known on
-/// this distribution.
-fn install_command(hints: &[Hint]) -> Option<String> {
-    let os_release = std::fs::read_to_string("/etc/os-release").or_else(|_| std::fs::read_to_string("/usr/lib/os-release"));
-    let distribution = Distribution::from_os_release(&os_release.ok()?)?;
-    let packages: Vec<&str> = hints.iter().filter_map(|hint| distribution.package(&hint.program)).collect();
-    (!packages.is_empty()).then(|| distribution.install_command(&packages))
-}
+pub use dc_core::program::run;
