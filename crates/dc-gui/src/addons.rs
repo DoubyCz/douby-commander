@@ -633,6 +633,8 @@ pub struct Strip {
     offers: RefCell<Vec<(String, Hint)>>,
     /// Programs the user closed the offer of; not offered again here.
     dismissed: RefCell<Vec<String>>,
+    /// The window's activation is followed already.
+    following: std::cell::Cell<bool>,
     addons: Weak<AddonsUi>,
 }
 
@@ -657,6 +659,7 @@ impl Strip {
             close,
             offers: RefCell::default(),
             dismissed: RefCell::default(),
+            following: std::cell::Cell::new(false),
             addons,
         });
         for widget in [
@@ -670,7 +673,31 @@ impl Strip {
             strip.root.append(widget);
         }
         strip.connect();
+        strip.follow_window();
         strip
+    }
+
+    /// Whenever its window becomes active again, the strip looks anew at
+    /// what is installed: a tool installed meanwhile in a terminal or a
+    /// software centre is no longer offered.
+    fn follow_window(self: &Rc<Self>) {
+        let weak = Rc::downgrade(self);
+        self.root.connect_realize(move |root| {
+            let Some(window) = window_of(root) else { return };
+            let Some(this) = weak.upgrade() else { return };
+            if this.following.replace(true) {
+                return;
+            }
+            let weak = weak.clone();
+            window.connect_is_active_notify(move |window| {
+                if let Some(this) = weak.upgrade()
+                    && window.is_active()
+                    && this.root.is_visible()
+                {
+                    this.refresh();
+                }
+            });
+        });
     }
 
     fn connect(self: &Rc<Self>) {
