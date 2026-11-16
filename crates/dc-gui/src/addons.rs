@@ -63,6 +63,11 @@ pub struct AddonsUi {
     strips: RefCell<Vec<Weak<Strip>>>,
     listeners: RefCell<Vec<Box<dyn Fn()>>>,
     details: RefCell<Option<(gtk::Window, gtk::TextBuffer)>>,
+    /// Windows the add-ons in the queue were chosen in.
+    queued_from: RefCell<Vec<glib::WeakRef<gtk::Window>>>,
+    /// Windows the installation now running (or just ended) was chosen
+    /// in: only their strips show it, the others keep their own offers.
+    shown_in: RefCell<Vec<glib::WeakRef<gtk::Window>>>,
     this: Weak<Self>,
 }
 
@@ -76,6 +81,8 @@ impl AddonsUi {
             strips: RefCell::default(),
             listeners: RefCell::default(),
             details: RefCell::default(),
+            queued_from: RefCell::default(),
+            shown_in: RefCell::default(),
             this: this.clone(),
         })
     }
@@ -101,6 +108,12 @@ impl AddonsUi {
         for strip in self.strips() {
             strip.refresh();
         }
+    }
+
+    /// Whether the installation is shown on the strip in `window`: only
+    /// in the windows it was chosen in.
+    fn shown_in(&self, window: Option<&gtk::Window>) -> bool {
+        window.is_some_and(|window| self.shown_in.borrow().iter().any(|shown| shown.upgrade().as_ref() == Some(window)))
     }
 
     /// Whether `program` is queued or its package is being installed.
@@ -264,6 +277,9 @@ impl AddonsUi {
     /// installation runs (then it goes on with them afterwards).
     fn enqueue(&self, parent: Option<&gtk::Window>, requests: Vec<Request>) {
         self.queue.borrow_mut().add(requests);
+        if let Some(parent) = parent {
+            self.queued_from.borrow_mut().push(parent.downgrade());
+        }
         if !matches!(*self.state.borrow(), State::Running { .. } | State::Waiting { .. }) {
             self.start_next(parent);
         }
@@ -275,6 +291,7 @@ impl AddonsUi {
     fn start_next(&self, parent: Option<&gtk::Window>) {
         let (Some(distribution), Some(elevation)) = (self.distribution, addons::elevation()) else { return };
         let requests = self.queue.borrow_mut().take_all();
+        *self.shown_in.borrow_mut() = std::mem::take(&mut *self.queued_from.borrow_mut());
         let packages: Vec<String> = addons::packages(&requests).into_iter().map(str::to_owned).collect();
         if packages.is_empty() {
             return;
@@ -301,7 +318,7 @@ impl AddonsUi {
     fn ask_password(&self, parent: Option<&gtk::Window>, job: Job, error: Option<&str>) {
         *self.state.borrow_mut() = State::Waiting { packages: job.packages.clone() };
         self.refresh_strips();
-        let parent = parent.cloned().or_else(|| self.strips().iter().find_map(|strip| window_of(strip.widget())));
+        let parent = parent.cloned().or_else(|| self.shown_in.borrow().iter().find_map(glib::WeakRef::upgrade));
         let message = fill(
             &gettext("Installing add-ons ({packages}) needs the rights of the administrator. Password for sudo:"),
             &[("packages", &job.packages.join(", "))],
@@ -313,6 +330,7 @@ impl AddonsUi {
             let Some(this) = weak.upgrade() else { return };
             let Some(password) = password else {
                 *this.state.borrow_mut() = State::Idle;
+                this.shown_in.borrow_mut().clear();
                 this.refresh_strips();
                 return;
             };
@@ -390,6 +408,7 @@ impl AddonsUi {
         };
         if finished {
             *self.state.borrow_mut() = State::Idle;
+            self.shown_in.borrow_mut().clear();
         }
         self.refresh_strips();
     }
@@ -676,7 +695,7 @@ impl Strip {
         self.close.connect_clicked(move |_| {
             let Some(this) = weak.upgrade() else { return };
             let Some(addons) = this.addons.upgrade() else { return };
-            if matches!(*addons.state.borrow(), State::Finished { .. }) {
+            if matches!(*addons.state.borrow(), State::Finished { .. }) && addons.shown_in(window_of(&this.root).as_ref()) {
                 addons.acknowledge(false);
                 return;
             }
@@ -710,7 +729,11 @@ impl Strip {
     /// else the offer; `None` when there is nothing to say.
     fn content(&self, addons: &AddonsUi) -> Option<(String, Option<&'static str>, bool)> {
         // (text, icon or a spinner, an offer)
-        Some(match &*addons.state.borrow() {
+        let state = addons.state.borrow();
+        // An installation chosen in another window: this one keeps its offer.
+        let idle = State::Idle;
+        let state = if addons.shown_in(window_of(&self.root).as_ref()) { &*state } else { &idle };
+        Some(match state {
             State::Running { packages, output } => {
                 let output = output.lock().unwrap_or_else(PoisonError::into_inner);
                 let text = fill(
@@ -769,7 +792,7 @@ impl Strip {
         self.icon.set_visible(!busy);
         self.icon.set_icon_name(icon);
         self.install.set_visible(offer);
-        let waiting = matches!(*addons.state.borrow(), State::Waiting { .. });
+        let waiting = matches!(*addons.state.borrow(), State::Waiting { .. }) && addons.shown_in(window_of(&self.root).as_ref());
         self.details.set_visible(!offer && !waiting);
         self.close.set_visible(!busy);
         self.close.set_tooltip_text(Some(&if offer { gettext("Do not offer these add-ons here") } else { gettext("Hide") }));

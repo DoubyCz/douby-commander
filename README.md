@@ -13,7 +13,7 @@ the name and the abbreviation DC.
 It follows the theme of [Omarchy](https://omarchy.org/) live: switch the theme and the
 colors change at once, with no setup.
 
-> **Alpha (0.0.20).** Many features are not done yet. Most menu items and toolbar buttons
+> **Alpha (0.0.21).** Many features are not done yet. Most menu items and toolbar buttons
 > are not connected, and there is no settings dialog. Expect rough edges.
 
 ## What works
@@ -55,11 +55,7 @@ the icons view.*
   DjVu, RTF and old Word files through the tools of your system, offered to install), modification time, size, file types and permissions,
   duplicate files. Searches can be saved under a name. The results go to the file
   or into the panel, to copy, move or delete them as files of a directory
-- Add-ons instead of plugins: where a function can do more with a program of your
-  distribution (the quick view, the text of documents in a search), a strip at the bottom
-  of the window offers it with what it is good for. Choose what to install, give the
-  administrator password and watch the strip: your package manager (pacman, apt, dnf or
-  zypper) installs it right away. Configuration > Add-ons lists everything there is
+- Add-ons: Linux tools instead of plugins, see below
 - Ctrl+. shows hidden files, also from the Show menu
 - F7 new directory, F8 delete (to the trash, or permanently with Shift)
 - F9 switches the panel's view in turn: list, details, icons and a terminal that follows
@@ -72,6 +68,41 @@ the icons view.*
   running already, it goes there in the running window. It can open folders from other
   applications
 - English and Czech
+
+## Linux tools instead of plugins
+
+Double Commander, like Total Commander, grows through plugins: WCX for archives, WDX for
+file properties, WLX for viewers, DSX for searching. Each of them is a library written for
+it, on Windows often the only way to read a format. Douby Commander has no plugins and
+never will. It runs on Linux only, and on Linux the package manager of your distribution
+already has a tool for nearly every format: Poppler for PDF, pandoc for documents and
+books, exiftool for metadata, the thumbnailers of the desktop, and many more. Douby
+Commander uses what is installed, and asks for nothing that is not needed.
+
+We call these tools **add-ons**. Nothing is pulled in as a dependency of the package: who
+never opens a DjVu file never installs a DjVu tool. When a function would do more with a
+tool you do not have, a strip at the bottom of its window says so, with what the tool
+would add. Click Install, choose what you want, give the administrator password in the
+window that asks for it, and watch the strip: the package manager of your distribution
+installs it right away (pacman, apt, dnf or zypper, through sudo). The function uses the
+tool from then on, no restart. Configuration > Add-ons lists every add-on there is.
+
+| Function | Tool | Package on Arch | What it adds |
+|---|---|---|---|
+| Quick view (F3) | `nvim` | neovim | text and source code with syntax highlighting |
+| | `pdftoppm`, `pdfinfo` | poppler | PDF documents page by page |
+| | `fluidsynth` | fluidsynth | list of instruments in SoundFont banks |
+| | `pandoc` | pandoc-cli | beginning of the text of books and documents |
+| | `exiftool` | perl-image-exiftool | metadata of almost any file |
+| | thumbnailers | evince, libgsf, gnome-epub-thumbnailer, gnome-font-viewer | pictures of documents, covers of e-books, samples of fonts |
+| Find files (Alt+F7), text of documents | `pdftotext` | poppler | text of PDF documents |
+| | `djvutxt` | djvulibre | text of DjVu documents |
+| | `pandoc` | pandoc-cli | text of RTF documents |
+| | `catdoc` | catdoc | text of old Word documents (.doc) |
+
+OpenDocument, Office Open XML, EPUB and FictionBook files are read by Douby Commander
+itself, they are zips of XML. The package names for Debian, Fedora and openSUSE are known
+too.
 
 ## Installing
 
